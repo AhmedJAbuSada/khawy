@@ -12,7 +12,7 @@ import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class UsernameViewModel @Inject constructor(
+class UpdateProfileViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val repository: UserRepository,
 ) : ViewModel() {

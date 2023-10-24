@@ -19,8 +19,8 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_phoneNumberFragment_to_usernameFragment"
-            app:destination="@id/usernameFragment"
+            android:id="@+id/action_phoneNumberFragment_to_updateProfileFragment"
+            app:destination="@id/updateProfileFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -32,16 +32,16 @@
         android:label="VerificationFragment"
         tools:layout="@layout/fragment_verification">
         <action
-            android:id="@+id/action_verificationFragment_to_usernameFragment"
-            app:destination="@id/usernameFragment"
+            android:id="@+id/action_verificationFragment_to_updateProfileFragment"
+            app:destination="@id/updateProfileFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"  />
     </fragment>
     <fragment
-        android:id="@+id/usernameFragment"
-        android:name="com.khawi.ui.login.username.UsernameFragment"
-        android:label="UsernameFragment"
-        tools:layout="@layout/fragment_username"/>
+        android:id="@+id/updateProfileFragment"
+        android:name="com.khawi.ui.login.username.UpdateProfileFragment"
+        android:label="updateProfileFragment"
+        tools:layout="@layout/fragment_update_profile"/>
 </navigation>

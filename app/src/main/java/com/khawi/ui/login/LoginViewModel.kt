@@ -24,6 +24,7 @@ class LoginViewModel @Inject constructor(
     val phoneLiveData = MutableLiveData("")
     val usernameLiveData = MutableLiveData("")
     val emailLiveData = MutableLiveData("")
+    val imageMutableLiveData = MutableLiveData<File>()
 
     suspend fun loginByPhone(phone: String): StateFlow<BaseState<BaseResponse<UserModel?>?>> {
 //        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->

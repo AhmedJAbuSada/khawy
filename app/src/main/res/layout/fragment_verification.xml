@@ -14,15 +14,14 @@
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="50dp"
-                android:text="@string/sms_verification"
-                android:textColor="@color/black"
-                android:textSize="28sp"
-                android:textStyle="bold"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginEnd="24dp"
+                android:text="@string/code_verification"
+                android:textColor="@color/textColor"
+                android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -31,14 +30,14 @@
                 android:id="@+id/content"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="50dp"
-                android:text="@string/join_content"
-                android:textColor="@color/black"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginEnd="24dp"
+                android:text="@string/code_verification_content"
+                android:textColor="@color/textColor2"
                 android:textSize="12sp"
-                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/title"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title" />
 
             <com.chaos.view.PinView
@@ -47,52 +46,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="47dp"
-                android:layout_marginEnd="30dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="33dp"
+                android:layout_marginEnd="24dp"
                 android:cursorVisible="true"
                 android:fontFamily="@font/ff_shamel_family_sans_one_bold"
                 android:inputType="number"
                 android:itemBackground="@android:color/transparent"
                 android:padding="5dp"
                 android:shadowColor="@color/white"
-                android:textColor="@color/black"
+                android:textColor="@color/textColor"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:cursorColor="@color/black"
+                app:cursorColor="@color/textColor"
                 app:cursorWidth="2dp"
                 app:hideLineWhenFilled="false"
                 app:itemCount="4"
                 app:itemHeight="66dp"
-                app:itemRadius="10dp"
+                app:itemRadius="12dp"
                 app:itemSpacing="16dp"
                 app:itemWidth="66dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/title"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/content"
                 app:lineColor="#F1F1F1"
                 app:lineWidth="2dp"
                 app:viewType="rectangle" />
 
             <TextView
-                android:id="@+id/timer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/resend_code"
-                android:textColor="@color/red"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/codePinView" />
-
-
-            <TextView
                 android:id="@+id/verifyBtn"
                 android:layout_width="0dp"
                 android:layout_height="51dp"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="30dp"
                 android:background="@drawable/button_main"
                 android:elevation="5dp"
@@ -103,12 +89,37 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/timer" />
+                app:layout_constraintTop_toBottomOf="@+id/codePinView" />
+
+            <TextView
+                android:id="@+id/timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/resend_code"
+                android:textColor="@color/main"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/verifyBtn" />
+
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 app:layout_constraintTop_toBottomOf="@+id/verifyBtn" />
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="16dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/arrow_back"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>

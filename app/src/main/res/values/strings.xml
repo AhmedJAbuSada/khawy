@@ -4,7 +4,7 @@
     <string name="error">خطأ</string>
     <string name="Ok">حسنا</string>
     <string name="error_phone_empty">حقل رقم الجوال مطلوب</string>
-    <string name="error_username_empty">حقل اسم المستخدم مطلوب</string>
+    <string name="error_full_name_empty">حقل الاسم مطلوب</string>
     <string name="resend_code">اعادة ارسال</string>
     <string name="you_can_resend_code_after">بامكانك ارسال الكود بعد</string>
     <string name="error_verification_empty">حقل كود التحقق مطلوب</string>
@@ -18,4 +18,28 @@
     <string name="yesterday">أمس</string>
     <string name="days_ago">يوم</string>
     <string name="please_wait">الرجاء الانتظار</string>
+    <string name="login">التسجيل</string>
+    <string name="phone_number">رقم الهاتف</string>
+    <string name="code_verification">التحقق من الرمز</string>
+    <string name="code_verification_content">أدخل الرمز الذي أرسلناه إلى رقم هاتفك التالي: </string>
+    <string name="verify_now">تحقق من الرمز</string>
+    <string name="profile_information">البيانات الشخصية</string>
+    <string name="save_changes">حفظ التغييرات</string>
+    <string name="full_name">الاسم كامل</string>
+    <string name="do_you_have_car">هل تمتلك سيارة؟</string>
+    <string name="email">البريد الإلكتروني</string>
+    <string name="car_type">نوع السيارة</string>
+    <string name="car_model">موديل السيارة</string>
+    <string name="car_color">لون السيارة</string>
+    <string name="car_plate">رقم السيارة</string>
+    <string name="error_email_empty">حقل البريد الالكتروني مطلوب</string>
+    <string name="error_email_invalid">البريد الالكتروني غير صحيح</string>
+    <string name="error_car_type_empty">حقل نوع السيارة مطلوب</string>
+    <string name="error_car_model_empty">حقل موديل السيارة مطلوب</string>
+    <string name="error_car_color_empty">حقل لون السيارة مطلوب</string>
+    <string name="error_car_plate_empty">حقل رقم السيارة مطلوب</string>
+    <string name="home">الرئيسية</string>
+    <string name="orders">الطلبات</string>
+    <string name="notifications">التنبيهات</string>
+    <string name="settings">الاعدادت</string>
 </resources>

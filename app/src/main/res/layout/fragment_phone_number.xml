@@ -14,59 +14,69 @@
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="50dp"
-                android:text="@string/create_new_account"
-                android:textColor="@color/black"
-                android:textSize="28sp"
-                android:textStyle="bold"
+                android:layout_marginTop="22dp"
+                android:layout_marginEnd="30dp"
+                android:text="@string/login"
+                android:textColor="@color/textColor"
+                android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/content"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="50dp"
-                android:text="@string/join_content"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:textStyle="bold"
+            <ImageView
+                android:id="@+id/logoIV"
+                android:layout_width="100dp"
+                android:layout_height="188dp"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/logo"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/title"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title" />
+
+            <TextView
+                android:id="@+id/phoneNumberTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="54dp"
+                android:layout_marginEnd="24dp"
+                android:text="@string/phone_number"
+                android:textColor="@color/textColor2"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/logoIV" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/phoneContainer"
                 android:layout_width="0dp"
-                android:layout_height="52dp"
-                android:layout_marginTop="47dp"
-                android:layout_marginEnd="30dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
                 android:background="@drawable/button_border_grey_light_12r"
                 android:gravity="center_vertical"
+                android:layoutDirection="ltr"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/title"
-                app:layout_constraintTop_toBottomOf="@+id/content">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/phoneNumberTV">
 
                 <com.hbb20.CountryCodePicker
                     android:id="@+id/ccp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    app:ccpDialog_textColor="@color/textColor"
+                    app:ccp_contentColor="@color/textColor"
                     app:ccp_defaultNameCode="SA"
+                    android:layoutDirection="ltr"
                     app:ccp_showArrow="true"
                     app:ccp_showNameCode="false"
                     app:ccp_showPhoneCode="true"
-                    app:ccp_textSize="15sp"
-                    app:ccp_contentColor="@color/black"
-                    app:ccpDialog_textColor="@color/black"
-                    app:ccp_textGravity="CENTER" />
+                    app:ccp_textGravity="CENTER"
+                    app:ccp_textSize="15sp" />
 
                 <View
                     android:layout_width="1dp"
@@ -79,6 +89,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@null"
+                    android:layoutDirection="ltr"
                     android:gravity="center_vertical"
                     android:hint="5X XXX XXXX"
                     android:imeOptions="actionDone"
@@ -86,7 +97,7 @@
                     android:lines="1"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/textColor"
                     android:textColorHint="@color/grey"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -98,12 +109,12 @@
                 android:layout_width="0dp"
                 android:layout_height="51dp"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="30dp"
                 android:background="@drawable/button_main"
                 android:elevation="5dp"
                 android:gravity="center"
-                android:text="@string/sign_in"
+                android:text="@string/login"
                 android:textColor="@color/white"
                 android:textSize="15sp"
                 android:textStyle="bold"
