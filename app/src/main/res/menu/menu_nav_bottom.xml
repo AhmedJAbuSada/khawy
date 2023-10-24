@@ -9,6 +9,9 @@
         android:icon="@drawable/orders_selector"
         android:title="@string/orders" />
     <item
+        android:id="@+id/emptyIcon"
+        android:title="" />
+    <item
         android:id="@+id/notifications"
         android:icon="@drawable/notifications_selector"
         android:title="@string/notifications" />

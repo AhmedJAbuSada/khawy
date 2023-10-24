@@ -36,17 +36,16 @@
             app:menu="@menu/menu_nav_bottom" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabButton"
+            android:id="@+id/requestForm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="18dp"
             app:backgroundTint="@color/main"
             app:elevation="10dp"
-            app:cornerRadius="60dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:src="@drawable/add"
+            app:srcCompat="@drawable/request_form"
             app:tint="@color/white" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
