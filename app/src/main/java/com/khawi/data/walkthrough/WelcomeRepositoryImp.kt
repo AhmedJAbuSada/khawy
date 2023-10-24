@@ -1,7 +1,7 @@
 package com.khawi.data.walkthrough
 
 import com.advance.threading.DispatcherProvider
-import com.khawi.model.welcome.Welcome
+import com.khawi.model.Welcome
 import com.khawi.network_base.model.AdvanceResult
 import com.khawi.network_base.model.BaseState
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,7 +1,7 @@
 package com.khawi.data.walkthrough
 
 import com.khawi.model.BaseResponse
-import com.khawi.model.welcome.Welcome
+import com.khawi.model.Welcome
 import com.khawi.network_base.RemoteDataSource
 import javax.inject.Inject
 

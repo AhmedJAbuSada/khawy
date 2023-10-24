@@ -10,4 +10,12 @@
     <string name="error_verification_empty">حقل كود التحقق مطلوب</string>
     <string name="create_new_account">انشاء حساب جديد</string>
     <string name="skip">تخطي</string>
+    <string name="just_now">الآن</string>
+    <string name="a_minute_ago">منذ دقيقة</string>
+    <string name="minute_ago">دقيقة</string>
+    <string name="an_hour_ago">مند ساعة</string>
+    <string name="hours_ago">ساعة</string>
+    <string name="yesterday">أمس</string>
+    <string name="days_ago">يوم</string>
+    <string name="please_wait">الرجاء الانتظار</string>
 </resources>
