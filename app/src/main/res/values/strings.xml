@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">خوي</string>
+    <string name="next">التالي</string>
+    <string name="error">خطأ</string>
+    <string name="Ok">حسنا</string>
+    <string name="error_phone_empty">حقل رقم الجوال مطلوب</string>
+    <string name="error_username_empty">حقل اسم المستخدم مطلوب</string>
+    <string name="resend_code">اعادة ارسال</string>
+    <string name="you_can_resend_code_after">بامكانك ارسال الكود بعد</string>
+    <string name="error_verification_empty">حقل كود التحقق مطلوب</string>
+    <string name="create_new_account">انشاء حساب جديد</string>
+    <string name="skip">تخطي</string>
+</resources>
