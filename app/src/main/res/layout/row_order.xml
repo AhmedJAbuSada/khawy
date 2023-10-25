@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="24dp"
+    android:layout_marginVertical="8dp"
+    android:background="@drawable/bg_grey_12r">
+
+    <TextView
+        android:id="@+id/orderStatus"
+        android:layout_width="83dp"
+        android:layout_height="28dp"
+        android:background="@drawable/bg_blue_corner_12r"
+        android:gravity="center"
+        android:textColor="@color/blue"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/orderImg"
+        android:layout_width="88dp"
+        android:layout_height="94dp"
+        android:layout_margin="16dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/roundedImageView"
+        app:srcCompat="@drawable/logo_circle_white" />
+
+    <TextView
+        android:id="@+id/orderDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:layout_marginEnd="17dp"
+        android:textColor="#898989"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toStartOf="@+id/orderImg"
+        app:layout_constraintStart_toEndOf="@+id/orderStatus"
+        app:layout_constraintTop_toTopOf="@+id/orderImg" />
+
+    <TextView
+        android:id="@+id/orderNumber"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="2dp"
+        android:textColor="#141F1F"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/orderDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/orderDate" />
+
+    <TextView
+        android:id="@+id/orderDistance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="2dp"
+        android:textColor="#141F1F"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/orderDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/orderNumber" />
+
+    <TextView
+        android:id="@+id/orderPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/main"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/orderImg"
+        app:layout_constraintEnd_toEndOf="@+id/orderDistance"
+        app:layout_constraintTop_toBottomOf="@+id/orderDistance" />
+
+    <ImageView
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/circle_grey"
+        android:scaleType="centerInside"
+        android:src="@drawable/arrow_show_details"
+        app:layout_constraintBottom_toBottomOf="@+id/orderImg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tint="#666666" />
+</androidx.constraintlayout.widget.ConstraintLayout>
