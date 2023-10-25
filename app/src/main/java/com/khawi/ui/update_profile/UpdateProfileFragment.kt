@@ -1,4 +1,4 @@
-package com.khawi.ui.login.username
+package com.khawi.ui.update_profile
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -73,6 +74,9 @@ class UpdateProfileFragment : Fragment() {
             }
         }
 
+        binding.back.setOnClickListener {
+            findNavController().popBackStack()
+        }
         binding.saveBtn.setOnClickListener {
 //            val username = binding.fullNameET.text.toString()
             if (validation()) {

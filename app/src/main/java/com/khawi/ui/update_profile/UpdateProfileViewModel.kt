@@ -1,4 +1,4 @@
-package com.khawi.ui.login.username
+package com.khawi.ui.update_profile
 
 import androidx.lifecycle.ViewModel
 import com.khawi.data.auth.AuthRepository

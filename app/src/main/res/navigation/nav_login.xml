@@ -41,7 +41,7 @@
     </fragment>
     <fragment
         android:id="@+id/updateProfileFragment"
-        android:name="com.khawi.ui.login.username.UpdateProfileFragment"
+        android:name="com.khawi.ui.update_profile.UpdateProfileFragment"
         android:label="updateProfileFragment"
         tools:layout="@layout/fragment_update_profile"/>
 </navigation>

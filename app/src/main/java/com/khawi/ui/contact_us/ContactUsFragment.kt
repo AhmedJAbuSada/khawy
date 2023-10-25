@@ -1,24 +1,25 @@
-package com.khawi.ui.main.notifications
+package com.khawi.ui.contact_us
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.khawi.databinding.FragmentNotificationsBinding
+import androidx.navigation.fragment.findNavController
+import com.khawi.databinding.FragmentContactUsBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class NotificationsFragment : Fragment() {
+class ContactUsFragment : Fragment() {
 
-    private var _binding: FragmentNotificationsBinding? = null
+    private var _binding: FragmentContactUsBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+        _binding = FragmentContactUsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
@@ -26,15 +27,13 @@ class NotificationsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val list = mutableListOf<String>()
-        list.add("")
-        list.add("")
-        list.add("")
-        val adapter = NotificationAdapter(requireContext()){_, _ ->
-
+        binding.back.setOnClickListener {
+            findNavController().popBackStack()
         }
-        adapter.items = list
-        binding.recyclerView.adapter = adapter
+        binding.sendBtn.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
     }
 
     override fun onDestroyView() {

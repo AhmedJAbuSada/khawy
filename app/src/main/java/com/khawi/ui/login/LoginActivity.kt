@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.activity.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -14,11 +13,9 @@ import com.github.dhaval2404.imagepicker.util.FileUriUtils
 import com.khawi.R
 import com.khawi.base.BaseActivity
 import com.khawi.databinding.ActivityLoginBinding
-import com.khawi.model.db.user.UserRepository
-import com.khawi.ui.login.username.UpdateProfileFragment
+import com.khawi.ui.update_profile.UpdateProfileFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : BaseActivity() {
