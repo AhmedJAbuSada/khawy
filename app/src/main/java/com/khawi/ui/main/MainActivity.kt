@@ -1,8 +1,8 @@
 package com.khawi.ui.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -17,6 +17,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
         navController = navHostFragment.navController
@@ -45,5 +47,19 @@ class MainActivity : AppCompatActivity() {
                 .setTopRightCorner(CornerFamily.ROUNDED, 16f)
                 .setTopLeftCorner(CornerFamily.ROUNDED, 16f)
                 .build()
+
+        binding.requestsFormGroup.visibility = View.GONE
+        binding.requestForm.setOnClickListener {
+            binding.requestsFormGroup.visibility = View.VISIBLE
+        }
+        binding.chooseForm.setOnClickListener {
+            binding.requestsFormGroup.visibility = View.GONE
+        }
+        binding.deliverFormContainer.setOnClickListener {
+            binding.requestsFormGroup.visibility = View.GONE
+        }
+        binding.joinFormContainer.setOnClickListener {
+            binding.requestsFormGroup.visibility = View.GONE
+        }
     }
 }

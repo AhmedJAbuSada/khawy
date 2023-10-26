@@ -4,9 +4,104 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
+        android:id="@+id/container"
         android:layout_height="match_parent">
 
+
+        <FrameLayout
+            android:id="@+id/mapContainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="124dp"
+            android:background="@color/grey"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/topContainer"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:background="@drawable/bg_bottom_corner_16r"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/userImg"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="16dp"
+            android:src="@drawable/profile_img"
+            app:civ_border_color="@color/main"
+            app:civ_border_width="2dp"
+            app:layout_constraintStart_toStartOf="@+id/topContainer"
+            app:layout_constraintTop_toTopOf="@+id/topContainer" />
+
+        <TextView
+            android:id="@+id/hiTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/hi_khawi"
+            android:textColor="@color/textColor"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@+id/topContainer"
+            app:layout_constraintTop_toTopOf="@+id/topContainer" />
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:text="أحمد.."
+            android:textColor="@color/main"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/hiTV"
+            app:layout_constraintEnd_toStartOf="@+id/hiTV"
+            app:layout_constraintTop_toTopOf="@+id/hiTV" />
+
+        <EditText
+            android:id="@+id/searchET"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_edit_text"
+            android:drawableEnd="@drawable/search"
+            android:drawablePadding="16dp"
+            android:gravity="center_vertical"
+            android:hint="@string/search_for_place"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:lines="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/grey"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="@+id/topContainer"
+            app:layout_constraintStart_toStartOf="@+id/topContainer"
+            app:layout_constraintTop_toBottomOf="@+id/userImg" />
+
+
+        <TextView
+            android:id="@+id/yourLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            android:textColor="@color/textColor"
+            android:textSize="12sp"
+            android:text="@string/your_location"
+            android:background="@drawable/bg_white_corner_main_22r"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="8dp"
+            android:drawablePadding="6dp"
+            android:gravity="center"
+            app:drawableEndCompat="@drawable/marker_main" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

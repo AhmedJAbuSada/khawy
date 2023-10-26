@@ -27,7 +27,7 @@
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:background="@color/white"
-            app:elevation="10dp"
+            app:elevation="8dp"
             app:itemTextColor="@drawable/nav_text_selector"
             app:labelVisibilityMode="labeled"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -47,5 +47,86 @@
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/request_form"
             app:tint="@color/white" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/requestsFormGroup"
+            android:layout_width="5dp"
+            android:visibility="gone"
+            android:layout_height="5dp"
+            app:constraint_referenced_ids="shadow,deliverFormContainer,joinFormContainer,chooseForm" />
+
+        <View
+            android:id="@+id/shadow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#CC000000"
+            app:elevation="12dp" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/deliverFormContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/chooseForm"
+            app:layout_constraintEnd_toStartOf="@+id/joinFormContainer"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:layout_width="47dp"
+                android:layout_height="47dp"
+                android:background="@drawable/circle_white"
+                android:scaleType="centerInside"
+                android:src="@drawable/car_form" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/deliver_form"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/joinFormContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/chooseForm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/deliverFormContainer">
+
+            <ImageView
+                android:layout_width="47dp"
+                android:layout_height="47dp"
+                android:background="@drawable/circle_white"
+                android:scaleType="centerInside"
+                android:src="@drawable/join_form" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/join_form"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/chooseForm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            app:backgroundTint="@color/white"
+            app:elevation="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/close"
+            app:tint="#666666" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
