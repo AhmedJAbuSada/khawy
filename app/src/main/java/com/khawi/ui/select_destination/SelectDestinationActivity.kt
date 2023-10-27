@@ -2,17 +2,21 @@ package com.khawi.ui.select_destination
 
 import android.os.Bundle
 import android.view.View
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.khawi.R
 import com.khawi.base.BaseActivity
 import com.khawi.databinding.ActivitySelectDestinationBinding
-import com.khawi.databinding.ActivitySplashBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SelectDestinationActivity : BaseActivity() {
     private lateinit var binding: ActivitySelectDestinationBinding
     private var step = 0
+    private var googleMap: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +45,9 @@ class SelectDestinationActivity : BaseActivity() {
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.mapContainer) as? SupportMapFragment
         mapFragment?.getMapAsync {
-
+            googleMap = it
         }
-
+"https://maps.googleapis.com/maps/api/geocode/json?latlng=44.4647452,7.3553838&key=AIzaSyDimezKyWNvM-1jEsjfQHvhYW3oBnaf67c"
         binding.selectBtn.setOnClickListener {
             if (step == 1) {
                 finish()
@@ -54,6 +58,13 @@ class SelectDestinationActivity : BaseActivity() {
                 binding.startDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     R.drawable.edit, 0, 0, 0
                 )
+
+                val markerOptions = MarkerOptions()
+                    .position(googleMap?.cameraPosition?.target?: LatLng(0.0,0.0))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.selected_start_marker))
+
+                googleMap?.addMarker(markerOptions)
+                binding.startDestinationET.setText("")
             }
         }
     }
