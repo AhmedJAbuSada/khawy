@@ -5,13 +5,20 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/home">
 
+    <action
+        android:id="@+id/action_requestFormFragment"
+        app:destination="@id/requestFormFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
     <fragment
         android:id="@+id/home"
         android:name="com.khawi.ui.main.home.HomeFragment"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_home_to_requestFormFragment"
-            app:destination="@id/requestFormFragment"
+            android:id="@+id/action_home_to_requestDetailsFragment"
+            app:destination="@id/requestDetailsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -24,18 +31,26 @@
     <fragment
         android:id="@+id/ordersFragment"
         android:name="com.khawi.ui.main.orders.OrdersFragment"
-        tools:layout="@layout/fragment_orders" />
+        tools:layout="@layout/fragment_orders" >
+        <action
+            android:id="@+id/action_ordersFragment_to_requestDetailsFragment"
+            app:destination="@id/requestDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.khawi.ui.main.settings.SettingsFragment"
-        tools:layout="@layout/fragment_settings" >
+        tools:layout="@layout/fragment_settings">
         <action
             android:id="@+id/action_settingsFragment_to_updateProfileFragment"
             app:destination="@id/updateProfileFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"  />
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_settingsFragment_to_walletFragment"
             app:destination="@id/walletFragment"
@@ -55,7 +70,7 @@
     <fragment
         android:id="@+id/updateProfileFragment"
         android:name="com.khawi.ui.update_profile.UpdateProfileFragment"
-        tools:layout="@layout/fragment_update_profile"/>
+        tools:layout="@layout/fragment_update_profile" />
     <fragment
         android:id="@+id/contactUsFragment"
         android:name="com.khawi.ui.contact_us.ContactUsFragment"
@@ -63,21 +78,61 @@
     <fragment
         android:id="@+id/walletFragment"
         android:name="com.khawi.ui.wallet.WalletFragment"
-        tools:layout="@layout/fragment_wallet"/>
+        tools:layout="@layout/fragment_wallet" />
     <fragment
-        android:id="@+id/requestFormFragment"
-        android:name="com.khawi.ui.request_form.RequestFormFragment"
-        tools:layout="@layout/fragment_request_form" >
+        android:id="@+id/requestDetailsFragment"
+        android:name="com.khawi.ui.request_details.RequestDetailsFragment"
+        tools:layout="@layout/fragment_request_details">
         <argument
             android:name="isDeliver"
-            app:argType="boolean"
-            android:defaultValue="true" />
+            android:defaultValue="true"
+            app:argType="boolean" />
+        <argument
+            android:name="isOrder"
+            android:defaultValue="true"
+            app:argType="boolean" />
+        <argument
+            android:name="orderStatus"
+            android:defaultValue="0"
+            app:argType="integer" />
         <action
-            android:id="@+id/action_requestFormFragment_to_requestDeliverFragment"
-            app:destination="@id/requestDeliverFragment" />
+            android:id="@+id/action_requestDetailsFragment_to_requestDeliverFragment"
+            app:destination="@id/requestDeliverFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"  />
+        <action
+            android:id="@+id/action_requestDetailsFragment_to_requestJoinFragment"
+            app:destination="@id/requestJoinFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"  />
+        <action
+            android:id="@+id/action_requestDetailsFragment_to_joinDetailsFragment"
+            app:destination="@id/joinDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/requestDeliverFragment"
         android:name="com.khawi.ui.request_deliver.RequestDeliverFragment"
-        android:label="RequestDeliverFragment" />
+        tools:layout="@layout/fragment_request_deliver" />
+    <fragment
+        android:id="@+id/requestFormFragment"
+        android:name="com.khawi.ui.request_form.RequestFormFragment"
+        tools:layout="@layout/fragment_request_form" >
+
+        <argument
+            android:name="isDeliver"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/requestJoinFragment"
+        android:name="com.khawi.ui.request_join.RequestJoinFragment"
+        tools:layout="@layout/fragment_request_join" />
+    <fragment
+        android:id="@+id/joinDetailsFragment"
+        android:name="com.khawi.ui.join_details.JoinDetailsFragment"
+        tools:layout="@layout/fragment_join_details" />
 </navigation>

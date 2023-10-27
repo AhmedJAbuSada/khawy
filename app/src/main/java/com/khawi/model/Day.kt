@@ -9,6 +9,6 @@ data class Day(
     val id: String? = null,
     @SerialName("name")
     val name: String? = null,
-    val select: Boolean = false,
+    var select: Boolean = false,
     var v: Long? = null
 )

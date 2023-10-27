@@ -1,6 +1,5 @@
-package com.khawi.ui.request_form
+package com.khawi.ui.request_join
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.CompositeDateValidator
 import com.google.android.material.datepicker.DateValidatorPointBackward
@@ -17,36 +15,30 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.khawi.R
 import com.khawi.base.deliverBottomSheet
-import com.khawi.databinding.FragmentRequestFormBinding
+import com.khawi.databinding.FragmentRequestJoinBinding
 import com.khawi.model.Day
 import com.khawi.ui.request_details.DaysAdapter
-import com.khawi.ui.static_page.StaticContentActivity
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class RequestFormFragment : Fragment() {
-    private var _binding: FragmentRequestFormBinding? = null
+class RequestJoinFragment : Fragment() {
+    private var _binding: FragmentRequestJoinBinding? = null
     private val binding get() = _binding!!
     private val listDays = mutableListOf<Day>()
     private var adapterDays: DaysAdapter? = null
-    private var isDeliver = false
-    private val args: RequestFormFragmentArgs by navArgs()
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentRequestFormBinding.inflate(inflater, container, false)
+        _binding = FragmentRequestJoinBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        isDeliver = args.isDeliver
 
         binding.tripMapIV.setImageResource(R.drawable.arrow_show_details)
         binding.tripMapTV.text = getString(R.string.select_the_destination_on_the_map)
@@ -63,17 +55,10 @@ class RequestFormFragment : Fragment() {
             setupTimePicker()
         }
 
-        binding.priceET.visibility = View.GONE
-        binding.joinGroup.visibility = View.GONE
-        if (isDeliver) {
-            binding.title.text = getString(R.string.deliver_form)
-            binding.priceET.visibility = View.VISIBLE
-            binding.maxSeatsET.setText(getString(R.string.seats_counts))
-        } else {
-            binding.title.text = getString(R.string.join_form)
-            binding.joinGroup.visibility = View.VISIBLE
-            binding.maxSeatsET.setText(getString(R.string.maximum_seats))
-        }
+        val minPrice = 25
+        val maxPrice = 100
+        binding.priceRangeAlert.text =
+            "${getString(R.string.price_must_between)} ($minPrice - $maxPrice ${getString(R.string.currancy)})"
 
         binding.recyclerViewDays.visibility = View.GONE
         binding.dailyCheckBoxContainer.setOnClickListener {
@@ -102,24 +87,11 @@ class RequestFormFragment : Fragment() {
         adapterDays?.items = listDays
         binding.recyclerViewDays.adapter = adapterDays
 
-        binding.termsTV.setOnClickListener {
-            startActivity(
-                Intent(requireContext(), StaticContentActivity::class.java)
-                    .putExtra(StaticContentActivity.terms, StaticContentActivity.terms)
-            )
-        }
-        binding.termsCheckBoxContainer.setOnClickListener {
-            binding.termsCheckBox.isChecked = !binding.termsCheckBox.isChecked
-        }
-
         binding.sendBtn.setOnClickListener {
             requireContext().deliverBottomSheet(
                 layoutInflater,
                 binding.container,
-                if (isDeliver)
-                    getString(R.string.success_request_deliver_create)
-                else
-                    getString(R.string.success_request_join_create),
+                getString(R.string.success_request_join_applied),
                 getString(R.string.show_request_details)
             ) {
                 findNavController().popBackStack()
@@ -155,7 +127,7 @@ class RequestFormFragment : Fragment() {
     }
 
     private fun setupTimePicker() {
-        val materialTimeBuilder =MaterialTimePicker.Builder()
+        val materialTimeBuilder = MaterialTimePicker.Builder()
             .setTimeFormat(TimeFormat.CLOCK_12H)
             .setHour(0)
             .setMinute(0)

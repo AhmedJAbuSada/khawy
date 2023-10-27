@@ -48,6 +48,7 @@
     <string name="contact_us">تواصل معنا</string>
     <string name="share_app">مشاركة التطبيق</string>
     <string name="terms_conditions">الشروط والأحكام</string>
+    <string name="terms_conditions_underline"><u>الشروط والأحكام</u></string>
     <string name="logout">تسجيل الخروج</string>
     <string name="privacy_policy">سياسة الخصوصية</string>
     <string name="subject">العنوان</string>
@@ -67,7 +68,7 @@
     <string name="join_form">طلب انضمام</string>
     <string name="car_information">معلومات السيارة</string>
     <string name="trip_time">وقت الرحلة</string>
-    <string name="trip_date">تاريخ أول رحلة</string>
+    <string name="trip_date">تاريخ الرحلة</string>
     <string name="request_details">تفاصيل الطلب</string>
     <string name="show_map">عرض على الخريطة</string>
     <string name="trip_days">أيام الرحلة</string>
@@ -94,4 +95,25 @@
     <string name="add_note_optional">اضف ملاحظة (اختياري)</string>
     <string name="minimum_price">أقل سعر</string>
     <string name="maximum_price">أعلى سعر</string>
+    <string name="apply_join">تقديم طلب الانضمام</string>
+    <string name="trip_subject">عنوان الرحلة</string>
+    <string name="select_the_destination_on_the_map">حدد الوجهة على الخريطة</string>
+    <string name="is_the_trip_daily">هل الرحلة بشكل يومي؟</string>
+    <string name="trip_first_date">تاريخ أول رحلة</string>
+    <string name="maximum_seats">الحد الأقصى للركاب في الرحلة</string>
+    <string name="confirm_to">الموافقة على</string>
+    <string name="set_price">حدد السعر</string>
+    <string name="seats_counts">عدد الركاب</string>
+    <string name="success_request_join_create">تم انشاء طلب الانضمام بنجاح</string>
+    <string name="success_request_deliver_create">تم انشاء طلب التوصيل بنجاح</string>
+    <string name="join_trip">الانضمام إلى الرحلة</string>
+    <string name="price_must_between">يجب ان يكون السعر بين</string>
+    <string name="currancy">SAR</string>
+    <string name="success_request_join_applied">تم تقديم طلب الانضمام بنجاح</string>
+    <string name="destination_selected">تم تحديد الوجهة</string>
+    <string name="requests_join">طلبات الانضمام</string>
+    <string name="price">السعر</string>
+    <string name="accept_order">قبول الطلب</string>
+    <string name="reject_order">رفض الطلب</string>
+    <string name="rate">تقييم</string>
 </resources>

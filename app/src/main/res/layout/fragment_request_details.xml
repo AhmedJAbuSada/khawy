@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/edit"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/edit"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="22dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/request_details"
+            android:textColor="@color/textColor"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/arrow_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:fillViewport="true"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toTopOf="@+id/sendBtn"
+            app:layout_constraintTop_toBottomOf="@+id/title">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/orderStatus"
+                    android:layout_width="116dp"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="24dp"
+                    android:background="@drawable/bg_blue_corner_all_12r"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="جديد"
+                    android:textColor="@color/blue"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/tripDateTop"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tripDateTop" />
+
+                <TextView
+                    android:id="@+id/tripDateTop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:layout_marginEnd="24dp"
+                    android:text="14 ربيع الأول، 1445 هـ"
+                    android:textColor="#898989"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tripName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:text="عنوان الرحلة: دوام أسبوعي"
+                    android:textColor="@color/textColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tripDateTop" />
+
+                <TextView
+                    android:id="@+id/tripInformation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:text="من: الرياض    إلى: جدة"
+                    android:textColor="@color/textColor"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tripName" />
+
+                <TextView
+                    android:id="@+id/showMap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/button_main"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:text="@string/show_map"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tripInformation" />
+
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/tripTimeContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_edit_text"
+                    android:gravity="end"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="@+id/showMap"
+                    app:layout_constraintStart_toEndOf="@+id/tripDateContainer"
+                    app:layout_constraintTop_toBottomOf="@+id/showMap">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/trip_time"
+                        android:textColor="#A4ACAD"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tripTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="7:30 صباحاً"
+                        android:textColor="@color/textColor"
+                        android:textSize="11sp" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/tripDateContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="17dp"
+                    android:background="@drawable/bg_edit_text"
+                    android:gravity="end"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tripTimeContainer"
+                    app:layout_constraintEnd_toStartOf="@+id/tripTimeContainer"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tripTimeContainer">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/trip_date"
+                        android:textColor="#A4ACAD"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tripDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="15 ربيع الأول، 1445"
+                        android:textColor="@color/textColor"
+                        android:textSize="11sp" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/requestsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/tripTimeContainer">
+
+                    <TextView
+                        android:id="@+id/requestsTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/requests_join"
+                        android:textColor="@color/textColor"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewRequests"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintTop_toBottomOf="@+id/requestsTitle"
+                        tools:itemCount="3"
+                        tools:listitem="@layout/row_user_request" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/tripDaysTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/trip_days"
+                    android:textColor="@color/textColor"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="@+id/tripTimeContainer"
+                    app:layout_constraintTop_toBottomOf="@+id/requestsContainer" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewDays"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="19dp"
+                    android:orientation="horizontal"
+                    android:scaleX="-1"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@+id/tripDaysTitle"
+                    tools:itemCount="7"
+                    tools:listitem="@layout/row_day" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/joinContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/recyclerViewDays">
+
+                    <TextView
+                        android:id="@+id/driverInformationTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="24dp"
+                        android:text="@string/driver_information"
+                        android:textColor="@color/textColor"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/rateDriver"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:background="@drawable/button_main"
+                        android:paddingHorizontal="24dp"
+                        android:paddingVertical="6dp"
+                        android:text="@string/rate"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/userImage"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/userImage" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/userImage"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="24dp"
+                        android:src="@drawable/profile_img"
+                        app:civ_border_color="@color/main"
+                        app:civ_border_width="1dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/driverInformationTitle" />
+
+                    <TextView
+                        android:id="@+id/username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:includeFontPadding="false"
+                        android:text="أحمد علي"
+                        android:textColor="@color/textColor"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toStartOf="@+id/userImage"
+                        app:layout_constraintTop_toTopOf="@+id/userImage" />
+
+                    <com.willy.ratingbar.ScaleRatingBar
+                        android:id="@+id/ratingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="@+id/username"
+                        app:layout_constraintTop_toBottomOf="@+id/username"
+                        app:srb_clearRatingEnabled="false"
+                        app:srb_clickable="false"
+                        app:srb_drawableEmpty="@drawable/ic_unselected_star"
+                        app:srb_drawableFilled="@drawable/ic_selected_star"
+                        app:srb_isIndicator="false"
+                        app:srb_numStars="5"
+                        app:srb_scrollable="false"
+                        app:srb_starHeight="14dp"
+                        app:srb_starPadding="2dp"
+                        app:srb_starWidth="14dp"
+                        app:srb_stepSize="1.0" />
+
+                    <TextView
+                        android:id="@+id/carInformationTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/car_information"
+                        android:textColor="@color/textColor"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="@+id/userImage"
+                        app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/carTypeContainer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:gravity="end"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        app:layout_constraintEnd_toEndOf="@+id/carInformationTitle"
+                        app:layout_constraintStart_toEndOf="@+id/carModelContainer"
+                        app:layout_constraintTop_toBottomOf="@+id/carInformationTitle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/car_type"
+                            android:textColor="#A4ACAD"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/carType"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="BMW"
+                            android:textColor="@color/textColor"
+                            android:textSize="11sp" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/carModelContainer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="17dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:gravity="end"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        app:layout_constraintEnd_toStartOf="@+id/carTypeContainer"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/carInformationTitle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/car_model"
+                            android:textColor="#A4ACAD"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/carModel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="X6"
+                            android:textColor="@color/textColor"
+                            android:textSize="11sp" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/carColorContainer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:gravity="end"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        app:layout_constraintEnd_toEndOf="@+id/carInformationTitle"
+                        app:layout_constraintStart_toEndOf="@+id/carPlateContainer"
+                        app:layout_constraintTop_toBottomOf="@+id/carTypeContainer">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/car_color"
+                            android:textColor="#A4ACAD"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/carColor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="سوداء"
+                            android:textColor="@color/textColor"
+                            android:textSize="11sp" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/carPlateContainer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="17dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:gravity="end"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/carColorContainer"
+                        app:layout_constraintEnd_toStartOf="@+id/carColorContainer"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/carColorContainer">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/car_plate"
+                            android:textColor="#A4ACAD"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/carPlate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="152454852"
+                            android:textColor="@color/textColor"
+                            android:textSize="11sp" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/seatContainer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:gravity="end"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        app:layout_constraintEnd_toEndOf="@+id/carColorContainer"
+                        app:layout_constraintStart_toStartOf="@+id/carPlateContainer"
+                        app:layout_constraintTop_toBottomOf="@+id/carColorContainer">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/seat_available"
+                            android:textColor="#A4ACAD"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/seat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="3 مقاعد"
+                            android:textColor="@color/textColor"
+                            android:textSize="11sp" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <TextView
+                        android:id="@+id/driverNoteTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/driver_note"
+                        android:textColor="#4E5556"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="@+id/seatContainer"
+                        app:layout_constraintTop_toBottomOf="@+id/seatContainer" />
+
+                    <TextView
+                        android:id="@+id/driverNote"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:padding="10dp"
+                        android:text="السيارة مكيفة و مريحة ستنال اعجابكم.
+انا مهتم جداً بالنظافة والالتزام في المواعيد."
+                        android:textColor="@color/textColor"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/driverNoteTitle" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/deliverContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/recyclerViewDays">
+
+                    <TextView
+                        android:id="@+id/personInformationTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="24dp"
+                        android:text="@string/person_information"
+                        android:textColor="@color/textColor"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/rateUser"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:background="@drawable/button_main"
+                        android:paddingHorizontal="24dp"
+                        android:paddingVertical="6dp"
+                        android:text="@string/rate"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/personImage"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/personImage" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/personImage"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="24dp"
+                        android:src="@drawable/profile_img"
+                        app:civ_border_color="@color/main"
+                        app:civ_border_width="1dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/personInformationTitle" />
+
+                    <TextView
+                        android:id="@+id/personName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:includeFontPadding="false"
+                        android:text="أحمد علي"
+                        android:textColor="@color/textColor"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/personImage"
+                        app:layout_constraintEnd_toStartOf="@+id/personImage"
+                        app:layout_constraintTop_toTopOf="@+id/personImage" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/seatRequestContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:gravity="end"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        app:layout_constraintTop_toBottomOf="@+id/personName">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/seat_request"
+                            android:textColor="#A4ACAD"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/seatRequest"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="3 مقاعد"
+                            android:textColor="@color/textColor"
+                            android:textSize="11sp" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <TextView
+                        android:id="@+id/noteTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/note"
+                        android:textColor="#4E5556"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="@+id/seatRequestContainer"
+                        app:layout_constraintTop_toBottomOf="@+id/seatRequestContainer" />
+
+                    <TextView
+                        android:id="@+id/note"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:padding="10dp"
+                        android:text="السيارة مكيفة و مريحة ستنال اعجابكم.
+انا مهتم جداً بالنظافة والالتزام في المواعيد."
+                        android:textColor="@color/textColor"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/noteTitle" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <TextView
+            android:id="@+id/sendBtn"
+            android:layout_width="0dp"
+            android:layout_height="51dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/button_main"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:text="@string/apply_deliver"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -19,12 +19,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -358,7 +361,7 @@ fun String.isHttps(): Boolean {
     }
 }
 
- val requestedPermissions = arrayOf(
+val requestedPermissions = arrayOf(
     Manifest.permission.RECORD_AUDIO,
     Manifest.permission.CAMERA
 )
@@ -372,6 +375,33 @@ fun Context.checkSelfPermission(): Boolean {
                 this,
                 requestedPermissions[1]
             ) != PackageManager.PERMISSION_GRANTED)
+}
+
+
+fun Context.deliverBottomSheet(
+    layoutInflater: LayoutInflater,
+    container: ViewGroup,
+    successText: String,
+    buttonText: String,
+    clickAction: () -> Unit
+) {
+    val bottomSheet = BottomSheetDialog(this)
+    val rootView =
+        layoutInflater.inflate(R.layout.bottomsheet_success_request, container, false)
+    bottomSheet.setContentView(rootView)
+
+    val successContent = rootView.findViewById<TextView>(R.id.successContent)
+
+    val doneBtn = rootView.findViewById<TextView>(R.id.doneBtn)
+
+    doneBtn.setOnClickListener {
+        clickAction.invoke()
+        bottomSheet.dismiss()
+    }
+
+    successContent.text = successText
+    doneBtn.text = buttonText
+    bottomSheet.show()
 }
 
 

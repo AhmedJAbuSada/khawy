@@ -177,7 +177,7 @@ class HomeFragment : Fragment() {
 
         val showDetails = rootView.findViewById<TextView>(R.id.showDetails)
         showDetails.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionHomeToRequestFormFragment(isDeliver = false))
+            findNavController().navigate(HomeFragmentDirections.actionHomeToRequestDetailsFragment(isDeliver = false))
             bottomSheet.dismiss()
         }
 
@@ -199,7 +199,7 @@ class HomeFragment : Fragment() {
 
         val showDetails = rootView.findViewById<TextView>(R.id.showDetails)
         showDetails.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionHomeToRequestFormFragment(isDeliver = true))
+            findNavController().navigate(HomeFragmentDirections.actionHomeToRequestDetailsFragment(isDeliver = true))
             bottomSheet.dismiss()
         }
 

@@ -8,6 +8,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.khawi.NavGraphDirections
 import com.khawi.R
 import com.khawi.databinding.ActivityMainBinding
 
@@ -56,9 +57,11 @@ class MainActivity : AppCompatActivity() {
             binding.requestsFormGroup.visibility = View.GONE
         }
         binding.deliverFormContainer.setOnClickListener {
+            navController?.navigate(NavGraphDirections.actionRequestFormFragment(true))
             binding.requestsFormGroup.visibility = View.GONE
         }
         binding.joinFormContainer.setOnClickListener {
+            navController?.navigate(NavGraphDirections.actionRequestFormFragment(false))
             binding.requestsFormGroup.visibility = View.GONE
         }
     }

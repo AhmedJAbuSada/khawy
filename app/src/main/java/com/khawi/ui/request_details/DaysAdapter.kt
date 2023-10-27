@@ -1,4 +1,4 @@
-package com.khawi.ui.request_form
+package com.khawi.ui.request_details
 
 import android.content.Context
 import android.view.LayoutInflater

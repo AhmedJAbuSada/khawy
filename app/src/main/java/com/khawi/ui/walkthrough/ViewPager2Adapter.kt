@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.khawi.R
 import com.khawi.base.loadImage
+import com.khawi.model.Welcome
 
 class ViewPager2Adapter(private val ctx: Context) :
     RecyclerView.Adapter<ViewPager2Adapter.ViewHolder>() {

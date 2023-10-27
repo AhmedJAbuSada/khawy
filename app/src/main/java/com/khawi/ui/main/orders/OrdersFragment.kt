@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
 import com.khawi.R
 import com.khawi.databinding.FragmentOrdersBinding
@@ -46,8 +47,14 @@ class OrdersFragment : Fragment() {
         list.add("")
         list.add("")
 
-        val adapter = OrderAdapter(requireContext(), tabPosition) { _, _ ->
-
+        val adapter = OrderAdapter(requireContext(), tabPosition) { _, position ->
+            findNavController().navigate(
+                OrdersFragmentDirections.actionOrdersFragmentToRequestDetailsFragment(
+                    isDeliver = position % 2 == 0,
+                    isOrder = true,
+                    orderStatus = position
+                )
+            )
         }
         adapter.items = list
         binding.recyclerView.adapter = adapter

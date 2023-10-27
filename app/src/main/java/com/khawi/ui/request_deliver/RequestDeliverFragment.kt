@@ -4,13 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.khawi.R
+import com.khawi.base.deliverBottomSheet
 import com.khawi.databinding.FragmentRequestDeliverBinding
-import com.khawi.databinding.FragmentRequestFormBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,7 +34,14 @@ class RequestDeliverFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding.sendBtn.setOnClickListener {
-            deliverBottomSheet()
+            requireContext().deliverBottomSheet(
+                layoutInflater,
+                binding.container,
+                getString(R.string.success_request_deliver),
+                getString(R.string.show_request_details)
+            ) {
+                findNavController().popBackStack()
+            }
         }
 
     }
@@ -46,22 +51,4 @@ class RequestDeliverFragment : Fragment() {
         _binding = null
     }
 
-    private fun deliverBottomSheet() {
-        val bottomSheet = BottomSheetDialog(requireContext())
-        val rootView =
-            layoutInflater.inflate(R.layout.bottomsheet_success_request, binding.container, false)
-        bottomSheet.setContentView(rootView)
-
-        val successContent = rootView.findViewById<TextView>(R.id.successContent)
-
-        val doneBtn = rootView.findViewById<TextView>(R.id.doneBtn)
-
-        doneBtn.setOnClickListener {
-            findNavController().popBackStack()
-            bottomSheet.dismiss()
-        }
-
-        successContent.text = getString(R.string.success_request_deliver)
-        bottomSheet.show()
-    }
 }
