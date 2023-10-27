@@ -86,4 +86,12 @@
     <string name="note">ملاحظات</string>
     <string name="join_now">انضم الآن</string>
     <string name="apply_deliver">تقديم عرض توصيل</string>
+    <string name="success_request_deliver">تم تقديم عرض التوصيل بنجاح</string>
+    <string name="show_request_details">عرض تفاصيل الطلب</string>
+    <string name="success_request_join">تم تقديم طلب الانضمام بنجاحئ</string>
+    <string name="join_offer">عرض توصيل</string>
+    <string name="message">النص</string>
+    <string name="add_note_optional">اضف ملاحظة (اختياري)</string>
+    <string name="minimum_price">أقل سعر</string>
+    <string name="maximum_price">أعلى سعر</string>
 </resources>

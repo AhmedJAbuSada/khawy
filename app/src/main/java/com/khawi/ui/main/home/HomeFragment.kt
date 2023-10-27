@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -176,6 +177,7 @@ class HomeFragment : Fragment() {
 
         val showDetails = rootView.findViewById<TextView>(R.id.showDetails)
         showDetails.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeToRequestFormFragment(isDeliver = false))
             bottomSheet.dismiss()
         }
 
@@ -197,6 +199,7 @@ class HomeFragment : Fragment() {
 
         val showDetails = rootView.findViewById<TextView>(R.id.showDetails)
         showDetails.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeToRequestFormFragment(isDeliver = true))
             bottomSheet.dismiss()
         }
 

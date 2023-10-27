@@ -8,7 +8,15 @@
     <fragment
         android:id="@+id/home"
         android:name="com.khawi.ui.main.home.HomeFragment"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_home_to_requestFormFragment"
+            app:destination="@id/requestFormFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/notificationsFragment"
         android:name="com.khawi.ui.main.notifications.NotificationsFragment"
@@ -30,10 +38,18 @@
             app:popExitAnim="@anim/slide_out_right"  />
         <action
             android:id="@+id/action_settingsFragment_to_walletFragment"
-            app:destination="@id/walletFragment" />
+            app:destination="@id/walletFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_settingsFragment_to_contactUsFragment"
-            app:destination="@id/contactUsFragment" />
+            app:destination="@id/contactUsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -48,4 +64,20 @@
         android:id="@+id/walletFragment"
         android:name="com.khawi.ui.wallet.WalletFragment"
         tools:layout="@layout/fragment_wallet"/>
+    <fragment
+        android:id="@+id/requestFormFragment"
+        android:name="com.khawi.ui.request_form.RequestFormFragment"
+        tools:layout="@layout/fragment_request_form" >
+        <argument
+            android:name="isDeliver"
+            app:argType="boolean"
+            android:defaultValue="true" />
+        <action
+            android:id="@+id/action_requestFormFragment_to_requestDeliverFragment"
+            app:destination="@id/requestDeliverFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/requestDeliverFragment"
+        android:name="com.khawi.ui.request_deliver.RequestDeliverFragment"
+        android:label="RequestDeliverFragment" />
 </navigation>

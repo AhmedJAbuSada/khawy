@@ -79,7 +79,7 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:textColor="@color/textColor"
-            android:textColorHint="@color/grey"
+            android:textColorHint="@color/grey4"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="@+id/topContainer"
             app:layout_constraintStart_toStartOf="@+id/topContainer"

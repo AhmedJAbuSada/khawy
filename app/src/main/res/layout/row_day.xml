@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="5dp"
     android:layout_marginTop="16dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:scaleX="-1">
 
     <TextView
         android:id="@+id/dayName"
@@ -20,6 +21,5 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/day_circle"
-        app:tint="@color/main" />
+        android:src="@drawable/day_circle" />
 </androidx.appcompat.widget.LinearLayoutCompat>
