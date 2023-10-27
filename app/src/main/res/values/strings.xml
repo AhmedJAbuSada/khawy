@@ -116,4 +116,10 @@
     <string name="accept_order">قبول الطلب</string>
     <string name="reject_order">رفض الطلب</string>
     <string name="rate">تقييم</string>
+    <string name="select_destination">تحديد الوجهة</string>
+    <string name="destination_route">مسار الرحلة</string>
+    <string name="start_destination">نقطة البداية</string>
+    <string name="end_destination">نقطة النهاية</string>
+    <string name="select_start">حدد نقطة البداية</string>
+    <string name="select_end">حدد نقطة النهاية</string>
 </resources>

@@ -42,6 +42,7 @@
         <activity android:name=".ui.walkthrough.WalkthroughActivity"/>
         <activity android:name=".ui.main.MainActivity"/>
         <activity android:name=".ui.static_page.StaticContentActivity"/>
+        <activity android:name=".ui.select_destination.SelectDestinationActivity"/>
     </application>
 
 </manifest>

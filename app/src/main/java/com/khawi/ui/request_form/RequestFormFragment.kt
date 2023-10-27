@@ -20,6 +20,7 @@ import com.khawi.base.deliverBottomSheet
 import com.khawi.databinding.FragmentRequestFormBinding
 import com.khawi.model.Day
 import com.khawi.ui.request_details.DaysAdapter
+import com.khawi.ui.select_destination.SelectDestinationActivity
 import com.khawi.ui.static_page.StaticContentActivity
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -55,6 +56,7 @@ class RequestFormFragment : Fragment() {
             binding.tripMapIV.setImageResource(R.drawable.edit)
             binding.tripMapTV.text = getString(R.string.destination_selected)
             binding.tripMapTV.setTextColor(Color.parseColor("#0CB057"))
+            startActivity(Intent(requireContext(), SelectDestinationActivity::class.java))
         }
         binding.tripDateContainer.setOnClickListener {
             setupDatePicker()

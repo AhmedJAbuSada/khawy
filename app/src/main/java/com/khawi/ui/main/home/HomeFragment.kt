@@ -117,6 +117,10 @@ class HomeFragment : Fragment() {
             }
         }
 
+
+        binding.yourLocation.setOnClickListener {
+
+        }
     }
 
     override fun onDestroyView() {

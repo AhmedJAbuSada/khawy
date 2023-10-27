@@ -1,5 +1,6 @@
 package com.khawi.ui.request_join
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import com.khawi.base.deliverBottomSheet
 import com.khawi.databinding.FragmentRequestJoinBinding
 import com.khawi.model.Day
 import com.khawi.ui.request_details.DaysAdapter
+import com.khawi.ui.select_destination.SelectDestinationActivity
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -47,6 +49,7 @@ class RequestJoinFragment : Fragment() {
             binding.tripMapIV.setImageResource(R.drawable.edit)
             binding.tripMapTV.text = getString(R.string.destination_selected)
             binding.tripMapTV.setTextColor(Color.parseColor("#0CB057"))
+            startActivity(Intent(requireContext(), SelectDestinationActivity::class.java))
         }
         binding.tripDateContainer.setOnClickListener {
             setupDatePicker()
