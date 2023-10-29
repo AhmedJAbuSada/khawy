@@ -11,7 +11,9 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.khawi.NavGraphDirections
 import com.khawi.R
 import com.khawi.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var navController: NavController? = null
@@ -28,6 +30,15 @@ class MainActivity : AppCompatActivity() {
 
         navController?.addOnDestinationChangedListener { _, destination, _ ->
             binding.bottomView.visibility =
+                if (destination.id == R.id.home
+                    || destination.id == R.id.orders
+                    || destination.id == R.id.notifications
+                    || destination.id == R.id.settings
+                )
+                    View.VISIBLE
+                else
+                    View.GONE
+            binding.requestForm.visibility =
                 if (destination.id == R.id.home
                     || destination.id == R.id.orders
                     || destination.id == R.id.notifications

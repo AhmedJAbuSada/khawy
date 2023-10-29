@@ -40,20 +40,20 @@ class SplashActivity : BaseActivity() {
 //                        )
 //                    }
 //                } else
-                if (getPreferenceBoolean(walkthrough_key)) {
-//                    val user = repository.getUser()
-                    val intent = Intent(
-                        this@SplashActivity,
-//                        if (user != null && user.isVerify == true)
-//                            MainActivity::class.java
-//                        else
-                        LoginActivity::class.java
-                    )
-                    startActivity(intent)
-                } else {
+//                if (getPreferenceBoolean(walkthrough_key)) {
+////                    val user = repository.getUser()
+//                    val intent = Intent(
+//                        this@SplashActivity,
+////                        if (user != null && user.isVerify == true)
+////                            MainActivity::class.java
+////                        else
+//                        LoginActivity::class.java
+//                    )
+//                    startActivity(intent)
+//                } else {
                     val intent = Intent(this@SplashActivity, WalkthroughActivity::class.java)
                     startActivity(intent)
-                }
+//                }
                 finishAffinity()
             }
         }, 2000)

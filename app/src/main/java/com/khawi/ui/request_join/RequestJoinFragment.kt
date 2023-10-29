@@ -134,7 +134,7 @@ class RequestJoinFragment : Fragment() {
             .setTimeFormat(TimeFormat.CLOCK_12H)
             .setHour(0)
             .setMinute(0)
-            .setTheme(R.style.MaterialCalendarTheme)
+//            .setTheme(R.style.MaterialCalendarTheme)
             .build()
 
 

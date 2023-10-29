@@ -25,11 +25,11 @@
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/notificationsFragment"
+        android:id="@+id/notifications"
         android:name="com.khawi.ui.main.notifications.NotificationsFragment"
         tools:layout="@layout/fragment_notifications" />
     <fragment
-        android:id="@+id/ordersFragment"
+        android:id="@+id/orders"
         android:name="com.khawi.ui.main.orders.OrdersFragment"
         tools:layout="@layout/fragment_orders" >
         <action
@@ -41,7 +41,7 @@
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/settingsFragment"
+        android:id="@+id/settings"
         android:name="com.khawi.ui.main.settings.SettingsFragment"
         tools:layout="@layout/fragment_settings">
         <action

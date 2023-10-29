@@ -45,6 +45,7 @@ class PhoneNumberFragment : Fragment() {
         binding.signInBtn.setOnClickListener {
             val phone = binding.phoneNumberET.text.toString()
             if (phone.isNotEmpty()) {
+                loginViewModel.phoneLiveData.postValue(binding.ccp.fullNumberWithPlus)
                 findNavController().safeNavigate(
                     PhoneNumberFragmentDirections.actionPhoneNumberFragmentToVerificationFragment()
                 )

@@ -3,6 +3,7 @@ package com.khawi.ui.select_destination
 import android.os.Bundle
 import android.view.View
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -22,7 +23,7 @@ class SelectDestinationActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySelectDestinationBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        MapsInitializer.initialize(applicationContext)
         binding.back.setOnClickListener {
             finish()
         }
@@ -30,7 +31,7 @@ class SelectDestinationActivity : BaseActivity() {
 
         }
 
-        binding.endDestinationGroup.visibility = View.VISIBLE
+        binding.endDestinationGroup.visibility = View.GONE
 
         binding.startDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
             0, 0, 0, 0
@@ -47,7 +48,7 @@ class SelectDestinationActivity : BaseActivity() {
         mapFragment?.getMapAsync {
             googleMap = it
         }
-"https://maps.googleapis.com/maps/api/geocode/json?latlng=44.4647452,7.3553838&key=AIzaSyDimezKyWNvM-1jEsjfQHvhYW3oBnaf67c"
+//"https://maps.googleapis.com/maps/api/geocode/json?latlng=44.4647452,7.3553838&key=AIzaSyDimezKyWNvM-1jEsjfQHvhYW3oBnaf67c"
         binding.selectBtn.setOnClickListener {
             if (step == 1) {
                 finish()
@@ -60,11 +61,12 @@ class SelectDestinationActivity : BaseActivity() {
                 )
 
                 val markerOptions = MarkerOptions()
-                    .position(googleMap?.cameraPosition?.target?: LatLng(0.0,0.0))
+                    .position(googleMap?.cameraPosition?.target ?: LatLng(0.0, 0.0))
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.selected_start_marker))
 
                 googleMap?.addMarker(markerOptions)
                 binding.startDestinationET.setText("")
+                binding.endDestinationGroup.visibility = View.VISIBLE
             }
         }
     }

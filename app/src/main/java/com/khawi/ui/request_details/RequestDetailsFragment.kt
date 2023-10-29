@@ -37,6 +37,7 @@ class RequestDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        listDays.clear()
         listDays.add(Day(name = getString(R.string.saturday), select = true))
         listDays.add(Day(name = getString(R.string.sunday), select = true))
         listDays.add(Day(name = getString(R.string.monday), select = false))
@@ -78,7 +79,7 @@ class RequestDetailsFragment : Fragment() {
         binding.requestsContainer.visibility = View.GONE
         binding.rateUser.visibility = View.GONE
         binding.rateDriver.visibility = View.GONE
-        binding.sendBtn.visibility = View.VISIBLE
+//        binding.sendBtn.visibility = View.VISIBLE
         if (args.isOrder) {
 //            args.orderStatus
             binding.edit.visibility = View.VISIBLE
@@ -86,17 +87,17 @@ class RequestDetailsFragment : Fragment() {
             binding.requestsContainer.visibility = View.VISIBLE
             binding.rateUser.visibility = View.VISIBLE
             binding.rateDriver.visibility = View.VISIBLE
-            binding.sendBtn.visibility = View.GONE
+//            binding.sendBtn.visibility = View.GONE
 
             val list = mutableListOf<String>()
             list.add("")
             list.add("")
             list.add("")
             val adapterUserRequest = UserRequestAdapter(requireContext()) { _, _ ->
-
+                findNavController().navigate(RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment())
             }
             adapterUserRequest.items = list
-            binding.recyclerViewDays.adapter = adapterUserRequest
+            binding.recyclerViewRequests.adapter = adapterUserRequest
         }
 
         binding.rateUser.setOnClickListener {

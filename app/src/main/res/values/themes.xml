@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Khawi" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.Khawi" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/main</item>
         <item name="colorPrimaryDark">@color/main</item>
         <item name="colorAccent">@color/red</item>

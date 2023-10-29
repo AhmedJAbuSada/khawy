@@ -43,6 +43,11 @@
         <activity android:name=".ui.main.MainActivity"/>
         <activity android:name=".ui.static_page.StaticContentActivity"/>
         <activity android:name=".ui.select_destination.SelectDestinationActivity"/>
+
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBlcUeYPme9ZE28rtnXubuXgQZTok4LuGo" />
     </application>
 
 </manifest>

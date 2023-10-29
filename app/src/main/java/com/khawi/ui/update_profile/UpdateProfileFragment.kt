@@ -28,7 +28,8 @@ class UpdateProfileFragment : Fragment() {
     private var _binding: FragmentUpdateProfileBinding? = null
     private val binding get() = _binding!!
     private val loginViewModel: LoginViewModel by activityViewModels()
-//    private val viewModel: UpdateProfileViewModel by viewModels()
+
+    //    private val viewModel: UpdateProfileViewModel by viewModels()
     private var loading: KProgressHUD? = null
     private var imageFile: File? = null
 
@@ -55,7 +56,8 @@ class UpdateProfileFragment : Fragment() {
             binding.haveCarCheckBox.isChecked = !binding.haveCarCheckBox.isChecked
             if (binding.haveCarCheckBox.isChecked) {
                 binding.carInformationContainer.visibility = View.VISIBLE
-            }
+            } else
+                binding.carInformationContainer.visibility = View.GONE
         }
 
         binding.profileImageIV.setOnClickListener {
@@ -168,7 +170,7 @@ class UpdateProfileFragment : Fragment() {
             )
             return false
         }
-        if (binding.haveCarCheckBox.isChecked){
+        if (binding.haveCarCheckBox.isChecked) {
             if (binding.carTypeET.text.toString().isEmpty()) {
                 getString(R.string.error_car_type_empty).showAlertMessage(
                     context = requireContext(),

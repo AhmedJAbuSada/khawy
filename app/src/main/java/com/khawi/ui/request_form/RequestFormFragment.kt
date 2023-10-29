@@ -49,6 +49,10 @@ class RequestFormFragment : Fragment() {
 
         isDeliver = args.isDeliver
 
+        binding.back.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
         binding.tripMapIV.setImageResource(R.drawable.arrow_show_details)
         binding.tripMapTV.text = getString(R.string.select_the_destination_on_the_map)
         binding.tripMapTV.setTextColor(Color.parseColor("#666666"))
@@ -70,11 +74,11 @@ class RequestFormFragment : Fragment() {
         if (isDeliver) {
             binding.title.text = getString(R.string.deliver_form)
             binding.priceET.visibility = View.VISIBLE
-            binding.maxSeatsET.setText(getString(R.string.seats_counts))
+            binding.maxSeatsET.hint = getString(R.string.seats_counts)
         } else {
             binding.title.text = getString(R.string.join_form)
             binding.joinGroup.visibility = View.VISIBLE
-            binding.maxSeatsET.setText(getString(R.string.maximum_seats))
+            binding.maxSeatsET.hint = getString(R.string.maximum_seats)
         }
 
         binding.recyclerViewDays.visibility = View.GONE
@@ -157,11 +161,11 @@ class RequestFormFragment : Fragment() {
     }
 
     private fun setupTimePicker() {
-        val materialTimeBuilder =MaterialTimePicker.Builder()
+        val materialTimeBuilder = MaterialTimePicker.Builder()
             .setTimeFormat(TimeFormat.CLOCK_12H)
             .setHour(0)
             .setMinute(0)
-            .setTheme(R.style.MaterialCalendarTheme)
+//            .setTheme(R.style.MaterialCalendarTheme)
             .build()
 
 
