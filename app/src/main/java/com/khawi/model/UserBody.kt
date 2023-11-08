@@ -16,10 +16,22 @@ data class UserBody(
     val lat: String? = null,
     @SerialName("lng")
     val lng: String? = null,
+    @SerialName("address")
+    val address: String? = null,
     @SerialName("id")
     val id: String? = null,
     @SerialName("_id")
     val _id: String? = null,
     @SerialName("verify_code")
     val verifyCode: String? = null,
+    @SerialName("hasCar")
+    val hasCar: Boolean? = null,
+    @SerialName("carType")
+    val carType: String? = null,
+    @SerialName("carModel")
+    val carModel: String? = null,
+    @SerialName("carColor")
+    val carColor: String? = null,
+    @SerialName("carNumber")
+    val carNumber: String? = null,
 )

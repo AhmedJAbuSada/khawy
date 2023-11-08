@@ -19,17 +19,21 @@ class RemoteAuthDataSource @Inject constructor(
 
     suspend fun loginByPhone(
         fcmToken: String,
-        phone: String
+        phone: String,
+        lat: String,
+        lng: String,
+        address: String,
     ): AdvanceResult<BaseResponse<UserModel?>> {
         val body = UserBody(
             phoneNumber = phone,
             os = "Android",
             fcmToken = fcmToken,
-            lat = "32.292929",
-            lng = "41.231231",
+            lat = lat,
+            lng = lng,
+            address = address,
         )
         return remoteDataSource.post(
-            urlPath = "mobile/user/add",
+            urlPath = "mobile/user/create_login",
             params = null,
             body = body
         )
@@ -63,20 +67,35 @@ class RemoteAuthDataSource @Inject constructor(
         )
     }
 
+    suspend fun logout(): AdvanceResult<BaseResponse<UserModel?>> {
+        return remoteDataSource.post(
+            urlPath = "mobile/user/logout/${repository.getUser()?.id ?: ""}",
+            params = null,
+            body = null
+        )
+    }
+
     suspend fun updateUser(
         id: String,
         email: String? = null,
         image: File? = null,
         name: String? = null,
         phoneNumber: String? = null,
-        type: String? = null,
+        lat: String? = null,
+        lng: String? = null,
+        address: String? = null,
+        hasCar: Boolean? = null,
+        carType: String? = null,
+        carModel: String? = null,
+        carColor: String? = null,
+        carNumber: String? = null,
     ): AdvanceResult<BaseResponse<UserModel?>> {
         val token = repository.getUser()?.token ?: ""
         val phone = phoneNumber ?: (repository.getUser()?.phoneNumber ?: "")
         val header = HashMap<String, String>()
         header["token"] = token
         return remoteDataSource.post(
-            urlPath = "mobile/user/update",
+            urlPath = "mobile/user/update-profile",
             headers = header,
             files = formData {
                 append("_id", id)
@@ -90,13 +109,31 @@ class RemoteAuthDataSource @Inject constructor(
                     })
                 }
                 name?.let {
-                    append("name", it)
+                    append("full_name", it)
                 }
-//                phone?.let {
-//                    append("phone_number", it)
-//                }
-                type?.let {
-                    append("type", it)
+                lat?.let {
+                    append("lat", lat)
+                }
+                lng?.let {
+                    append("lng", lng)
+                }
+                address?.let {
+                    append("address", address)
+                }
+                hasCar?.let {
+                    append("hasCar", hasCar)
+                }
+                carType?.let {
+                    append("carType", carType)
+                }
+                carModel?.let {
+                    append("carModel", carModel)
+                }
+                carColor?.let {
+                    append("carColor", carColor)
+                }
+                carNumber?.let {
+                    append("carNumber", carNumber)
                 }
             })
 

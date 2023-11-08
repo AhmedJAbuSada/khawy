@@ -19,9 +19,15 @@ class AuthRepositoryImp @Inject constructor(
 
     private val _event = MutableStateFlow<BaseState<BaseResponse<UserModel?>?>>(BaseState.Idle())
 
-    override suspend fun loginByPhone(fcmToken: String, phone: String) =
+    override suspend fun loginByPhone(
+        fcmToken: String,
+        phone: String,
+        lat: String,
+        lng: String,
+        address: String,
+    ) =
         withContext(dispatcherProvider.io()) {
-            when (val result = remoteDataSource.loginByPhone(fcmToken, phone)) {
+            when (val result = remoteDataSource.loginByPhone(fcmToken, phone, lat, lng, address)) {
                 is AdvanceResult.Success -> {
                     val item = result.data
                     item.v = System.currentTimeMillis()
@@ -70,16 +76,51 @@ class AuthRepositoryImp @Inject constructor(
             }
         }
 
+    override suspend fun logout() =
+        withContext(dispatcherProvider.io()) {
+            when (val result = remoteDataSource.logout()) {
+                is AdvanceResult.Success -> {
+                    _event.emit(BaseState.ItemsLoaded(result.data))
+                    Timber.d("results here res ${result.data}")
+                }
+
+                is AdvanceResult.Error -> {
+                    Timber.d("something went wrong ${result.fault}")
+                }
+            }
+        }
+
     override suspend fun updateUser(
         id: String,
         email: String?,
         image: File?,
         name: String?,
         phone: String?,
-        type: String?,
+        lat: String?,
+        lng: String?,
+        address: String?,
+        hasCar: Boolean?,
+        carType: String?,
+        carModel: String?,
+        carColor: String?,
+        carNumber: String?,
     ) = withContext(dispatcherProvider.io()) {
         when (val result =
-            remoteDataSource.updateUser(id, email, image, name, phone, type)) {
+            remoteDataSource.updateUser(
+                id,
+                email,
+                image,
+                name,
+                phone,
+                lat,
+                lng,
+                address,
+                hasCar,
+                carType,
+                carModel,
+                carColor,
+                carNumber
+            )) {
             is AdvanceResult.Success -> {
                 val item = result.data
                 item.v = System.currentTimeMillis()

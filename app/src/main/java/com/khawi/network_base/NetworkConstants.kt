@@ -2,7 +2,7 @@ package com.khawi.network_base
 
 object NetworkConstants {
 
-    const val BASE_URL = "https://muslim-guid-90a81af4a747.herokuapp.com/api/"
+    const val BASE_URL = "https://khawii-598d2a7a9203.herokuapp.com/api/"
 //    const val BASE_URL = "https://muslim.tahqq.com/api/"
     // general
     const val kHTTPLocalFaultName = "HTTP"

@@ -79,7 +79,7 @@ class RequestDetailsFragment : Fragment() {
         binding.requestsContainer.visibility = View.GONE
         binding.rateUser.visibility = View.GONE
         binding.rateDriver.visibility = View.GONE
-//        binding.sendBtn.visibility = View.VISIBLE
+        binding.sendBtn.visibility = View.VISIBLE
         if (args.isOrder) {
 //            args.orderStatus
             binding.edit.visibility = View.VISIBLE
@@ -87,7 +87,7 @@ class RequestDetailsFragment : Fragment() {
             binding.requestsContainer.visibility = View.VISIBLE
             binding.rateUser.visibility = View.VISIBLE
             binding.rateDriver.visibility = View.VISIBLE
-//            binding.sendBtn.visibility = View.GONE
+            binding.sendBtn.visibility = View.GONE
 
             val list = mutableListOf<String>()
             list.add("")

@@ -3,15 +3,15 @@ package com.khawi.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+
 @Serializable
-data class Welcome(
+data class StaticPage(
     @SerialName("_id")
     val id: String? = null,
-    @SerialName("icon")
-    val icon: String? = null,
+    @SerialName("Type")
+    val type: String? = null,
     @SerialName("Title")
-    val name: String? = null,
-    @SerialName("Description")
-    val description: String? = null,
-    var v: Long? = null
+    val title: String? = null,
+    @SerialName("Content")
+    val content: String? = null,
 )

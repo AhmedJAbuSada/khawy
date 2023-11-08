@@ -40,14 +40,14 @@
         </activity>
         <activity android:name=".ui.login.LoginActivity"/>
         <activity android:name=".ui.walkthrough.WalkthroughActivity"/>
-        <activity android:name=".ui.main.MainActivity"/>
+        <activity android:name=".ui.main.main.MainActivity"/>
         <activity android:name=".ui.static_page.StaticContentActivity"/>
         <activity android:name=".ui.select_destination.SelectDestinationActivity"/>
 
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBlcUeYPme9ZE28rtnXubuXgQZTok4LuGo" />
+            android:value="AIzaSyBG2O9nhPoHxemxdMh4NX8pBa32cd0Kc1Q" />
     </application>
 
 </manifest>

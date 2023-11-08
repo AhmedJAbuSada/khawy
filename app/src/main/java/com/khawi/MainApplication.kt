@@ -1,6 +1,7 @@
 package com.khawi
 
 import androidx.multidex.MultiDexApplication
+import com.google.firebase.FirebaseApp
 import com.khawi.base.english_key
 import com.khawi.base.getPreference
 import com.khawi.base.language_key
@@ -23,7 +24,7 @@ class MainApplication : MultiDexApplication() {
         }
         setLocale(Locale(language))
 
-//        FirebaseApp.initializeApp(this)
+        FirebaseApp.initializeApp(this)
     }
 
     companion object {

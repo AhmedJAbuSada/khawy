@@ -6,8 +6,8 @@ plugins {
     id('kotlin-parcelize')
     id('androidx.navigation.safeargs.kotlin')
     id('kotlinx-serialization')
-//    id ("com.google.gms.google-services")
-//    id ("com.google.firebase.crashlytics")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 android {
     namespace "com.khawi"
@@ -39,6 +39,11 @@ android {
     buildFeatures {
         dataBinding true
         viewBinding true
+    }
+    configurations.configureEach {
+        resolutionStrategy {
+            exclude group: "org.jetbrains.kotlinx", module: "kotlinx-coroutines-debug"
+        }
     }
 }
 
@@ -75,11 +80,11 @@ dependencies {
     // Feature module Support
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
 
-//    // firebase
-//    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
-//    implementation("com.google.firebase:firebase-analytics-ktx")
-//    implementation("com.google.firebase:firebase-messaging-ktx")
-//    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    // firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     // hilt
     implementation "com.google.dagger:hilt-android:2.45"
@@ -150,5 +155,11 @@ dependencies {
 
     // loading
     implementation 'com.github.ome450901:SimpleRatingBar:1.5.0'
+
+    // locus
+    implementation 'com.github.BirjuVachhani:locus-android:5.0.0'
+
+    // paytabs
+    implementation 'com.paytabs:payment-sdk:6.5.2'
 
 }

@@ -3,6 +3,7 @@
     <string name="next">التالي</string>
     <string name="error">خطأ</string>
     <string name="Ok">حسنا</string>
+    <string name="error_message_empty">حقل النص مطلوب</string>
     <string name="error_phone_empty">حقل رقم الجوال مطلوب</string>
     <string name="error_full_name_empty">حقل الاسم مطلوب</string>
     <string name="resend_code">اعادة ارسال</string>
@@ -122,4 +123,5 @@
     <string name="end_destination">نقطة النهاية</string>
     <string name="select_start">حدد نقطة البداية</string>
     <string name="select_end">حدد نقطة النهاية</string>
+    <string name="success">تم بنجاح</string>
 </resources>

@@ -1,15 +1,21 @@
 package com.khawi.ui.static_page
 
-import android.graphics.Color
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.core.text.HtmlCompat
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
 import com.khawi.base.BaseActivity
+import com.khawi.base.hideDialog
+import com.khawi.base.initLoading
+import com.khawi.base.showDialog
 import com.khawi.databinding.ActivityStaticContentBinding
 
 
 class StaticContentActivity : BaseActivity() {
     private var binding: ActivityStaticContentBinding? = null
+    private var loading: KProgressHUD? = null
+    private val viewModel: StaticPagesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,51 +40,39 @@ class StaticContentActivity : BaseActivity() {
                 binding?.titlePage?.text = getString(R.string.privacy_policy)
             }
         }
-//        callRequest()
+
+        loading = initLoading()
+        viewModel.progressLiveData.observe(this) {
+            if (it) loading?.showDialog()
+            else loading?.hideDialog()
+        }
+        viewModel.successLiveData.observe(this) {
+            if (it?.status == true) {
+                it.data?.let { list ->
+                    for (value in list) {
+                        if (value.type == "terms" && intent.hasExtra(terms)) {
+                            binding?.content?.text = HtmlCompat.fromHtml(
+                                value.content ?: "",
+                                HtmlCompat.FROM_HTML_MODE_LEGACY
+                            )
+                            break
+                        }
+                        if (value.type == "about" && intent.hasExtra(about)) {
+                            binding?.content?.text = HtmlCompat.fromHtml(
+                                value.content ?: "",
+                                HtmlCompat.FROM_HTML_MODE_LEGACY
+                            )
+                            break
+                        }
+                    }
+
+                }
+            }
+        }
+
+
     }
 
-//    private fun callRequest() {
-//        DataClint.instants(false).callIntro(this, object : CallBackRequestListener<BaseResponse> {
-//            override fun onResponse(response: BaseResponse?) {
-//                try {
-//                    if (response?.status?.success == true) {
-//                        when {
-//                            intent.hasExtra(about) -> {
-//                                binding?.titlePage?.text = getString(R.string.about_us)
-//                                binding?.content?.text = HtmlCompat.fromHtml(
-//                                    response.settings?.about_us ?: "",
-//                                    HtmlCompat.FROM_HTML_MODE_LEGACY
-//                                )
-//                            }
-//
-//                            intent.hasExtra(terms) -> {
-//                                binding?.titlePage?.text = getString(R.string.terms_and_conditions)
-//                                binding?.content?.text = HtmlCompat.fromHtml(
-//                                    response.settings?.terms ?: "",
-//                                    HtmlCompat.FROM_HTML_MODE_LEGACY
-//                                )
-//                            }
-//
-//                            intent.hasExtra(privacy) -> {
-//                                binding?.titlePage?.text = getString(R.string.privacy_policy)
-//                                binding?.content?.text = HtmlCompat.fromHtml(
-//                                    response.settings?.privacy ?: "",
-//                                    HtmlCompat.FROM_HTML_MODE_LEGACY
-//                                )
-//                            }
-//                        }
-//                    }
-//
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
-//            }
-//
-//            override fun onError(response: String) {
-//            }
-//
-//        })
-//    }
 
     companion object {
         const val about = "about"

@@ -1,4 +1,4 @@
-package com.khawi.ui.login
+package com.khawi.ui.main.main
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,9 +7,8 @@ import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor() : ViewModel() {
+class MainViewModel @Inject constructor() : ViewModel() {
 
-    val phoneLiveData = MutableLiveData("")
     val imageMutableLiveData = MutableLiveData<File>()
 
 }

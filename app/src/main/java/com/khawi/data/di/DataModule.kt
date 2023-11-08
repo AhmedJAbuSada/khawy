@@ -2,6 +2,8 @@ package com.khawi.data.di
 
 import com.khawi.data.auth.AuthRepository
 import com.khawi.data.auth.AuthRepositoryImp
+import com.khawi.data.settings.SettingsRepository
+import com.khawi.data.settings.SettingsRepositoryImp
 import com.khawi.data.walkthrough.WelcomeRepository
 import com.khawi.data.walkthrough.WelcomeRepositoryImp
 import dagger.Binds
@@ -22,5 +24,10 @@ interface DataModule {
     fun bindsAuthRepository(
         authRepositoryImp: AuthRepositoryImp,
     ): AuthRepository
+
+    @Binds
+    fun bindsSettingsRepository(
+        settingsRepositoryImp: SettingsRepositoryImp,
+    ): SettingsRepository
 
 }

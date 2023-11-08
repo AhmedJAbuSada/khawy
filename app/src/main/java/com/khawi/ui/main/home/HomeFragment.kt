@@ -1,5 +1,7 @@
 package com.khawi.ui.main.home
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -10,8 +12,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.birjuvachhani.locus.Locus
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -20,6 +27,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.khawi.R
+import com.khawi.base.loadImage
 import com.khawi.databinding.FragmentHomeBinding
 import com.willy.ratingbar.ScaleRatingBar
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,9 +38,12 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val markerStates: MutableMap<Marker, Boolean> = HashMap()
     private var list = mutableListOf<LatLng>()
-//    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by viewModels()
+    private var isFirst = true
+    private var latlng: LatLng? = null
+    private var selectedMarker: Marker? = null
+    private var googleMap: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,10 +61,57 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Locus.getCurrentLocation(requireContext()) { result ->
+            result.location?.let {
+                latlng = LatLng(it.latitude, it.longitude)
+                handleMap()
+            }
+            result.error?.let { }
+        }
 
+        viewModel.userMutableLiveData.observe(viewLifecycleOwner) {
+            it?.let {
+                binding.userImg.loadImage(requireContext(), it.image)
+                binding.username.text = "${it.fullName} .."
+            }
+        }
+
+        binding.yourLocation.setOnClickListener {
+            latlng?.let { lat ->
+                googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(lat, 15f))
+            }
+        }
+    }
+
+    private fun handleMap(){
         val mapFragment =
-            childFragmentManager.findFragmentById(R.id.mapContainer) as? SupportMapFragment
+            childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync {
+            googleMap = it
+            if (isFirst)
+                latlng?.let { lat ->
+                    googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(lat, 15f))
+                    isFirst = false
+                }
+
+            googleMap?.uiSettings?.isCompassEnabled = true
+            googleMap?.uiSettings?.isZoomGesturesEnabled = true
+            googleMap?.uiSettings?.isZoomControlsEnabled = true
+            googleMap?.uiSettings?.isRotateGesturesEnabled = false
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return@getMapAsync
+            }
+            googleMap?.isMyLocationEnabled = true
+            googleMap?.clear()
+
+
             for ((index, dataObject) in list.withIndex()) {
                 val position = LatLng(dataObject.latitude, dataObject.longitude)
 
@@ -78,18 +136,13 @@ class HomeFragment : Fragment() {
                         )
                     )
 
-                val marker = it.addMarker(markerOptions)
+                val marker = googleMap?.addMarker(markerOptions)
                 marker?.tag = index
 
-                marker?.let { markerIt ->
-                    markerStates[markerIt] = false
-                }
-
-                it.setOnMarkerClickListener { clickedMarker ->
-                    val currentState = markerStates[clickedMarker] ?: false
-
-                    if (currentState) {
-                        markerStates[clickedMarker] = false
+                googleMap?.setOnMarkerClickListener { clickedMarker ->
+                    if (selectedMarker != null
+//                        && ((selectedMarker?.tag as Unit).id == (clickedMarker.tag as Unit).id)
+                        ) {
                         clickedMarker.setIcon(
                             BitmapDescriptorFactory.fromBitmap(
                                 getSelectedMarkerBitmapFromView(
@@ -99,8 +152,9 @@ class HomeFragment : Fragment() {
                                 )
                             )
                         )
+                        selectedMarker = null
                     } else {
-                        markerStates[clickedMarker] = true
+                        selectedMarker = clickedMarker
                         clickedMarker.setIcon(
                             BitmapDescriptorFactory.fromBitmap(
                                 getSelectedMarkerBitmapFromView(
@@ -122,13 +176,7 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-
-
-        binding.yourLocation.setOnClickListener {
-
-        }
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -187,7 +235,11 @@ class HomeFragment : Fragment() {
 
         val showDetails = rootView.findViewById<TextView>(R.id.showDetails)
         showDetails.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionHomeToRequestDetailsFragment(isDeliver = false))
+            findNavController().navigate(
+                HomeFragmentDirections.actionHomeToRequestDetailsFragment(
+                    isDeliver = false
+                )
+            )
             bottomSheet.dismiss()
         }
 
@@ -209,7 +261,11 @@ class HomeFragment : Fragment() {
 
         val showDetails = rootView.findViewById<TextView>(R.id.showDetails)
         showDetails.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionHomeToRequestDetailsFragment(isDeliver = true))
+            findNavController().navigate(
+                HomeFragmentDirections.actionHomeToRequestDetailsFragment(
+                    isDeliver = true
+                )
+            )
             bottomSheet.dismiss()
         }
 
