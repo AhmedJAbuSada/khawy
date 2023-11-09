@@ -19,7 +19,6 @@ import androidx.navigation.fragment.findNavController
 import com.birjuvachhani.locus.Locus
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -44,11 +43,6 @@ class HomeFragment : Fragment() {
     private var latlng: LatLng? = null
     private var selectedMarker: Marker? = null
     private var googleMap: GoogleMap? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        MapsInitializer.initialize(requireContext())
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

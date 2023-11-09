@@ -6,12 +6,11 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-
-        <FrameLayout
-            android:id="@+id/mapContainer"
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/grey"
             android:layout_marginBottom="70dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -23,17 +22,17 @@
             android:layout_width="46dp"
             android:layout_height="46dp"
             android:src="@drawable/selecting_start_marker"
-            app:layout_constraintBottom_toBottomOf="@+id/mapContainer"
-            app:layout_constraintEnd_toEndOf="@+id/mapContainer"
-            app:layout_constraintStart_toStartOf="@+id/mapContainer"
-            app:layout_constraintTop_toTopOf="@+id/mapContainer" />
+            app:layout_constraintBottom_toBottomOf="@+id/map"
+            app:layout_constraintEnd_toEndOf="@+id/map"
+            app:layout_constraintStart_toStartOf="@+id/map"
+            app:layout_constraintTop_toTopOf="@+id/map" />
 
         <TextView
             android:id="@+id/yourLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/mapContainer"
-            app:layout_constraintEnd_toEndOf="@+id/mapContainer"
+            app:layout_constraintBottom_toBottomOf="@+id/map"
+            app:layout_constraintEnd_toEndOf="@+id/map"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="44dp"
             android:textColor="@color/textColor"
@@ -100,7 +99,7 @@
             app:layout_constraintEnd_toEndOf="@+id/destinationRoute"
             app:layout_constraintTop_toBottomOf="@+id/destinationRoute" />
 
-        <EditText
+        <TextView
             android:id="@+id/startDestinationET"
             android:layout_width="0dp"
             android:layout_height="52dp"
@@ -110,8 +109,6 @@
             android:drawablePadding="8dp"
             android:gravity="center_vertical"
             android:hint="@string/start_destination"
-            android:imeOptions="actionDone"
-            android:inputType="text"
             android:lines="1"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -149,7 +146,7 @@
             app:layout_constraintEnd_toEndOf="@+id/destinationRoute"
             app:layout_constraintTop_toBottomOf="@+id/startDestinationET" />
 
-        <EditText
+        <TextView
             android:id="@+id/endDestinationET"
             android:layout_width="0dp"
             android:layout_height="52dp"
@@ -159,8 +156,6 @@
             android:drawablePadding="8dp"
             android:gravity="center_vertical"
             android:hint="@string/end_destination"
-            android:imeOptions="actionDone"
-            android:inputType="text"
             android:lines="1"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
