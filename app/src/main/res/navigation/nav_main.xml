@@ -95,6 +95,11 @@
             android:name="orderStatus"
             android:defaultValue="0"
             app:argType="integer" />
+        <argument
+            android:name="orderObj"
+            app:argType="com.khawi.model.Order"
+            app:nullable="true"
+            android:defaultValue="@null" />
         <action
             android:id="@+id/action_requestDetailsFragment_to_requestDeliverFragment"
             app:destination="@id/requestDeliverFragment"
@@ -111,7 +116,11 @@
             app:popExitAnim="@anim/slide_out_right"  />
         <action
             android:id="@+id/action_requestDetailsFragment_to_joinDetailsFragment"
-            app:destination="@id/joinDetailsFragment" />
+            app:destination="@id/joinDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"  />
     </fragment>
     <fragment
         android:id="@+id/requestDeliverFragment"

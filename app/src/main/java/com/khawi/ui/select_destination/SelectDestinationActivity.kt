@@ -4,37 +4,42 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
 import androidx.core.app.ActivityCompat
+import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
+import com.beust.klaxon.array
+import com.beust.klaxon.get
+import com.beust.klaxon.obj
+import com.beust.klaxon.string
 import com.birjuvachhani.locus.Locus
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.khawi.R
 import com.khawi.base.BaseActivity
+import com.khawi.base.getAddress
 import com.khawi.base.parcelable
 import com.khawi.databinding.ActivitySelectDestinationBinding
 import dagger.hilt.android.AndroidEntryPoint
-import java.net.URL
-import java.util.Locale
 import org.jetbrains.anko.async
 import org.jetbrains.anko.uiThread
-import com.beust.klaxon.*
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.PolylineOptions
+import java.net.URL
 
 
 @AndroidEntryPoint
 class SelectDestinationActivity : BaseActivity() {
     private lateinit var binding: ActivitySelectDestinationBinding
-    private var step = 0
     private var googleMap: GoogleMap? = null
     private var isFirst = true
+    private var isPreview = false
     private var latlngMyLocation: LatLng? = null
     private var latlngStart: LatLng? = null
     private var latlngEnd: LatLng? = null
@@ -42,6 +47,7 @@ class SelectDestinationActivity : BaseActivity() {
     companion object {
         const val latLongStartKey = "lat_long_start"
         const val latLongEndKey = "lat_long_end"
+        const val isPreviewKey = "is_preview"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +55,12 @@ class SelectDestinationActivity : BaseActivity() {
         binding = ActivitySelectDestinationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        isPreview = intent.getBooleanExtra(isPreviewKey, false)
+        binding.buttonGroup.visibility =
+            if (isPreview)
+                View.GONE
+            else
+                View.VISIBLE
         latlngStart = intent.parcelable(latLongStartKey)
         latlngEnd = intent.parcelable(latLongEndKey)
 
@@ -69,43 +81,17 @@ class SelectDestinationActivity : BaseActivity() {
             }
         }
 
-        binding.endDestinationGroup.visibility = View.GONE
-
-        binding.startDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
-            0, 0, 0, 0
-        )
-        binding.endDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
-            0, 0, 0, 0
-        )
-
-        if (latlngStart != null) {
-            step = 0
-            binding.markerIV.setImageResource(R.drawable.selecting_start_marker)
-            binding.selectBtn.text = getString(R.string.select_start)
-            binding.startDestinationET.text = getAddress(latlngStart!!)
-            binding.startDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.edit, 0, 0, 0
-            )
-        }
-        if (latlngEnd != null) {
-            step = 1
-            binding.markerIV.setImageResource(R.drawable.end_marker)
-            binding.selectBtn.text = getString(R.string.select_end)
-            binding.endDestinationET.text = getAddress(latlngEnd!!)
-            binding.endDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.edit, 0, 0, 0
-            )
-        }
-        if (latlngStart != null && latlngEnd != null) {
-            drawRout()
-        }
+        handleMarkers()
 
         binding.startDestinationET.setOnClickListener {
-
+            latlngEnd = null
+            latlngStart = null
+            handleMarkers()
         }
 
         binding.endDestinationET.setOnClickListener {
-
+            latlngEnd = null
+            handleMarkers()
         }
 
         val mapFragment =
@@ -136,62 +122,72 @@ class SelectDestinationActivity : BaseActivity() {
         }
 
         binding.selectBtn.setOnClickListener {
-            when (step) {
-                2 -> {
-                    val intent = Intent()
-                    intent.putExtra(latLongStartKey, latlngStart)
-                    intent.putExtra(latLongEndKey, latlngEnd)
-                    setResult(RESULT_OK, intent)
-                    finish()
-                }
-                1 -> {
-                    latlngEnd = googleMap?.cameraPosition?.target ?: LatLng(0.0, 0.0)
-                    latlngEnd?.let { latlngEnd->
-                        step = 2
-                        binding.markerIV.setImageResource(R.drawable.end_marker)
-                        binding.selectBtn.text = getString(R.string.save_changes)
-                        binding.endDestinationET.text = getAddress(latlngEnd)
-                        binding.endDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                            R.drawable.edit, 0, 0, 0
-                        )
-                        val markerOptions = MarkerOptions()
-                            .position(latlngEnd)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_marker))
-                        googleMap?.addMarker(markerOptions)
-                        drawRout()
-                    }
-                }
-                else -> {
+            when {
+                latlngStart == null -> {
                     latlngStart = googleMap?.cameraPosition?.target ?: LatLng(0.0, 0.0)
-                    latlngStart?.let { latlngStart ->
-                        step = 1
-                        binding.markerIV.setImageResource(R.drawable.end_marker)
-                        binding.selectBtn.text = getString(R.string.select_end)
-                        binding.startDestinationET.text = getAddress(latlngStart)
-                        binding.startDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                            R.drawable.edit, 0, 0, 0
-                        )
-                        val markerOptions = MarkerOptions()
-                            .position(latlngStart)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.selected_start_marker))
-                        googleMap?.addMarker(markerOptions)
-                        binding.endDestinationGroup.visibility = View.VISIBLE
-                    }
-
                 }
+
+                latlngEnd == null -> {
+                    latlngEnd = googleMap?.cameraPosition?.target ?: LatLng(0.0, 0.0)
+                }
+            }
+            handleMarkers()
+            if (latlngStart != null && latlngEnd != null) {
+                val intent = Intent()
+                intent.putExtra(latLongStartKey, latlngStart)
+                intent.putExtra(latLongEndKey, latlngEnd)
+                setResult(RESULT_OK, intent)
+                finish()
             }
         }
     }
 
-    private fun getAddress(latlng: LatLng): String {
-        val geocoder = Geocoder(this, Locale.getDefault())
-        val addresses = geocoder.getFromLocation(
-            latlng.latitude,
-            latlng.longitude,
-            1
+    private fun handleMarkers() {
+
+        binding.endDestinationGroup.visibility = View.GONE
+
+        binding.startDestinationET.text = ""
+        binding.startDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            0, 0, 0, 0
         )
-        return addresses?.get(0)?.getAddressLine(0) ?: ""
+        binding.endDestinationET.text = ""
+        binding.endDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            0, 0, 0, 0
+        )
+        binding.markerIV.setImageResource(R.drawable.selecting_start_marker)
+
+        latlngStart?.let { latlngStart ->
+            binding.markerIV.setImageResource(R.drawable.end_marker)
+            binding.selectBtn.text = getString(R.string.select_end)
+            binding.startDestinationET.text = latlngStart.getAddress(this)
+            if (!isPreview)
+                binding.startDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    R.drawable.edit, 0, 0, 0
+                )
+            googleMap?.clear()
+            val markerOptions = MarkerOptions()
+                .position(latlngStart)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.selected_start_marker))
+            googleMap?.addMarker(markerOptions)
+            binding.endDestinationGroup.visibility = View.VISIBLE
+        }
+
+        latlngEnd?.let { latlngEnd ->
+            binding.markerIV.setImageResource(R.drawable.end_marker)
+            binding.selectBtn.text = getString(R.string.save_changes)
+            binding.endDestinationET.text = latlngEnd.getAddress(this)
+            if (!isPreview)
+                binding.endDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    R.drawable.edit, 0, 0, 0
+                )
+            val markerOptions = MarkerOptions()
+                .position(latlngEnd)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_marker))
+            googleMap?.addMarker(markerOptions)
+            drawRout()
+        }
     }
+
 
     private fun drawRout() {
         val url = getURL(latlngStart!!, latlngEnd!!)

@@ -10,8 +10,11 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.CompositeDateValidator
@@ -19,14 +22,22 @@ import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
 import com.khawi.base.deliverBottomSheet
+import com.khawi.base.getAddress
+import com.khawi.base.hideDialog
+import com.khawi.base.initLoading
 import com.khawi.base.parcelable
+import com.khawi.base.showAlertMessage
+import com.khawi.base.showDialog
 import com.khawi.databinding.FragmentRequestFormBinding
+import com.khawi.model.AddOrderBody
 import com.khawi.model.Day
 import com.khawi.ui.request_details.DaysAdapter
 import com.khawi.ui.select_destination.SelectDestinationActivity
 import com.khawi.ui.static_page.StaticContentActivity
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -40,6 +51,24 @@ class RequestFormFragment : Fragment() {
     private val args: RequestFormFragmentArgs by navArgs()
     private var latlngStart: LatLng? = null
     private var latlngEnd: LatLng? = null
+    private var tripDate: String? = null
+    private var tripTime: String? = null
+
+    private var loading: KProgressHUD? = null
+    private val viewModel: RequestFormViewModel by viewModels()
+
+    private val registerForActivityResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                latlngStart = result.data?.parcelable(SelectDestinationActivity.latLongStartKey)
+                latlngEnd = result.data?.parcelable(SelectDestinationActivity.latLongStartKey)
+                if (latlngStart != null && latlngEnd != null) {
+                    binding.tripMapIV.setImageResource(R.drawable.edit)
+                    binding.tripMapTV.text = getString(R.string.destination_selected)
+                    binding.tripMapTV.setTextColor(Color.parseColor("#0CB057"))
+                }
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,17 +98,7 @@ class RequestFormFragment : Fragment() {
             if (latlngEnd != null)
                 intent.putExtra(SelectDestinationActivity.latLongEndKey, latlngEnd)
 
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    latlngStart = result.data?.parcelable(SelectDestinationActivity.latLongStartKey)
-                    latlngEnd = result.data?.parcelable(SelectDestinationActivity.latLongStartKey)
-                    if (latlngStart != null && latlngEnd != null) {
-                        binding.tripMapIV.setImageResource(R.drawable.edit)
-                        binding.tripMapTV.text = getString(R.string.destination_selected)
-                        binding.tripMapTV.setTextColor(Color.parseColor("#0CB057"))
-                    }
-                }
-            }.launch(intent)
+            registerForActivityResult.launch(intent)
         }
         binding.tripDateContainer.setOnClickListener {
             setupDatePicker()
@@ -138,16 +157,74 @@ class RequestFormFragment : Fragment() {
         }
 
         binding.sendBtn.setOnClickListener {
-            requireContext().deliverBottomSheet(
-                layoutInflater,
-                binding.container,
-                if (isDeliver)
-                    getString(R.string.success_request_deliver_create)
-                else
-                    getString(R.string.success_request_join_create),
-                getString(R.string.show_request_details)
-            ) {
-                findNavController().popBackStack()
+            if (validation()) {
+                val maxPrice =
+                    if (!isDeliver)
+                        binding.maximumPriceET.text.toString()
+                    else
+                        null
+                val minPrice =
+                    if (!isDeliver)
+                        binding.maximumPriceET.text.toString()
+                    else
+                        null
+                val price =
+                    if (isDeliver)
+                        binding.priceET.text.toString()
+                    else
+                        null
+                val selectedDays = listDays.filter { it.select }
+                val listDays = mutableListOf<String>()
+                for (value in selectedDays) {
+                    listDays.add(value.name ?: "")
+                }
+                val stringDays = "$listDays"
+                viewModel.viewModelScope.launch {
+                    viewModel.addOrder(
+                        AddOrderBody(
+                            couponCode = "",
+                            paymentType = 1,
+                            dtDate = tripDate,
+                            dtTime = tripTime,
+                            fAddress = latlngStart?.getAddress(requireContext()),
+                            tAddress = latlngEnd?.getAddress(requireContext()),
+                            fLat = latlngStart?.latitude,
+                            fLng = latlngStart?.longitude,
+                            tLat = latlngEnd?.latitude,
+                            tLng = latlngEnd?.longitude,
+                            title = binding.tripSubjectET.text.toString(),
+                            maxPrice = maxPrice,
+                            minPrice = minPrice,
+                            price = price,
+                            isRepeated = binding.dailyCheckBox.isChecked,
+                            days = stringDays,
+                            orderType = if (isDeliver) 2 else 1,
+                            maxPassenger = (binding.maxSeatsET.text.toString()).toInt(),
+                            notes = binding.noteET.text.toString(),
+                        )
+                    )
+                }
+            }
+        }
+
+        loading = requireContext().initLoading()
+        viewModel.progressLiveData.observe(viewLifecycleOwner) {
+            if (it) loading?.showDialog()
+            else loading?.hideDialog()
+        }
+        viewModel.successLiveData.observe(viewLifecycleOwner) {
+            if (it?.status == true) {
+                requireContext().deliverBottomSheet(
+                    layoutInflater,
+                    binding.container,
+                    if (isDeliver)
+                        getString(R.string.success_request_deliver_create)
+                    else
+                        getString(R.string.success_request_join_create),
+                    getString(R.string.show_request_details)
+                ) {
+                    findNavController().popBackStack()
+                }
             }
         }
     }
@@ -173,8 +250,9 @@ class RequestFormFragment : Fragment() {
         materialDatePicker.addOnPositiveButtonClickListener {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = it
-            binding.tripDate.text = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            tripDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                 .format(calendar.time)
+            binding.tripDate.text = tripDate
         }
         materialDatePicker.show(childFragmentManager, "MATERIAL_DATE_PICKER")
     }
@@ -191,8 +269,120 @@ class RequestFormFragment : Fragment() {
         materialTimeBuilder.addOnPositiveButtonClickListener {
             val selectedHour = materialTimeBuilder.hour
             val selectedMinute = materialTimeBuilder.minute
-            binding.tripTime.text = String.format("%02d:%02d", selectedHour, selectedMinute)
+            tripTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+            binding.tripTime.text = tripTime
         }
         materialTimeBuilder.show(childFragmentManager, "MATERIAL_DATE_PICKER")
+    }
+
+    private fun validation(): Boolean {
+        if (binding.tripSubjectET.text.toString().isEmpty()) {
+            getString(R.string.error_trip_subject_empty).showAlertMessage(
+                context = requireContext(),
+                title = getString(R.string.error),
+                confirmText = getString(R.string.Ok),
+                type = SweetAlertDialog.ERROR_TYPE,
+                onCancelClick = {
+
+                },
+                onConfirmClick = {
+
+                }
+            )
+            return false
+        }
+        if (latlngStart == null || latlngEnd == null) {
+            getString(R.string.select_the_destination_on_the_map).showAlertMessage(
+                context = requireContext(),
+                title = getString(R.string.error),
+                confirmText = getString(R.string.Ok),
+                type = SweetAlertDialog.ERROR_TYPE,
+                onCancelClick = {
+
+                },
+                onConfirmClick = {
+
+                }
+            )
+            return false
+        }
+        if (isDeliver && binding.priceET.text.toString().isEmpty()) {
+            getString(R.string.error_price_empty).showAlertMessage(
+                context = requireContext(),
+                title = getString(R.string.error),
+                confirmText = getString(R.string.Ok),
+                type = SweetAlertDialog.ERROR_TYPE,
+                onCancelClick = {
+
+                },
+                onConfirmClick = {
+
+                }
+            )
+            return false
+        }
+        if (binding.dailyCheckBox.isChecked) {
+            val selectedDays = listDays.filter { it.select }
+            if (selectedDays.isEmpty())
+                getString(R.string.error_select_a_day).showAlertMessage(
+                    context = requireContext(),
+                    title = getString(R.string.error),
+                    confirmText = getString(R.string.Ok),
+                    type = SweetAlertDialog.ERROR_TYPE,
+                    onCancelClick = {
+
+                    },
+                    onConfirmClick = {
+
+                    }
+                )
+            return false
+        }
+        if (tripDate.isNullOrEmpty()) {
+            getString(R.string.error_date_empty).showAlertMessage(
+                context = requireContext(),
+                title = getString(R.string.error),
+                confirmText = getString(R.string.Ok),
+                type = SweetAlertDialog.ERROR_TYPE,
+                onCancelClick = {
+
+                },
+                onConfirmClick = {
+
+                }
+            )
+            return false
+        }
+        if (tripTime.isNullOrEmpty()) {
+            getString(R.string.error_time_empty).showAlertMessage(
+                context = requireContext(),
+                title = getString(R.string.error),
+                confirmText = getString(R.string.Ok),
+                type = SweetAlertDialog.ERROR_TYPE,
+                onCancelClick = {
+
+                },
+                onConfirmClick = {
+
+                }
+            )
+            return false
+        }
+        if (binding.maxSeatsET.text.toString().isEmpty()) {
+            getString(R.string.error_seats_empty).showAlertMessage(
+                context = requireContext(),
+                title = getString(R.string.error),
+                confirmText = getString(R.string.Ok),
+                type = SweetAlertDialog.ERROR_TYPE,
+                onCancelClick = {
+
+                },
+                onConfirmClick = {
+
+                }
+            )
+            return false
+        }
+        return true
     }
 }

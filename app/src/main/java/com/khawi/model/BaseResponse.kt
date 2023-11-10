@@ -12,7 +12,7 @@ data class BaseResponse<T>(
     val code: Int? = null,
     @SerialName("message")
     var message: String? = null,
-    @SerialName("data")
+    @SerialName("items")
     var data: T? = null,
     @SerialName("showDialog")
     val showDialog: Boolean? = null,

@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.khawi.R
 import com.khawi.databinding.FragmentRequestDetailsBinding
 import com.khawi.model.Day
+import com.khawi.model.Order
 import com.willy.ratingbar.ScaleRatingBar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,6 +25,7 @@ class RequestDetailsFragment : Fragment() {
     private val binding get() = _binding!!
     private val listDays = mutableListOf<Day>()
     private val args: RequestDetailsFragmentArgs by navArgs()
+    private var order: Order? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +38,8 @@ class RequestDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        order = args.orderObj
 
         listDays.clear()
         listDays.add(Day(name = getString(R.string.saturday), select = true))

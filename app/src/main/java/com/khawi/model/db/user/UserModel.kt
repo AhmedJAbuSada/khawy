@@ -1,10 +1,13 @@
 package com.khawi.model.db.user
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Parcelize
 @Serializable
 @Entity(tableName = "user", primaryKeys = ["id"])
 data class UserModel(
@@ -51,4 +54,4 @@ data class UserModel(
     val rate: String? = "",
     @ColumnInfo("orders")
     val orders: String? = "",
-)
+): Parcelable

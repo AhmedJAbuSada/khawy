@@ -1,13 +1,17 @@
 package com.khawi.ui.request_join
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.CompositeDateValidator
 import com.google.android.material.datepicker.DateValidatorPointBackward
@@ -16,6 +20,7 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.khawi.R
 import com.khawi.base.deliverBottomSheet
+import com.khawi.base.parcelable
 import com.khawi.databinding.FragmentRequestJoinBinding
 import com.khawi.model.Day
 import com.khawi.ui.request_details.DaysAdapter
@@ -29,6 +34,22 @@ class RequestJoinFragment : Fragment() {
     private val binding get() = _binding!!
     private val listDays = mutableListOf<Day>()
     private var adapterDays: DaysAdapter? = null
+
+    private var latlngStart: LatLng? = null
+    private var latlngEnd: LatLng? = null
+
+    private val registerForActivityResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                latlngStart = result.data?.parcelable(SelectDestinationActivity.latLongStartKey)
+                latlngEnd = result.data?.parcelable(SelectDestinationActivity.latLongStartKey)
+                if (latlngStart != null && latlngEnd != null) {
+                    binding.tripMapIV.setImageResource(R.drawable.edit)
+                    binding.tripMapTV.text = getString(R.string.destination_selected)
+                    binding.tripMapTV.setTextColor(Color.parseColor("#0CB057"))
+                }
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,10 +67,12 @@ class RequestJoinFragment : Fragment() {
         binding.tripMapTV.text = getString(R.string.select_the_destination_on_the_map)
         binding.tripMapTV.setTextColor(Color.parseColor("#666666"))
         binding.tripMapContainer.setOnClickListener {
-            binding.tripMapIV.setImageResource(R.drawable.edit)
-            binding.tripMapTV.text = getString(R.string.destination_selected)
-            binding.tripMapTV.setTextColor(Color.parseColor("#0CB057"))
-            startActivity(Intent(requireContext(), SelectDestinationActivity::class.java))
+            val intent = Intent(requireContext(), SelectDestinationActivity::class.java)
+            if (latlngStart != null)
+                intent.putExtra(SelectDestinationActivity.latLongStartKey, latlngStart)
+            if (latlngEnd != null)
+                intent.putExtra(SelectDestinationActivity.latLongEndKey, latlngEnd)
+            registerForActivityResult.launch(intent)
         }
         binding.tripDateContainer.setOnClickListener {
             setupDatePicker()

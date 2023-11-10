@@ -27,7 +27,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/Theme.Khawi"
-        tools:replace="android:supportsRtl"
+        tools:replace="android:supportsRtl,android:fullBackupContent,android:allowBackup"
         tools:targetApi="31">
         <activity
             android:name=".SplashActivity"

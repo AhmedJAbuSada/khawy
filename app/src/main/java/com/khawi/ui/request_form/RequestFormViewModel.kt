@@ -1,44 +1,39 @@
-package com.khawi.ui.main.home
+package com.khawi.ui.request_form
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
+import com.khawi.data.auth.AuthRepository
 import com.khawi.data.order.OrderRepository
+import com.khawi.data.settings.SettingsRepository
 import com.khawi.model.AddOrderBody
 import com.khawi.model.BaseResponse
+import com.khawi.model.ContactUsBody
 import com.khawi.model.Order
 import com.khawi.model.db.user.UserModel
 import com.khawi.model.db.user.UserRepository
 import com.khawi.network_base.model.BaseState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val repository: OrderRepository,
-    private val userRepository: UserRepository,
-) : ViewModel() {
-    val userMutableLiveData = MutableLiveData<UserModel>()
+class RequestFormViewModel @Inject constructor(private val repository: OrderRepository) :
+    ViewModel() {
 
-    init {
-        getUser()
-    }
-
-    private fun getUser() {
-        userMutableLiveData.postValue(userRepository.getUser())
-    }
-
-    private val _successLiveData = MutableLiveData<BaseResponse<MutableList<Order>?>?>()
-    val successLiveData: LiveData<BaseResponse<MutableList<Order>?>?> = _successLiveData
+    private val _successLiveData = MutableLiveData<BaseResponse<Order?>?>()
+    val successLiveData: LiveData<BaseResponse<Order?>?> = _successLiveData
 
     private val _progressLiveData = MutableLiveData<Boolean>()
     val progressLiveData: MutableLiveData<Boolean> = _progressLiveData
 
     init {
         viewModelScope.launch {
-            repository.getOrderListFlow().collect {
+            repository.getOrderFlow().collect {
 
                 when (it) {
                     is BaseState.NetworkError -> {
@@ -53,6 +48,7 @@ class HomeViewModel @Inject constructor(
                         it.items?.let { item ->
                             _progressLiveData.postValue(false)
                             _successLiveData.postValue(item)
+
                         }
                     }
 
@@ -63,10 +59,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun getOrders(lat: String, lng: String) {
-        val params = HashMap<String, String>()
-        params["lat"] = lat
-        params["lng"] = lng
-        repository.showMap(params)
+    suspend fun addOrder(body: AddOrderBody) {
+        repository.addOrder(body)
     }
+
 }
