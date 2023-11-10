@@ -321,6 +321,24 @@ class RequestFormFragment : Fragment() {
             )
             return false
         }
+        if (!isDeliver
+            && (binding.minimumPriceET.text.toString().isEmpty()
+                    || binding.maximumPriceET.text.toString().isEmpty())
+        ) {
+            getString(R.string.error_price_empty).showAlertMessage(
+                context = requireContext(),
+                title = getString(R.string.error),
+                confirmText = getString(R.string.Ok),
+                type = SweetAlertDialog.ERROR_TYPE,
+                onCancelClick = {
+
+                },
+                onConfirmClick = {
+
+                }
+            )
+            return false
+        }
         if (binding.dailyCheckBox.isChecked) {
             val selectedDays = listDays.filter { it.select }
             if (selectedDays.isEmpty())
