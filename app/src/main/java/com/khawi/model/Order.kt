@@ -32,9 +32,9 @@ data class Order(
     @SerialName("f_lng")
     val fLng: Double? = null,
     @SerialName("t_lat")
-    val tLat: String? = null,
+    val tLat: Double? = null,
     @SerialName("t_lng")
-    val tLng: String? = null,
+    val tLng: Double? = null,
     @SerialName("max_price")
     val maxPrice: String? = null,
     @SerialName("min_price")

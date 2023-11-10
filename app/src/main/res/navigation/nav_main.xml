@@ -31,7 +31,7 @@
     <fragment
         android:id="@+id/orders"
         android:name="com.khawi.ui.main.orders.OrdersFragment"
-        tools:layout="@layout/fragment_orders" >
+        tools:layout="@layout/fragment_orders">
         <action
             android:id="@+id/action_ordersFragment_to_requestDetailsFragment"
             app:destination="@id/requestDetailsFragment"
@@ -93,43 +93,50 @@
             app:argType="boolean" />
         <argument
             android:name="orderStatus"
-            android:defaultValue="0"
-            app:argType="integer" />
+            android:defaultValue=""
+            app:argType="string" />
         <argument
             android:name="orderObj"
+            android:defaultValue="@null"
             app:argType="com.khawi.model.Order"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
         <action
             android:id="@+id/action_requestDetailsFragment_to_requestDeliverFragment"
             app:destination="@id/requestDeliverFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"  />
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_requestDetailsFragment_to_requestJoinFragment"
             app:destination="@id/requestJoinFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"  />
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_requestDetailsFragment_to_joinDetailsFragment"
             app:destination="@id/joinDetailsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"  />
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/requestDeliverFragment"
         android:name="com.khawi.ui.request_deliver.RequestDeliverFragment"
-        tools:layout="@layout/fragment_request_deliver" />
+        tools:layout="@layout/fragment_request_deliver">
+
+        <argument
+            android:name="orderObj"
+            android:defaultValue="@null"
+            app:argType="com.khawi.model.Order"
+            app:nullable="true" />
+    </fragment>
     <fragment
         android:id="@+id/requestFormFragment"
         android:name="com.khawi.ui.request_form.RequestFormFragment"
-        tools:layout="@layout/fragment_request_form" >
+        tools:layout="@layout/fragment_request_form">
 
         <argument
             android:name="isDeliver"
@@ -139,7 +146,14 @@
     <fragment
         android:id="@+id/requestJoinFragment"
         android:name="com.khawi.ui.request_join.RequestJoinFragment"
-        tools:layout="@layout/fragment_request_join" />
+        tools:layout="@layout/fragment_request_join">
+
+        <argument
+            android:name="orderObj"
+            android:defaultValue="@null"
+            app:argType="com.khawi.model.Order"
+            app:nullable="true" />
+    </fragment>
     <fragment
         android:id="@+id/joinDetailsFragment"
         android:name="com.khawi.ui.join_details.JoinDetailsFragment"

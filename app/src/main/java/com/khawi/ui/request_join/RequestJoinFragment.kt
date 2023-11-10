@@ -11,6 +11,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.CompositeDateValidator
@@ -34,6 +35,7 @@ class RequestJoinFragment : Fragment() {
     private val binding get() = _binding!!
     private val listDays = mutableListOf<Day>()
     private var adapterDays: DaysAdapter? = null
+    private val args: RequestJoinFragmentArgs by navArgs()
 
     private var latlngStart: LatLng? = null
     private var latlngEnd: LatLng? = null

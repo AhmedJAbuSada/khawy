@@ -12,6 +12,10 @@ data class BaseResponse<T>(
     val code: Int? = null,
     @SerialName("message")
     var message: String? = null,
+    @SerialName("total")
+    var total: String? = null,
+    @SerialName("last_date")
+    var lastDate: String? = null,
     @SerialName("items")
     var data: T? = null,
     @SerialName("showDialog")

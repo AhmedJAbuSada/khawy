@@ -231,7 +231,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         googleMap?.clear()
 
 
-        for ((index, dataObject) in list.withIndex()) {
+        for (dataObject in list) {
             val position = LatLng(dataObject.fLat ?: 0.0, dataObject.fLng ?: 0.0)
 
             val markerView = LayoutInflater.from(requireContext())

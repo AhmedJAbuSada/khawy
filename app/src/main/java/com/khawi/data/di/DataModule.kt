@@ -8,6 +8,8 @@ import com.khawi.data.settings.SettingsRepository
 import com.khawi.data.settings.SettingsRepositoryImp
 import com.khawi.data.walkthrough.WelcomeRepository
 import com.khawi.data.walkthrough.WelcomeRepositoryImp
+import com.khawi.data.wallet.WalletRepository
+import com.khawi.data.wallet.WalletRepositoryImp
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -36,5 +38,10 @@ interface DataModule {
     fun bindsOrderRepository(
         orderRepositoryImp: OrderRepositoryImp,
     ): OrderRepository
+
+    @Binds
+    fun bindsWalletRepository(
+        walletRepositoryImp: WalletRepositoryImp,
+    ): WalletRepository
 
 }

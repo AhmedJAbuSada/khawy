@@ -132,4 +132,14 @@
     <string name="error_seats_empty">حقل عدد الركاب مطلوب</string>
     <string name="from">من</string>
     <string name="to">إلى</string>
+    <string name="trip_title">عنوان الرحلة</string>
+    <string name="seats">مقعد</string>
+    <string name="trip_number">رقم الرحلة</string>
+    <string name="finished">مكتمل</string>
+    <string name="cancelled">ملغي</string>
+    <string name="open_order">طلب مفتوح</string>
+    <string name="amount_trip_number">رسوم رحلة رقم</string>
+    <string name="add_amount">اضف رصيد</string>
+    <string name="amount">الرصيد</string>
+    <string name="error_amount_empty">حقل الرصيد مطلوب</string>
 </resources>

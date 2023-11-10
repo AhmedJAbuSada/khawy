@@ -6,17 +6,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.khawi.R
+import com.khawi.model.Order
+import com.khawi.model.Wallet
+import com.khawi.ui.main.orders.OrderAdapter
 
 
 class WalletAdapter(
     private val ctx: Context,
-    private val onClick: (item: String, position: Int) -> Unit
-) :
-    RecyclerView.Adapter<WalletAdapter.ViewHolder>() {
+    private val onClick: (item: Wallet, position: Int) -> Unit
+) : ListAdapter<Wallet, WalletAdapter.ViewHolder>(DIFF_CALLBACK) {
 
-    var items = mutableListOf<String>()
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Wallet>() {
+            override fun areItemsTheSame(oldItem: Wallet, newItem: Wallet) =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: Wallet, newItem: Wallet) =
+                oldItem == newItem
+        }
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(ctx).inflate(R.layout.row_transaction, parent, false)
@@ -24,24 +37,27 @@ class WalletAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
+        val item = currentList[position]
 
+        val amount = item.total ?: 0.0
         holder.transactionIcon.setImageResource(
-            if (position % 2 == 0)
+            if (amount > 0)
                 R.drawable.transfer_up
             else
                 R.drawable.transfer_down
         )
 
-        holder.transactionName.text = "رسوم رحلة رقم #154645"
-        holder.transactionAmount.text = "-50 SAR"
+        holder.transactionName.text =
+            "${ctx.getString(R.string.amount_trip_number)} ${item.orderNo}"
+        holder.transactionAmount.text = "$amount ${ctx.getString(R.string.currancy)}"
+
         holder.itemView.setOnClickListener {
             onClick.invoke(item, position)
         }
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return currentList.size
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

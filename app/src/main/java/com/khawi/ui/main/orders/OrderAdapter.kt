@@ -7,18 +7,29 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.khawi.R
+import com.khawi.base.cancelledKey
+import com.khawi.base.finishedKey
+import com.khawi.model.Order
 
 
 class OrderAdapter(
     private val ctx: Context,
-    private val type:Int,
-    private val onClick: (item: String, position: Int) -> Unit
-) :
-    RecyclerView.Adapter<OrderAdapter.ViewHolder>() {
+    private val onClick: (item: Order, position: Int) -> Unit
+) : ListAdapter<Order, OrderAdapter.ViewHolder>(DIFF_CALLBACK) {
 
-    var items = mutableListOf<String>()
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Order>() {
+            override fun areItemsTheSame(oldItem: Order, newItem: Order) =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: Order, newItem: Order) =
+                oldItem == newItem
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(ctx).inflate(R.layout.row_order, parent, false)
@@ -26,30 +37,35 @@ class OrderAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
+        val item = currentList[position]
 
         holder.orderImg.setImageResource(R.drawable.logo_circle_white)
-        holder.orderDate.text = "14 ربيع الأول، ١٤٤٥ هـ"
-        holder.orderNumber.text = "رقم الرحلة: #12547"
-        holder.orderDistance.text = "من: الرياض    إلى: جدة"
-        holder.orderPrice.text = "50 SAR"
-        when (type) {
-            1 -> {
-                holder.orderStatus.background = ContextCompat.getDrawable(ctx, R.drawable.bg_green_corner_12r)
+        holder.orderDate.text = item.dtDate ?: ""
+        holder.orderNumber.text = "${ctx.getString(R.string.trip_number)}: #${item.orderNo}"
+        holder.orderDistance.text =
+            "${ctx.getString(R.string.from)}: ${item.fAddress}    ${ctx.getString(R.string.to)}: ${item.tAddress}"
+        val price = item.price ?: "0.0"
+        holder.orderPrice.text = "$price ${ctx.getString(R.string.currancy)}"
+        when (item.status) {
+            finishedKey -> {
+                holder.orderStatus.background =
+                    ContextCompat.getDrawable(ctx, R.drawable.bg_green_corner_12r)
                 holder.orderStatus.setTextColor(ContextCompat.getColor(ctx, R.color.green2))
-                holder.orderStatus.text = "مكتمل"
+                holder.orderStatus.text = ctx.getString(R.string.finished)
             }
 
-            2 -> {
-                holder.orderStatus.background = ContextCompat.getDrawable(ctx, R.drawable.bg_red_corner_12r)
+            cancelledKey -> {
+                holder.orderStatus.background =
+                    ContextCompat.getDrawable(ctx, R.drawable.bg_red_corner_12r)
                 holder.orderStatus.setTextColor(ContextCompat.getColor(ctx, R.color.red2))
-                holder.orderStatus.text = "ملغي"
+                holder.orderStatus.text = ctx.getString(R.string.cancelled)
             }
 
             else -> {
-                holder.orderStatus.background = ContextCompat.getDrawable(ctx, R.drawable.bg_blue_corner_12r)
+                holder.orderStatus.background =
+                    ContextCompat.getDrawable(ctx, R.drawable.bg_blue_corner_12r)
                 holder.orderStatus.setTextColor(ContextCompat.getColor(ctx, R.color.blue))
-                holder.orderStatus.text = "طلب مفتوح"
+                holder.orderStatus.text = ctx.getString(R.string.open_order)
             }
         }
 
@@ -59,7 +75,7 @@ class OrderAdapter(
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return currentList.size
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
