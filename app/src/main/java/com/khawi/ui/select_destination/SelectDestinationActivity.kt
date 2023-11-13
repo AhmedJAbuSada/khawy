@@ -3,10 +3,13 @@ package com.khawi.ui.select_destination
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
@@ -17,7 +20,9 @@ import com.beust.klaxon.string
 import com.birjuvachhani.locus.Locus
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -35,7 +40,7 @@ import java.net.URL
 
 
 @AndroidEntryPoint
-class SelectDestinationActivity : BaseActivity() {
+class SelectDestinationActivity : BaseActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivitySelectDestinationBinding
     private var googleMap: GoogleMap? = null
     private var isFirst = true
@@ -67,6 +72,7 @@ class SelectDestinationActivity : BaseActivity() {
         Locus.getCurrentLocation(this) { result ->
             result.location?.let {
                 latlngMyLocation = LatLng(it.latitude, it.longitude)
+                handleMap()
             }
             result.error?.let { }
         }
@@ -77,11 +83,9 @@ class SelectDestinationActivity : BaseActivity() {
 
         binding.yourLocation.setOnClickListener {
             latlngMyLocation?.let { lat ->
-                googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(lat, 15f))
+                googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15f))
             }
         }
-
-        handleMarkers()
 
         binding.startDestinationET.setOnClickListener {
             latlngEnd = null
@@ -94,34 +98,14 @@ class SelectDestinationActivity : BaseActivity() {
             handleMarkers()
         }
 
-        val mapFragment =
-            supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
-        mapFragment?.getMapAsync {
-            googleMap = it
-            if (isFirst)
-                latlngMyLocation?.let { lat ->
-                    googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(lat, 15f))
-                    isFirst = false
-                }
-
-            googleMap?.uiSettings?.isCompassEnabled = true
-            googleMap?.uiSettings?.isZoomGesturesEnabled = true
-            googleMap?.uiSettings?.isZoomControlsEnabled = true
-            googleMap?.uiSettings?.isRotateGesturesEnabled = false
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                return@getMapAsync
-            }
-            googleMap?.isMyLocationEnabled = true
-        }
-
         binding.selectBtn.setOnClickListener {
+            if (latlngStart != null && latlngEnd != null) {
+                val intent = Intent()
+                intent.putExtra(latLongStartKey, latlngStart)
+                intent.putExtra(latLongEndKey, latlngEnd)
+                setResult(RESULT_OK, intent)
+                finish()
+            }
             when {
                 latlngStart == null -> {
                     latlngStart = googleMap?.cameraPosition?.target ?: LatLng(0.0, 0.0)
@@ -132,19 +116,45 @@ class SelectDestinationActivity : BaseActivity() {
                 }
             }
             handleMarkers()
-            if (latlngStart != null && latlngEnd != null) {
-                val intent = Intent()
-                intent.putExtra(latLongStartKey, latlngStart)
-                intent.putExtra(latLongEndKey, latlngEnd)
-                setResult(RESULT_OK, intent)
-                finish()
-            }
         }
+    }
+
+    override fun onMapReady(p0: GoogleMap) {
+        googleMap = p0
+        if (isFirst)
+            latlngMyLocation?.let { lat ->
+                googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15f))
+                isFirst = false
+            }
+
+        googleMap?.uiSettings?.isCompassEnabled = true
+        googleMap?.uiSettings?.isZoomGesturesEnabled = true
+        googleMap?.uiSettings?.isZoomControlsEnabled = true
+        googleMap?.uiSettings?.isRotateGesturesEnabled = false
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        googleMap?.isMyLocationEnabled = true
+        handleMarkers()
+    }
+
+    private fun handleMap() {
+        val mapFragment =
+            supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
+        mapFragment?.getMapAsync(this)
     }
 
     private fun handleMarkers() {
 
         binding.endDestinationGroup.visibility = View.GONE
+        binding.markerIV.visibility = View.VISIBLE
 
         binding.startDestinationET.text = ""
         binding.startDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
@@ -154,7 +164,10 @@ class SelectDestinationActivity : BaseActivity() {
         binding.endDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
             0, 0, 0, 0
         )
-        binding.markerIV.setImageResource(R.drawable.selecting_start_marker)
+        if (!isPreview)
+            binding.markerIV.setImageResource(R.drawable.selecting_start_marker)
+        else
+            binding.markerIV.visibility = View.GONE
 
         latlngStart?.let { latlngStart ->
             binding.markerIV.setImageResource(R.drawable.end_marker)
@@ -167,13 +180,13 @@ class SelectDestinationActivity : BaseActivity() {
             googleMap?.clear()
             val markerOptions = MarkerOptions()
                 .position(latlngStart)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.selected_start_marker))
+                .icon(generateBitmapDescriptorFromRes(R.drawable.selected_start_marker))
             googleMap?.addMarker(markerOptions)
             binding.endDestinationGroup.visibility = View.VISIBLE
         }
 
         latlngEnd?.let { latlngEnd ->
-            binding.markerIV.setImageResource(R.drawable.end_marker)
+            binding.markerIV.visibility = View.GONE
             binding.selectBtn.text = getString(R.string.save_changes)
             binding.endDestinationET.text = latlngEnd.getAddress(this)
             if (!isPreview)
@@ -182,7 +195,7 @@ class SelectDestinationActivity : BaseActivity() {
                 )
             val markerOptions = MarkerOptions()
                 .position(latlngEnd)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_marker))
+                .icon(generateBitmapDescriptorFromRes(R.drawable.end_marker))
             googleMap?.addMarker(markerOptions)
             drawRout()
         }
@@ -206,24 +219,27 @@ class SelectDestinationActivity : BaseActivity() {
                 val json: JsonObject = parser.parse(stringBuilder) as JsonObject
                 // get to the correct element in JsonObject
                 val routes = json.array<JsonObject>("routes")
-                val points = routes!!["legs"]["steps"][0] as JsonArray<JsonObject>
-                // For every element in the JsonArray, decode the polyline string and pass all points to a List
-                val polypts = points.flatMap { decodePoly(it.obj("polyline")?.string("points")!!) }
-                // Add  points to polyline and bounds
-                options.add(latlngStart)
-                LatLongB.include(latlngStart!!)
-                for (point in polypts) {
-                    options.add(point)
-                    LatLongB.include(point)
+                if (!routes.isNullOrEmpty()) {
+                    val points = routes["legs"]["steps"][0] as JsonArray<JsonObject>
+                    // For every element in the JsonArray, decode the polyline string and pass all points to a List
+                    val polypts =
+                        points.flatMap { decodePoly(it.obj("polyline")?.string("points")!!) }
+                    // Add  points to polyline and bounds
+                    options.add(latlngStart)
+                    LatLongB.include(latlngStart!!)
+                    for (point in polypts) {
+                        options.add(point)
+                        LatLongB.include(point)
+                    }
+                    options.add(latlngEnd)
+                    LatLongB.include(latlngEnd!!)
+                    // build bounds
+                    val bounds = LatLongB.build()
+                    // add polyline to the map
+                    googleMap?.addPolyline(options)
+                    // show map with route centered
+                    googleMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
                 }
-                options.add(latlngEnd)
-                LatLongB.include(latlngEnd!!)
-                // build bounds
-                val bounds = LatLongB.build()
-                // add polyline to the map
-                googleMap?.addPolyline(options)
-                // show map with route centered
-                googleMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
             }
         }
     }
@@ -273,5 +289,23 @@ class SelectDestinationActivity : BaseActivity() {
         }
 
         return poly
+    }
+
+    private fun generateBitmapDescriptorFromRes(resId: Int): BitmapDescriptor {
+        val drawable = ContextCompat.getDrawable(this, resId)
+        drawable!!.setBounds(
+            0,
+            0,
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight
+        )
+        val bitmap = Bitmap.createBitmap(
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        drawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 }

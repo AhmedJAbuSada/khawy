@@ -83,42 +83,28 @@ class VerificationFragment : Fragment() {
             getString(R.string.resend_code),
             120
         )
-
         loading = requireActivity().initLoading()
+        viewModel.progressLiveData.observe(viewLifecycleOwner) {
+            if (it) loading?.showDialog()
+            else loading?.hideDialog()
+        }
+        viewModel.successLiveData.observe(viewLifecycleOwner) {
+            if (it?.status == true) {
+                it.data?.let { item ->
+                    viewModel.addUser(item)
+                    findNavController().safeNavigate(
+                        VerificationFragmentDirections.actionVerificationFragmentToUpdateProfileFragment()
+                    )
+                }
+            } else {
+                it?.message?.errorMessage(requireContext())
+            }
+        }
         binding.verifyBtn.setOnClickListener {
             val code = binding.codePinView.text.toString()
             if (code.isNotEmpty()) {
-                loading?.showDialog()
                 viewModel.viewModelScope.launch {
-                    viewModel.verifyPhone(code).collect {
-                        when (it) {
-                            is BaseState.NetworkError -> {
-                                loading?.hideDialog()
-                            }
-
-                            is BaseState.EmptyResult -> {
-                                loading?.hideDialog()
-                            }
-
-                            is BaseState.ItemsLoaded -> {
-                                loading?.hideDialog()
-                                if (it.items?.status == true) {
-                                    it.items.data?.let { item ->
-                                        viewModel.addUser(item)
-                                        findNavController().safeNavigate(
-                                            VerificationFragmentDirections.actionVerificationFragmentToUpdateProfileFragment()
-                                        )
-                                    }
-                                } else {
-                                    it.items?.message?.errorMessage(requireContext())
-                                }
-                            }
-
-                            else -> {
-                                loading?.hideDialog()
-                            }
-                        }
-                    }
+                    viewModel.verifyPhone(code)
                 }
             } else {
                 getString(R.string.error_verification_empty).showAlertMessage(

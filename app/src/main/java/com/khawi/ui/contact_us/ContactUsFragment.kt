@@ -74,7 +74,7 @@ class ContactUsFragment : Fragment() {
             }
         }
 
-        loading = requireContext().initLoading()
+        loading = requireActivity().initLoading()
         viewModel.progressLiveData.observe(viewLifecycleOwner) {
             if (it) loading?.showDialog()
             else loading?.hideDialog()

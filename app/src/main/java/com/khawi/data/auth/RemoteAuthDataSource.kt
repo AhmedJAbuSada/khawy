@@ -43,7 +43,7 @@ class RemoteAuthDataSource @Inject constructor(
         id: String,
         phone: String,
         code: String
-    ): AdvanceResult<BaseResponse<MutableList<UserModel>?>> {
+    ): AdvanceResult<BaseResponse<UserModel?>> {
         val body = UserBody(
             phoneNumber = phone,
             id = id,
@@ -71,7 +71,7 @@ class RemoteAuthDataSource @Inject constructor(
         return remoteDataSource.post(
             urlPath = "mobile/user/logout/${repository.getUser()?.id ?: ""}",
             params = null,
-            body = null
+            body = UserBody()
         )
     }
 

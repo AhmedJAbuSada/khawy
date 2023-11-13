@@ -60,6 +60,7 @@ class RequestJoinViewModel @Inject constructor(private val repository: OrderRepo
     }
 
     suspend fun addOrder(orderId: String, body: AddOrderBody) {
+        _progressLiveData.postValue(true)
         repository.addOffer(orderId, body)
     }
 

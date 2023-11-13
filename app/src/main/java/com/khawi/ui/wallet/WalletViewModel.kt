@@ -94,10 +94,12 @@ class WalletViewModel @Inject constructor(
     }
 
     suspend fun walletList() {
+        _progressLiveData.postValue(true)
         repository.walletList(params as HashMap<String, String>)
     }
 
     suspend fun addAmount(amount: String) {
+        _progressLiveData.postValue(true)
         repository.addAmount(
             WalletBody(
                 amount = amount

@@ -38,6 +38,7 @@ import java.net.InetAddress
 import java.net.MalformedURLException
 import java.net.NetworkInterface
 import java.net.URL
+import java.text.SimpleDateFormat
 import java.util.Collections
 import java.util.Locale
 
@@ -413,5 +414,22 @@ fun LatLng.getAddress(context: Context): String {
         this.longitude,
         1
     )
-    return addresses?.get(0)?.getAddressLine(0) ?: ""
+    var address = ""
+    if (addresses?.isNotEmpty() == true)
+        address = addresses[0].getAddressLine(0) ?: ""
+    return address
+}
+
+fun String.formatDate(): String? {
+    val formatZ = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
+    val format = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+
+    return formatZ.parse(this)?.let { date -> format.format(date) }
+}
+
+fun String.formatDateTime(): String? {
+    val formatZ = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
+    val format = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH)
+
+    return formatZ.parse(this)?.let { date -> format.format(date) }
 }

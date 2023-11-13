@@ -25,10 +25,6 @@ class ContactUSViewModel @Inject constructor(
 ) : ViewModel() {
     val userMutableLiveData = MutableLiveData<UserModel>()
 
-    init {
-        getUser()
-    }
-
     private fun getUser() {
         userMutableLiveData.postValue(userRepository.getUser())
     }
@@ -40,6 +36,9 @@ class ContactUSViewModel @Inject constructor(
     val progressLiveData: MutableLiveData<Boolean> = _progressLiveData
 
     init {
+        viewModelScope.launch {
+            getUser()
+        }
         viewModelScope.launch {
             repository.getContactUsFlow().collect {
 
@@ -73,6 +72,7 @@ class ContactUSViewModel @Inject constructor(
         email: String,
         phoneNumber: String,
     ) {
+        _progressLiveData.postValue(true)
         repository.contactUs(
             ContactUsBody(
                 details = details,

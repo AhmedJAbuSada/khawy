@@ -62,6 +62,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     suspend fun logout() {
+        _progressLiveData.postValue(true)
         authRepository.logout()
     }
 

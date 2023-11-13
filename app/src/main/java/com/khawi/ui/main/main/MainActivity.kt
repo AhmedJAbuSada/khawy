@@ -78,11 +78,11 @@ class MainActivity : AppCompatActivity() {
             binding.requestsFormGroup.visibility = View.GONE
         }
         binding.deliverFormContainer.setOnClickListener {
-            navController?.navigate(NavGraphDirections.actionRequestFormFragment(true))
+            navController?.navigate(NavGraphDirections.actionRequestFormFragment(false))
             binding.requestsFormGroup.visibility = View.GONE
         }
         binding.joinFormContainer.setOnClickListener {
-            navController?.navigate(NavGraphDirections.actionRequestFormFragment(false))
+            navController?.navigate(NavGraphDirections.actionRequestFormFragment(true))
             binding.requestsFormGroup.visibility = View.GONE
         }
     }
@@ -92,19 +92,20 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
             Activity.RESULT_OK -> {
-                val uri: Uri = data?.data!!
-                when (requestCode) {
-                    UpdateProfileFragment.PROFILE_IMAGE_REQ_CODE -> {
-                        viewModel.imageMutableLiveData.postValue(
-                            File(
-                                FileUriUtils.getRealPath(
-                                    this,
-                                    uri
-                                ) ?: ""
+                val uri: Uri? = data?.data
+                if (uri != null)
+                    when (requestCode) {
+                        UpdateProfileFragment.PROFILE_IMAGE_REQ_CODE -> {
+                            viewModel.imageMutableLiveData.postValue(
+                                File(
+                                    FileUriUtils.getRealPath(
+                                        this,
+                                        uri
+                                    ) ?: ""
+                                )
                             )
-                        )
+                        }
                     }
-                }
             }
 
             ImagePicker.RESULT_ERROR -> {

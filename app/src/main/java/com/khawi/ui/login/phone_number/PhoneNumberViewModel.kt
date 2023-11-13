@@ -1,5 +1,7 @@
 package com.khawi.ui.login.phone_number
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.tasks.OnCompleteListener
@@ -20,12 +22,44 @@ class PhoneNumberViewModel @Inject constructor(
     private val repository: UserRepository,
 ) : ViewModel() {
 
+    private val _successLiveData = MutableLiveData<BaseResponse<UserModel?>?>()
+    val successLiveData: LiveData<BaseResponse<UserModel?>?> = _successLiveData
+
+    private val _progressLiveData = MutableLiveData<Boolean>()
+    val progressLiveData: MutableLiveData<Boolean> = _progressLiveData
+
+    init {
+        viewModelScope.launch {
+            authRepository.getUserFlow().collect{
+                when (it) {
+                    is BaseState.NetworkError -> {
+                        _progressLiveData.postValue(false)
+                    }
+
+                    is BaseState.EmptyResult -> {
+                        _progressLiveData.postValue(false)
+                    }
+
+                    is BaseState.ItemsLoaded -> {
+                        it.items?.let { item ->
+                            _progressLiveData.postValue(false)
+                            _successLiveData.postValue(item)
+                        }
+                    }
+
+                    else -> {
+                    }
+                }
+            }
+        }
+    }
+
     suspend fun loginByPhone(
         phone: String,
         lat: String,
         lng: String,
         address: String,
-    ): StateFlow<BaseState<BaseResponse<UserModel?>?>> {
+    ) {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 return@OnCompleteListener
@@ -34,10 +68,10 @@ class PhoneNumberViewModel @Inject constructor(
             val token = task.result
 
             viewModelScope.launch {
+                _progressLiveData.postValue(true)
                 authRepository.loginByPhone(token, phone, lat, lng,address)
             }
         })
-        return authRepository.getUserFlow()
     }
 
     fun addUser(user: UserModel) {

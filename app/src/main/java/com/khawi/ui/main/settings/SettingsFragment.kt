@@ -9,10 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.kaopiz.kprogresshud.KProgressHUD
+import com.khawi.R
 import com.khawi.base.hideDialog
 import com.khawi.base.initLoading
 import com.khawi.base.loadImage
+import com.khawi.base.showAlertMessage
 import com.khawi.base.showDialog
 import com.khawi.databinding.FragmentSettingsBinding
 import com.khawi.ui.login.LoginActivity
@@ -81,12 +84,22 @@ class SettingsFragment : Fragment() {
             )
         }
         binding.logoutContainer.setOnClickListener {
-            viewModel.viewModelScope.launch {
-                viewModel.logout()
-            }
+            getString(R.string.are_you_want_logout).showAlertMessage(context = requireContext(),
+                title = getString(R.string.alert),
+                confirmText = getString(R.string.Ok),
+                cancelText = getString(R.string.close_),
+                type = SweetAlertDialog.WARNING_TYPE,
+                onCancelClick = {
+
+                },
+                onConfirmClick = {
+                    viewModel.viewModelScope.launch {
+                        viewModel.logout()
+                    }
+                })
         }
 
-        loading = requireContext().initLoading()
+        loading = requireActivity().initLoading()
         viewModel.progressLiveData.observe(viewLifecycleOwner) {
             if (it) loading?.showDialog()
             else loading?.hideDialog()

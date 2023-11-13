@@ -55,6 +55,7 @@ class RequestDeliverViewModel @Inject constructor(
     }
 
     suspend fun addOffer(orderId: String, body: AddOrderBody) {
+        _progressLiveData.postValue(true)
         repository.addOffer(orderId, body)
     }
 }

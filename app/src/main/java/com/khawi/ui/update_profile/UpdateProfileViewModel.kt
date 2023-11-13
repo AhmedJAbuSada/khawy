@@ -1,14 +1,18 @@
 package com.khawi.ui.update_profile
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.khawi.data.auth.AuthRepository
 import com.khawi.model.BaseResponse
+import com.khawi.model.ContactUsBody
 import com.khawi.model.db.user.UserModel
 import com.khawi.model.db.user.UserRepository
 import com.khawi.network_base.model.BaseState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -19,8 +23,40 @@ class UpdateProfileViewModel @Inject constructor(
 ) : ViewModel() {
     val userMutableLiveData = MutableLiveData<UserModel>()
 
+    private val _successLiveData = MutableLiveData<BaseResponse<UserModel?>?>()
+    val successLiveData: LiveData<BaseResponse<UserModel?>?> = _successLiveData
+
+    private val _progressLiveData = MutableLiveData<Boolean>()
+    val progressLiveData: MutableLiveData<Boolean> = _progressLiveData
+
     init {
-        getUser()
+        viewModelScope.launch {
+            getUser()
+        }
+        viewModelScope.launch {
+            authRepository.getUserFlow().collect{
+                when (it) {
+                    is BaseState.NetworkError -> {
+                        _progressLiveData.postValue(false)
+                    }
+
+                    is BaseState.EmptyResult -> {
+                        _progressLiveData.postValue(false)
+                    }
+
+                    is BaseState.ItemsLoaded -> {
+                        it.items?.let { item ->
+                            _progressLiveData.postValue(false)
+                            _successLiveData.postValue(item)
+
+                        }
+                    }
+
+                    else -> {
+                    }
+                }
+            }
+        }
     }
 
     private fun getUser() {
@@ -40,7 +76,8 @@ class UpdateProfileViewModel @Inject constructor(
         carModel: String? = null,
         carColor: String? = null,
         carNumber: String? = null,
-    ): StateFlow<BaseState<BaseResponse<UserModel?>?>> {
+    ) {
+        _progressLiveData.postValue(true)
         val user = userMutableLiveData.value
         user?.let {
             authRepository.updateUser(
@@ -59,7 +96,6 @@ class UpdateProfileViewModel @Inject constructor(
                 carNumber
             )
         }
-        return authRepository.getUserFlow()
     }
 
     fun addUser(user: UserModel) {

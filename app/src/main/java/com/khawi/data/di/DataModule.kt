@@ -2,6 +2,8 @@ package com.khawi.data.di
 
 import com.khawi.data.auth.AuthRepository
 import com.khawi.data.auth.AuthRepositoryImp
+import com.khawi.data.notification.NotificationRepository
+import com.khawi.data.notification.NotificationRepositoryImp
 import com.khawi.data.order.OrderRepository
 import com.khawi.data.order.OrderRepositoryImp
 import com.khawi.data.settings.SettingsRepository
@@ -43,5 +45,10 @@ interface DataModule {
     fun bindsWalletRepository(
         walletRepositoryImp: WalletRepositoryImp,
     ): WalletRepository
+
+    @Binds
+    fun bindsNotificationRepository(
+        notificationRepositoryImp: NotificationRepositoryImp,
+    ): NotificationRepository
 
 }

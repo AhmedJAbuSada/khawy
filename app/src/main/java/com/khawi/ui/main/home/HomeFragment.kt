@@ -30,9 +30,11 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.khawi.R
+import com.khawi.base.formatDate
 import com.khawi.base.loadImage
 import com.khawi.databinding.FragmentHomeBinding
 import com.khawi.model.Order
+import com.khawi.model.db.user.UserModel
 import com.willy.ratingbar.ScaleRatingBar
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
@@ -46,8 +48,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var list = mutableListOf<Order>()
     private val viewModel: HomeViewModel by viewModels()
     private var isFirst = true
-    private var latlng: LatLng? = null
-    private var selectedMarker: Marker? = null
+    private var latitude = 0.0
+    private var longitude = 0.0
+    private var user: UserModel? = null
+
+    //    private var selectedMarker: Marker? = null
     private var googleMap: GoogleMap? = null
 
     override fun onCreateView(
@@ -63,23 +68,43 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         Locus.getCurrentLocation(requireContext()) { result ->
             result.location?.let {
-                latlng = LatLng(it.latitude, it.longitude)
-                handleMap()
+                if (isFirst) {
+                    latitude = it.latitude
+                    longitude = it.longitude
+                    handleMap()
+                }
             }
             result.error?.let { }
         }
 
         viewModel.userMutableLiveData.observe(viewLifecycleOwner) {
             it?.let {
-                binding.userImg.loadImage(requireContext(), it.image)
-                binding.username.text = "${it.fullName} .."
+                user = it
+                binding.userImg.loadImage(requireContext(), user?.image?:"")
+                binding.username.text = "${user?.fullName} .."
+            }
+        }
+
+
+        viewModel.successLiveData.observe(viewLifecycleOwner) {
+            it?.let { response ->
+                if (response.status == true) {
+                    response.data?.let { data ->
+                        list = data
+                        handleMap()
+                    }
+                }
+
             }
         }
 
         binding.yourLocation.setOnClickListener {
-            latlng?.let { lat ->
-                googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(lat, 15f))
-            }
+            googleMap?.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(latitude, longitude),
+                    15f
+                )
+            )
         }
     }
 
@@ -111,19 +136,20 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     private fun getSelectedMarkerBitmapFromView(
         view: View,
-        isSelected: Boolean,
         isCarType: Boolean
     ): Bitmap {
-        val carUnselected = R.drawable.car_marker_unselect
+//        val carSelected = R.drawable.car_marker_unselect
         val carSelected = R.drawable.car_marker
-        val joinUnselected = R.drawable.join_marker_unselect
+//        val joinSelected = R.drawable.join_marker_unselect
         val joinSelected = R.drawable.join_marker
         val markerIV = view.findViewById<ImageView>(R.id.markerIV)
         markerIV.setImageResource(
             if (isCarType) {
-                if (isSelected) carSelected else carUnselected
+                carSelected
+//                if (isSelected) carSelected else carUnselected
             } else {
-                if (isSelected) joinSelected else joinUnselected
+                joinSelected
+//                if (isSelected) joinSelected else joinUnselected
             }
         )
 
@@ -143,7 +169,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         val ownerUser = order.user
         userImage.loadImage(requireContext(), ownerUser?.image ?: "")
         username.text = ownerUser?.fullName ?: ""
-        ratingBar.rating = (ownerUser?.rate ?: "0").toFloat()
+        ratingBar.rating = if (ownerUser?.rate?.isNotEmpty() == true)
+            ownerUser.rate.toFloat()
+        else
+            0f
 
         val carType = rootView.findViewById<TextView>(R.id.carType)
         val carModel = rootView.findViewById<TextView>(R.id.carModel)
@@ -159,8 +188,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         showDetails.setOnClickListener {
             findNavController().navigate(
                 HomeFragmentDirections.actionHomeToRequestDetailsFragment(
-                    isDeliver = false,
-                    orderObj = order
+                    isDeliver = order.orderType == 2,
+                    orderObj = order,
+                    isOrder = order.user?.id == user?.id
                 )
             )
             bottomSheet.dismiss()
@@ -187,16 +217,17 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         val tripTime = rootView.findViewById<TextView>(R.id.tripTime)
         val tripDate = rootView.findViewById<TextView>(R.id.tripDate)
         tripInformation.text =
-            "${getString(R.string.from)}: ${order.fAddress}    ${getString(R.string.to)}: ${order.tAddress}"
+            "${getString(R.string.from)}: ${order.fAddress}\n${getString(R.string.to)}: ${order.tAddress}"
         tripTime.text = order.dtTime ?: ""
-        tripDate.text = order.dtDate ?: ""
+        tripDate.text = order.dtDate?.formatDate() ?: ""
 
         val showDetails = rootView.findViewById<TextView>(R.id.showDetails)
         showDetails.setOnClickListener {
             findNavController().navigate(
                 HomeFragmentDirections.actionHomeToRequestDetailsFragment(
-                    isDeliver = true,
-                    orderObj = order
+                    isDeliver = order.orderType == 2,
+                    orderObj = order,
+                    isOrder = order.user?.id == user?.id
                 )
             )
             bottomSheet.dismiss()
@@ -207,11 +238,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(mMap: GoogleMap) {
         googleMap = mMap
-        if (isFirst)
-            latlng?.let { lat ->
-                googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(lat, 15f))
-                isFirst = false
-            }
+        if (isFirst) {
+            googleMap?.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(latitude, longitude),
+                    15f
+                )
+            )
+            isFirst = false
+        }
 
         googleMap?.uiSettings?.isCompassEnabled = true
         googleMap?.uiSettings?.isZoomGesturesEnabled = true
@@ -243,7 +278,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                     BitmapDescriptorFactory.fromBitmap(
                         getSelectedMarkerBitmapFromView(
                             markerView,
-                            false,
                             dataObject.orderType == 1
                         )
                     )
@@ -254,37 +288,40 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
             googleMap?.setOnMarkerClickListener { clickedMarker ->
                 val clickedOrder = (clickedMarker.tag as Order)
-                if (selectedMarker != null
-                    && ((selectedMarker?.tag as Order).id == clickedOrder.id)
-                ) {
-                    clickedMarker.setIcon(
-                        BitmapDescriptorFactory.fromBitmap(
-                            getSelectedMarkerBitmapFromView(
-                                markerView,
-                                false,
-                                (clickedOrder.orderType == 1)
-                            )
-                        )
-                    )
-                    selectedMarker = null
+                if (clickedOrder.orderType == 1) {
+                    deliverBottomSheet(clickedOrder)
                 } else {
-                    selectedMarker = clickedMarker
-                    clickedMarker.setIcon(
-                        BitmapDescriptorFactory.fromBitmap(
-                            getSelectedMarkerBitmapFromView(
-                                markerView,
-                                true,
-                                (clickedOrder.orderType == 1)
-                            )
-                        )
-                    )
-                    if (clickedOrder.orderType == 1) {
-                        deliverBottomSheet(clickedOrder)
-                    } else {
-                        joinBottomSheet(clickedOrder)
-                    }
-
+                    joinBottomSheet(clickedOrder)
                 }
+//                if (selectedMarker != null
+//                    && ((selectedMarker?.tag as Order).id == clickedOrder.id)
+//                ) {
+//                    clickedMarker.setIcon(
+//                        BitmapDescriptorFactory.fromBitmap(
+//                            getSelectedMarkerBitmapFromView(
+//                                markerView,
+//                                (clickedOrder.orderType == 1)
+//                            )
+//                        )
+//                    )
+//                    selectedMarker = null
+//                } else {
+//                    selectedMarker = clickedMarker
+//                    clickedMarker.setIcon(
+//                        BitmapDescriptorFactory.fromBitmap(
+//                            getSelectedMarkerBitmapFromView(
+//                                markerView,
+//                                (clickedOrder.orderType == 1)
+//                            )
+//                        )
+//                    )
+//                    if (clickedOrder.orderType == 1) {
+//                        deliverBottomSheet(clickedOrder)
+//                    } else {
+//                        joinBottomSheet(clickedOrder)
+//                    }
+//
+//                }
 
                 true
             }
@@ -292,7 +329,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         googleMap?.setOnCameraIdleListener {
             Handler(Looper.getMainLooper()).postDelayed({}, 2000)
-            latlng = googleMap?.cameraPosition?.target
+            val latlng = googleMap?.cameraPosition?.target
             latlng?.let {
                 viewModel.viewModelScope.launch {
                     viewModel.getOrders(it.latitude.toString(), it.longitude.toString())

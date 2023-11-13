@@ -157,5 +157,11 @@
     <fragment
         android:id="@+id/joinDetailsFragment"
         android:name="com.khawi.ui.join_details.JoinDetailsFragment"
-        tools:layout="@layout/fragment_join_details" />
+        tools:layout="@layout/fragment_join_details" >
+        <argument
+            android:name="joinObj"
+            app:argType="com.khawi.model.Offer"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
 </navigation>

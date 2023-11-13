@@ -117,6 +117,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:visibility="gone"
                     android:layout_marginTop="16dp"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -180,6 +181,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:text="@string/trip_date"
+                        android:textAlignment="viewEnd"
                         android:textColor="#666666"
                         android:textSize="16sp" />
 
@@ -210,6 +212,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:text="@string/trip_time"
+                        android:textAlignment="viewEnd"
                         android:textColor="#666666"
                         android:textSize="16sp" />
 

@@ -11,8 +11,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.khawi.R
+import com.khawi.base.acceptedKey
 import com.khawi.base.cancelledKey
 import com.khawi.base.finishedKey
+import com.khawi.base.formatDate
 import com.khawi.model.Order
 
 
@@ -40,10 +42,10 @@ class OrderAdapter(
         val item = currentList[position]
 
         holder.orderImg.setImageResource(R.drawable.logo_circle_white)
-        holder.orderDate.text = item.dtDate ?: ""
+        holder.orderDate.text = item.dtDate?.formatDate() ?: ""
         holder.orderNumber.text = "${ctx.getString(R.string.trip_number)}: #${item.orderNo}"
         holder.orderDistance.text =
-            "${ctx.getString(R.string.from)}: ${item.fAddress}    ${ctx.getString(R.string.to)}: ${item.tAddress}"
+            "${ctx.getString(R.string.from)}: ${item.fAddress}\n${ctx.getString(R.string.to)}: ${item.tAddress}"
         val price = item.price ?: "0.0"
         holder.orderPrice.text = "$price ${ctx.getString(R.string.currancy)}"
         when (item.status) {
@@ -59,6 +61,13 @@ class OrderAdapter(
                     ContextCompat.getDrawable(ctx, R.drawable.bg_red_corner_12r)
                 holder.orderStatus.setTextColor(ContextCompat.getColor(ctx, R.color.red2))
                 holder.orderStatus.text = ctx.getString(R.string.cancelled)
+            }
+
+            acceptedKey  -> {
+                holder.orderStatus.background =
+                    ContextCompat.getDrawable(ctx, R.drawable.bg_blue_corner_12r)
+                holder.orderStatus.setTextColor(ContextCompat.getColor(ctx, R.color.blue))
+                holder.orderStatus.text = ctx.getString(R.string.open_order)
             }
 
             else -> {

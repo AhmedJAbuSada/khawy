@@ -15,10 +15,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.gson.Gson
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
+import com.khawi.base.acceptedKey
 import com.khawi.base.cancelledKey
 import com.khawi.base.finishedKey
+import com.khawi.base.formatDate
 import com.khawi.base.hideDialog
 import com.khawi.base.initLoading
 import com.khawi.base.loadImage
@@ -62,7 +65,7 @@ class RequestDetailsFragment : Fragment() {
             }
         }
 
-        loading = requireContext().initLoading()
+        loading = requireActivity().initLoading()
         viewModel.progressLiveData.observe(viewLifecycleOwner) {
             if (it) loading?.showDialog()
             else loading?.hideDialog()
@@ -85,30 +88,38 @@ class RequestDetailsFragment : Fragment() {
     }
 
     private fun fillInfo() {
-        listDays.clear()
-        listDays.add(Day(name = getString(R.string.saturday), select = false))
-        listDays.add(Day(name = getString(R.string.sunday), select = false))
-        listDays.add(Day(name = getString(R.string.monday), select = false))
-        listDays.add(Day(name = getString(R.string.tuesday), select = false))
-        listDays.add(Day(name = getString(R.string.wednesday), select = false))
-        listDays.add(Day(name = getString(R.string.thursday), select = false))
-        listDays.add(Day(name = getString(R.string.friday), select = false))
-        for (value in listDays) {
-            value.select = (order?.days?.contains(value.name ?: "") == true)
+        binding.groupDays.visibility = View.GONE
+        if (order?.days?.isNotEmpty() == true) {
+            binding.groupDays.visibility = View.VISIBLE
+            listDays.clear()
+            listDays.add(Day(name = getString(R.string.saturday), select = false))
+            listDays.add(Day(name = getString(R.string.sunday), select = false))
+            listDays.add(Day(name = getString(R.string.monday), select = false))
+            listDays.add(Day(name = getString(R.string.tuesday), select = false))
+            listDays.add(Day(name = getString(R.string.wednesday), select = false))
+            listDays.add(Day(name = getString(R.string.thursday), select = false))
+            listDays.add(Day(name = getString(R.string.friday), select = false))
+            val selectedDays = Gson().fromJson(order?.days!![0], Array<String>::class.java)
+            for (value in listDays) {
+                for (valueInner in selectedDays) {
+                    if (valueInner.contains(value.name ?: ""))
+                        value.select = true
+                }
+            }
+            val adapter = DaysAdapter(requireContext()) { _, _ ->
+
+            }
+            adapter.items = listDays
+            binding.recyclerViewDays.adapter = adapter
         }
 
-        val adapter = DaysAdapter(requireContext()) { _, _ ->
 
-        }
-        adapter.items = listDays
-        binding.recyclerViewDays.adapter = adapter
-
-        binding.tripDateTop.text = order?.dtDate ?: ""
+        binding.tripDateTop.text = order?.dtDate?.formatDate() ?: ""
         binding.tripName.text = "${getString(R.string.trip_title)}: ${order?.title ?: ""}"
         binding.tripInformation.text =
-            "${getString(R.string.from)}: ${order?.fAddress}    ${getString(R.string.to)}: ${order?.tAddress}"
+            "${getString(R.string.from)}: ${order?.fAddress}\n${getString(R.string.to)}: ${order?.tAddress}"
         binding.tripTime.text = order?.dtTime ?: ""
-        binding.tripDate.text = order?.dtDate ?: ""
+        binding.tripDate.text = order?.dtDate?.formatDate() ?: ""
 
         binding.back.setOnClickListener {
             findNavController().popBackStack()
@@ -151,7 +162,7 @@ class RequestDetailsFragment : Fragment() {
             binding.personImage.loadImage(requireContext(), order?.user?.image ?: "")
             binding.personName.text = order?.user?.fullName ?: ""
             binding.seatRequest.text = "${order?.maxPassenger ?: 0} ${getString(R.string.seats)}"
-            binding.noteTitle.text = order?.notes ?: ""
+            binding.note.text = order?.notes ?: ""
 
         } else {
             binding.sendBtn.text = getString(R.string.join_now)
@@ -166,7 +177,10 @@ class RequestDetailsFragment : Fragment() {
 
             binding.userImage.loadImage(requireContext(), order?.user?.image ?: "")
             binding.username.text = order?.user?.fullName ?: ""
-            binding.ratingBar.rating = (order?.user?.rate ?: "0").toFloat()
+            binding.ratingBar.rating = if (order?.user?.rate?.isNotEmpty() == true)
+                order?.user?.rate?.toFloat() ?: 0f
+            else 0f
+
 
             binding.carType.text = order?.user?.carType ?: ""
             binding.carModel.text = order?.user?.carModel ?: ""
@@ -185,31 +199,37 @@ class RequestDetailsFragment : Fragment() {
         binding.sendBtn.visibility = View.VISIBLE
         if (args.isOrder) {
             binding.sendBtn.visibility = View.GONE
-            if (order?.user?.id == user?.id)
-                binding.edit.visibility = View.VISIBLE
+//            if (order?.user?.id == user?.id)
+//                binding.edit.visibility = View.VISIBLE
 
             binding.orderStatus.visibility = View.VISIBLE
             binding.orderStatus.text = when (order?.status) {
                 finishedKey -> getString(R.string.finished)
                 cancelledKey -> getString(R.string.cancelled)
-                else -> getString(R.string.open_order)
+                acceptedKey -> getString(R.string.open_order)
+                else -> getString(R.string.new_order)
             }
 
-            binding.requestsContainer.visibility = View.VISIBLE
             if (order?.status == finishedKey) {
                 binding.rateUser.visibility = View.VISIBLE
                 binding.rateDriver.visibility = View.VISIBLE
             }
 
-            val list = mutableListOf<String>()
-            list.add("")
-            list.add("")
-            list.add("")
-            val adapterUserRequest = UserRequestAdapter(requireContext()) { _, _ ->
-                findNavController().navigate(RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment())
+            order?.offers?.let {
+                if (it.isNotEmpty()) {
+                    binding.requestsContainer.visibility = View.VISIBLE
+
+                    val adapterUserRequest = UserRequestAdapter(requireContext()) { item, _ ->
+                        findNavController().navigate(
+                            RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
+                                joinObj = item
+                            )
+                        )
+                    }
+                    adapterUserRequest.items = it
+                    binding.recyclerViewRequests.adapter = adapterUserRequest
+                }
             }
-            adapterUserRequest.items = list
-            binding.recyclerViewRequests.adapter = adapterUserRequest
         }
 
         binding.rateUser.setOnClickListener {

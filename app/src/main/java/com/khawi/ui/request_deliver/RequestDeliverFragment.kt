@@ -13,6 +13,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
 import com.khawi.base.deliverBottomSheet
+import com.khawi.base.formatDate
 import com.khawi.base.hideDialog
 import com.khawi.base.initLoading
 import com.khawi.base.showAlertMessage
@@ -62,7 +63,7 @@ class RequestDeliverFragment : Fragment() {
                             fLng = order?.fLng ?: 0.0,
                             tLat = order?.tLat ?: 0.0,
                             tLng = order?.tLng ?: 0.0,
-                            dtDate = order?.dtDate ?: "",
+                            dtDate = order?.dtDate?.formatDate() ?: "",
                             dtTime = order?.dtTime ?: "",
                             price = price,
                             notes = binding.noteET.text.toString(),
@@ -85,7 +86,7 @@ class RequestDeliverFragment : Fragment() {
             }
         }
 
-        loading = requireContext().initLoading()
+        loading = requireActivity().initLoading()
         viewModel.progressLiveData.observe(viewLifecycleOwner) {
             if (it) loading?.showDialog()
             else loading?.hideDialog()
@@ -100,6 +101,19 @@ class RequestDeliverFragment : Fragment() {
                 ) {
                     findNavController().popBackStack()
                 }
+            } else {
+                it?.message?.showAlertMessage(
+                    context = requireContext(),
+                    title = getString(R.string.error),
+                    confirmText = getString(R.string.Ok),
+                    type = SweetAlertDialog.ERROR_TYPE,
+                    onCancelClick = {
+
+                    },
+                    onConfirmClick = {
+
+                    }
+                )
             }
         }
 

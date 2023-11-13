@@ -7,17 +7,28 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.khawi.R
+import com.khawi.base.formatDateTime
+import com.khawi.model.Notification
 
 
 class NotificationAdapter(
     private val ctx: Context,
-    private val onClick: (item: String, position: Int) -> Unit
-) :
-    RecyclerView.Adapter<NotificationAdapter.ViewHolder>() {
+    private val onClick: (item: Notification, position: Int) -> Unit
+) : ListAdapter<Notification, NotificationAdapter.ViewHolder>(DIFF_CALLBACK) {
 
-    var items = mutableListOf<String>()
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Notification>() {
+            override fun areItemsTheSame(oldItem: Notification, newItem: Notification) =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: Notification, newItem: Notification) =
+                oldItem == newItem
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(ctx).inflate(R.layout.row_notification, parent, false)
@@ -25,36 +36,35 @@ class NotificationAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
+        val item = currentList[position]
 
         holder.normalNotificationContainer.visibility = View.GONE
         holder.actionNotificationContainer.visibility = View.GONE
-        when (position) {
-            1 -> {
-                holder.actionNotificationContainer.visibility = View.VISIBLE
-                holder.iconIV.background = ContextCompat.getDrawable(ctx, R.drawable.bg_green_12r)
-                holder.iconIV.setImageResource(R.drawable.accept_order_notification)
-                holder.notificationActionTitle.text = "موافقة على الانضمام"
-                holder.notificationActionContent.text = "جاسم صباح، وافق\n" +
-                        "على انضمامك لرحلته."
-                holder.notificationActionTime.text = "09.45"
-            }
+        when (item.type) {
+//            1 -> {
+//                holder.actionNotificationContainer.visibility = View.VISIBLE
+//                holder.iconIV.background = ContextCompat.getDrawable(ctx, R.drawable.bg_green_12r)
+//                holder.iconIV.setImageResource(R.drawable.accept_order_notification)
+//                holder.notificationActionTitle.text = "موافقة على الانضمام"
+//                holder.notificationActionContent.text = "جاسم صباح، وافق\n" +
+//                        "على انضمامك لرحلته."
+//                holder.notificationActionTime.text = "09.45"
+//            }
 
-            2 -> {
+            1 -> {
                 holder.actionNotificationContainer.visibility = View.VISIBLE
                 holder.iconIV.background = ContextCompat.getDrawable(ctx, R.drawable.bg_orange_12r)
                 holder.iconIV.setImageResource(R.drawable.order_notification)
-                holder.notificationActionTitle.text = "راكب جديد"
-                holder.notificationActionContent.text = "أحمد محمد علي، يطلب الانضمام إلى رحلتك."
-                holder.notificationActionTime.text = "09.45"
+                holder.notificationTitle.text = item.title ?: ""
+                holder.notificationContent.text = item.msg ?: ""
+                holder.notificationTime.text = item.dtDate?.formatDateTime() ?: ""
             }
 
             else -> {
                 holder.normalNotificationContainer.visibility = View.VISIBLE
-                holder.notificationTitle.text = "هذا اشعار خاص بالإدارة"
-                holder.notificationContent.text =
-                    "هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص"
-                holder.notificationTime.text = "09.45"
+                holder.notificationTitle.text = item.title ?: ""
+                holder.notificationContent.text = item.msg ?: ""
+                holder.notificationTime.text = item.dtDate?.formatDateTime() ?: ""
             }
         }
 
@@ -64,7 +74,7 @@ class NotificationAdapter(
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return currentList.size
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

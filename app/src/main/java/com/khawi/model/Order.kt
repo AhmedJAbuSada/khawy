@@ -70,5 +70,5 @@ data class Order(
     @SerialName("passengers")
     val passengers: MutableList<String>? = null,
     @SerialName("offers")
-    val offers: MutableList<String>? = null,
+    val offers: MutableList<Offer>? = null,
 ) : Parcelable

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.khawi.R
+import com.khawi.base.formatDate
 import com.khawi.base.showAlertMessage
 import com.khawi.custom_view.PaginationScrollListener
 import com.khawi.databinding.FragmentWalletBinding
@@ -109,10 +110,8 @@ class WalletFragment : Fragment() {
                 binding.totalBalance.text = "$total ${getString(R.string.currancy)}"
             }
             it?.lastDate?.let { lastDate ->
-                val formatZ = SimpleDateFormat("2023-11-08T17:25:05.761Z", Locale.ENGLISH)
-                val format = SimpleDateFormat("2023-11-08", Locale.ENGLISH)
-                binding.lastTransactionDate.text =
-                    formatZ.parse(lastDate)?.let { date -> format.format(date) }
+                if (lastDate.isNotEmpty() && lastDate != "0")
+                    binding.lastTransactionDate.text = lastDate.formatDate() ?: ""
             }
         }
 
@@ -156,7 +155,10 @@ class WalletFragment : Fragment() {
         sendBtn.setOnClickListener {
             val amount = amountET.text.toString()
             if (amount.isNotEmpty()) {
-                openPaymentGateway(amount)
+                viewModel.viewModelScope.launch {
+                    viewModel.addAmount(amount)
+                }
+//                openPaymentGateway(amount)
                 bottomSheet.dismiss()
             } else {
                 getString(R.string.error_amount_empty).showAlertMessage(context = requireContext(),

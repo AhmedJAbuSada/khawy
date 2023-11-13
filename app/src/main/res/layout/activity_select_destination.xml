@@ -32,7 +32,7 @@
             android:id="@+id/yourLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginBottom="44dp"
             android:background="@drawable/bg_white_corner_main_22r"
             android:drawablePadding="6dp"
@@ -44,7 +44,7 @@
             android:textSize="12sp"
             app:drawableEndCompat="@drawable/marker_main"
             app:layout_constraintBottom_toBottomOf="@+id/map"
-            app:layout_constraintEnd_toEndOf="@+id/map" />
+            app:layout_constraintStart_toStartOf="@+id/map" />
 
         <View
             android:id="@+id/topContainer"

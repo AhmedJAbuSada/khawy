@@ -18,7 +18,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.CompositeDateValidator
-import com.google.android.material.datepicker.DateValidatorPointBackward
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -37,11 +37,13 @@ import com.khawi.model.Day
 import com.khawi.model.Order
 import com.khawi.ui.request_details.DaysAdapter
 import com.khawi.ui.select_destination.SelectDestinationActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+@AndroidEntryPoint
 class RequestJoinFragment : Fragment() {
     private var _binding: FragmentRequestJoinBinding? = null
     private val binding get() = _binding!!
@@ -103,6 +105,10 @@ class RequestJoinFragment : Fragment() {
             setupTimePicker()
         }
 
+        binding.back.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
         val minPrice = order?.minPrice
         val maxPrice = order?.maxPrice
         val message =
@@ -122,28 +128,28 @@ class RequestJoinFragment : Fragment() {
             }
         }
 
-        listDays.add(Day(name = getString(R.string.saturday), select = false))
-        listDays.add(Day(name = getString(R.string.sunday), select = false))
-        listDays.add(Day(name = getString(R.string.monday), select = false))
-        listDays.add(Day(name = getString(R.string.tuesday), select = false))
-        listDays.add(Day(name = getString(R.string.wednesday), select = false))
-        listDays.add(Day(name = getString(R.string.thursday), select = false))
-        listDays.add(Day(name = getString(R.string.friday), select = false))
-        adapterDays = DaysAdapter(requireContext()) { _, position ->
-            listDays[position].select = !listDays[position].select
-            adapterDays?.notifyDataSetChanged()
-        }
-        adapterDays?.items = listDays
-        binding.recyclerViewDays.adapter = adapterDays
+//        listDays.add(Day(name = getString(R.string.saturday), select = false))
+//        listDays.add(Day(name = getString(R.string.sunday), select = false))
+//        listDays.add(Day(name = getString(R.string.monday), select = false))
+//        listDays.add(Day(name = getString(R.string.tuesday), select = false))
+//        listDays.add(Day(name = getString(R.string.wednesday), select = false))
+//        listDays.add(Day(name = getString(R.string.thursday), select = false))
+//        listDays.add(Day(name = getString(R.string.friday), select = false))
+//        adapterDays = DaysAdapter(requireContext()) { _, position ->
+//            listDays[position].select = !listDays[position].select
+//            adapterDays?.notifyDataSetChanged()
+//        }
+//        adapterDays?.items = listDays
+//        binding.recyclerViewDays.adapter = adapterDays
 
         binding.sendBtn.setOnClickListener {
             if (validation()) {
-                val selectedDays = listDays.filter { it.select }
-                val listDays = mutableListOf<String>()
-                for (value in selectedDays) {
-                    listDays.add(value.name ?: "")
-                }
-                val stringDays = "$listDays"
+//                val selectedDays = listDays.filter { it.select }
+//                val listDays = mutableListOf<String>()
+//                for (value in selectedDays) {
+//                    listDays.add(value.name ?: "")
+//                }
+//                val stringDays = "$listDays"
                 viewModel.viewModelScope.launch {
                     viewModel.addOrder(
                         order?.id ?: "",
@@ -158,7 +164,6 @@ class RequestJoinFragment : Fragment() {
                             tLng = latlngEnd?.longitude,
                             price = binding.priceET.text.toString(),
                             isRepeated = binding.dailyCheckBox.isChecked,
-                            days = stringDays,
                             notes = binding.noteET.text.toString(),
                         )
                     )
@@ -166,7 +171,7 @@ class RequestJoinFragment : Fragment() {
             }
         }
 
-        loading = requireContext().initLoading()
+        loading = requireActivity().initLoading()
         viewModel.progressLiveData.observe(viewLifecycleOwner) {
             if (it) loading?.showDialog()
             else loading?.hideDialog()
@@ -181,6 +186,19 @@ class RequestJoinFragment : Fragment() {
                 ) {
                     findNavController().popBackStack()
                 }
+            } else {
+                it?.message?.showAlertMessage(
+                    context = requireContext(),
+                    title = getString(R.string.error),
+                    confirmText = getString(R.string.Ok),
+                    type = SweetAlertDialog.ERROR_TYPE,
+                    onCancelClick = {
+
+                    },
+                    onConfirmClick = {
+
+                    }
+                )
             }
         }
     }
@@ -193,7 +211,7 @@ class RequestJoinFragment : Fragment() {
 
         val constraintsBuilderRange = CalendarConstraints.Builder()
         val dateValidatorMin: CalendarConstraints.DateValidator =
-            DateValidatorPointBackward.before(Calendar.getInstance().timeInMillis)
+            DateValidatorPointForward.now()
         val listValidators = ArrayList<CalendarConstraints.DateValidator>()
         listValidators.add(dateValidatorMin)
         val validators: CalendarConstraints.DateValidator =

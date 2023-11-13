@@ -34,7 +34,6 @@ class RequestFormViewModel @Inject constructor(private val repository: OrderRepo
     init {
         viewModelScope.launch {
             repository.getOrderFlow().collect {
-
                 when (it) {
                     is BaseState.NetworkError -> {
                         _progressLiveData.postValue(false)
@@ -48,7 +47,6 @@ class RequestFormViewModel @Inject constructor(private val repository: OrderRepo
                         it.items?.let { item ->
                             _progressLiveData.postValue(false)
                             _successLiveData.postValue(item)
-
                         }
                     }
 
@@ -60,6 +58,7 @@ class RequestFormViewModel @Inject constructor(private val repository: OrderRepo
     }
 
     suspend fun addOrder(body: AddOrderBody) {
+        _progressLiveData.postValue(true)
         repository.addOrder(body)
     }
 

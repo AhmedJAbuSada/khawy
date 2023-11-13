@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.CompositeDateValidator
 import com.google.android.material.datepicker.DateValidatorPointBackward
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -37,11 +38,13 @@ import com.khawi.model.Day
 import com.khawi.ui.request_details.DaysAdapter
 import com.khawi.ui.select_destination.SelectDestinationActivity
 import com.khawi.ui.static_page.StaticContentActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+@AndroidEntryPoint
 class RequestFormFragment : Fragment() {
     private var _binding: FragmentRequestFormBinding? = null
     private val binding get() = _binding!!
@@ -61,7 +64,7 @@ class RequestFormFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 latlngStart = result.data?.parcelable(SelectDestinationActivity.latLongStartKey)
-                latlngEnd = result.data?.parcelable(SelectDestinationActivity.latLongStartKey)
+                latlngEnd = result.data?.parcelable(SelectDestinationActivity.latLongEndKey)
                 if (latlngStart != null && latlngEnd != null) {
                     binding.tripMapIV.setImageResource(R.drawable.edit)
                     binding.tripMapTV.text = getString(R.string.destination_selected)
@@ -165,7 +168,7 @@ class RequestFormFragment : Fragment() {
                         null
                 val minPrice =
                     if (!isDeliver)
-                        binding.maximumPriceET.text.toString()
+                        binding.minimumPriceET.text.toString()
                     else
                         null
                 val price =
@@ -207,7 +210,7 @@ class RequestFormFragment : Fragment() {
             }
         }
 
-        loading = requireContext().initLoading()
+        loading = requireActivity().initLoading()
         viewModel.progressLiveData.observe(viewLifecycleOwner) {
             if (it) loading?.showDialog()
             else loading?.hideDialog()
@@ -237,7 +240,7 @@ class RequestFormFragment : Fragment() {
 
         val constraintsBuilderRange = CalendarConstraints.Builder()
         val dateValidatorMin: CalendarConstraints.DateValidator =
-            DateValidatorPointBackward.before(Calendar.getInstance().timeInMillis)
+            DateValidatorPointForward.now()
         val listValidators = ArrayList<CalendarConstraints.DateValidator>()
         listValidators.add(dateValidatorMin)
         val validators: CalendarConstraints.DateValidator =
@@ -341,7 +344,7 @@ class RequestFormFragment : Fragment() {
         }
         if (binding.dailyCheckBox.isChecked) {
             val selectedDays = listDays.filter { it.select }
-            if (selectedDays.isEmpty())
+            if (selectedDays.isEmpty()) {
                 getString(R.string.error_select_a_day).showAlertMessage(
                     context = requireContext(),
                     title = getString(R.string.error),
@@ -354,7 +357,8 @@ class RequestFormFragment : Fragment() {
 
                     }
                 )
-            return false
+                return false
+            }
         }
         if (tripDate.isNullOrEmpty()) {
             getString(R.string.error_date_empty).showAlertMessage(
@@ -388,6 +392,21 @@ class RequestFormFragment : Fragment() {
         }
         if (binding.maxSeatsET.text.toString().isEmpty()) {
             getString(R.string.error_seats_empty).showAlertMessage(
+                context = requireContext(),
+                title = getString(R.string.error),
+                confirmText = getString(R.string.Ok),
+                type = SweetAlertDialog.ERROR_TYPE,
+                onCancelClick = {
+
+                },
+                onConfirmClick = {
+
+                }
+            )
+            return false
+        }
+        if (!binding.termsCheckBox.isChecked){
+            getString(R.string.accept_terms).showAlertMessage(
                 context = requireContext(),
                 title = getString(R.string.error),
                 confirmText = getString(R.string.Ok),

@@ -3,6 +3,7 @@ package com.khawi.ui.static_page
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.text.HtmlCompat
+import androidx.lifecycle.viewModelScope
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
 import com.khawi.base.BaseActivity
@@ -10,8 +11,11 @@ import com.khawi.base.hideDialog
 import com.khawi.base.initLoading
 import com.khawi.base.showDialog
 import com.khawi.databinding.ActivityStaticContentBinding
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
+@AndroidEntryPoint
 class StaticContentActivity : BaseActivity() {
     private var binding: ActivityStaticContentBinding? = null
     private var loading: KProgressHUD? = null
@@ -70,6 +74,9 @@ class StaticContentActivity : BaseActivity() {
             }
         }
 
+        viewModel.viewModelScope.launch {
+            viewModel.getStaticPages()
+        }
 
     }
 

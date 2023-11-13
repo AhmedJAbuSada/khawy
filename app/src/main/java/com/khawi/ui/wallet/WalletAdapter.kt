@@ -48,7 +48,10 @@ class WalletAdapter(
         )
 
         holder.transactionName.text =
-            "${ctx.getString(R.string.amount_trip_number)} ${item.orderNo}"
+            if (amount > 0)
+                ctx.getString(R.string.added_amount)
+            else
+                "${ctx.getString(R.string.amount_trip_number)} ${item.orderNo}"
         holder.transactionAmount.text = "$amount ${ctx.getString(R.string.currancy)}"
 
         holder.itemView.setOnClickListener {

@@ -1,13 +1,17 @@
-package com.khawi.ui.request_details
+package com.khawi.ui.main.notifications
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.khawi.data.notification.NotificationRepository
 import com.khawi.data.order.OrderRepository
-import com.khawi.model.AddRateBody
+import com.khawi.data.wallet.WalletRepository
 import com.khawi.model.BaseResponse
+import com.khawi.model.Notification
 import com.khawi.model.Order
+import com.khawi.model.Wallet
+import com.khawi.model.WalletBody
 import com.khawi.model.db.user.UserModel
 import com.khawi.model.db.user.UserRepository
 import com.khawi.network_base.model.BaseState
@@ -16,25 +20,27 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RequestDetailsViewModel @Inject constructor(
-    private val repository: OrderRepository,
-    private val userRepository: UserRepository,
+class NotificationViewModel @Inject constructor(
+    private val repository: NotificationRepository,
+//    private val userRepository: UserRepository,
 ) : ViewModel() {
-    val userMutableLiveData = MutableLiveData<UserModel>()
+//    val userMutableLiveData = MutableLiveData<UserModel>()
+//
+//    private fun getUser() {
+//        userMutableLiveData.postValue(userRepository.getUser())
+//    }
 
-    private fun getUser() {
-        userMutableLiveData.postValue(userRepository.getUser())
-    }
-
-    private val _successLiveData = MutableLiveData<BaseResponse<Order?>?>()
-    val successLiveData: LiveData<BaseResponse<Order?>?> = _successLiveData
+    private val _successLiveDataList = MutableLiveData<BaseResponse<MutableList<Notification>?>?>()
+    val successLiveDataList: LiveData<BaseResponse<MutableList<Notification>?>?> = _successLiveDataList
 
     private val _progressLiveData = MutableLiveData<Boolean>()
     val progressLiveData: MutableLiveData<Boolean> = _progressLiveData
 
+    val params = mutableMapOf<String, String>()
+
     init {
         viewModelScope.launch {
-            repository.getOrderFlow().collect {
+            repository.getNotificationListFlow().collect {
 
                 when (it) {
                     is BaseState.NetworkError -> {
@@ -48,7 +54,7 @@ class RequestDetailsViewModel @Inject constructor(
                     is BaseState.ItemsLoaded -> {
                         it.items?.let { item ->
                             _progressLiveData.postValue(false)
-                            _successLiveData.postValue(item)
+                            _successLiveDataList.postValue(item)
                         }
                     }
 
@@ -57,23 +63,10 @@ class RequestDetailsViewModel @Inject constructor(
                 }
             }
         }
-        viewModelScope.launch {
-            getUser()
-        }
     }
 
-    suspend fun getOrders(orderId: String) {
+    suspend fun notificationList() {
         _progressLiveData.postValue(true)
-        repository.orderDetails(orderId)
-    }
-
-    suspend fun addRate(orderId: String, rate: String, note: String?) {
-        _progressLiveData.postValue(true)
-        repository.addRateBody(
-            orderId, AddRateBody(
-                rateFromUser = rate,
-                noteFromUser = note
-            )
-        )
+        repository.notificationList(params as HashMap<String, String>)
     }
 }

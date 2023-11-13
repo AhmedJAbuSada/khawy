@@ -45,14 +45,9 @@ class AuthRepositoryImp @Inject constructor(
         withContext(dispatcherProvider.io()) {
             when (val result = remoteDataSource.verifyPhone(id, phone, code)) {
                 is AdvanceResult.Success -> {
-                    if (result.data.data?.isNotEmpty() == true) {
-                        val response = BaseResponse<UserModel?>()
-                        response.data = result.data.data?.get(0)
-                        response.status = result.data.status
-                        response.message = result.data.message
-                        response.v = System.currentTimeMillis()
-                        _event.emit(BaseState.ItemsLoaded(response))
-                    }
+                    val item = result.data
+                    item.v = System.currentTimeMillis()
+                    _event.emit(BaseState.ItemsLoaded(item))
                     Timber.d("results here res ${result.data}")
                 }
 

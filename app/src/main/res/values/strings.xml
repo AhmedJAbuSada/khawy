@@ -142,4 +142,10 @@
     <string name="add_amount">اضف رصيد</string>
     <string name="amount">الرصيد</string>
     <string name="error_amount_empty">حقل الرصيد مطلوب</string>
+    <string name="accept_terms">يجب الموافقة على الشروط والاحكام</string>
+    <string name="new_order">طلب جديد</string>
+    <string name="are_you_want_logout">هل انت تريد تسجيل الخروج</string>
+    <string name="alert">تنبيه</string>
+    <string name="close_">الغاء</string>
+    <string name="added_amount">اضافة رصيد</string>
 </resources>
