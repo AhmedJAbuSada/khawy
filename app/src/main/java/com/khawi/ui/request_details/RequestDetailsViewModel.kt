@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.khawi.data.order.OrderRepository
 import com.khawi.model.AddRateBody
 import com.khawi.model.BaseResponse
+import com.khawi.model.ChangeStatusBody
 import com.khawi.model.Order
 import com.khawi.model.db.user.UserModel
 import com.khawi.model.db.user.UserRepository
@@ -65,6 +66,16 @@ class RequestDetailsViewModel @Inject constructor(
     suspend fun getOrders(orderId: String) {
         _progressLiveData.postValue(true)
         repository.orderDetails(orderId)
+    }
+
+    suspend fun changeOrderStatusBody(orderId: String, status: String, note: String? = null) {
+        _progressLiveData.postValue(true)
+        repository.changeOrderStatusBody(
+            orderId, ChangeStatusBody(
+                status = status,
+                canceledNote = note
+            )
+        )
     }
 
     suspend fun addRate(orderId: String, rate: String, note: String?) {

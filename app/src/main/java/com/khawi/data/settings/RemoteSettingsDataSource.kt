@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class RemoteSettingsDataSource @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val repository: UserRepository,
+//    private val repository: UserRepository,
 ) {
 
     suspend fun contactUs(body: ContactUsBody): AdvanceResult<BaseResponse<ContactUsBody?>> {
@@ -28,10 +28,9 @@ class RemoteSettingsDataSource @Inject constructor(
     }
 
     suspend fun getStaticPages(): AdvanceResult<BaseResponse<MutableList<StaticPage>?>> {
-        return remoteDataSource.post(
+        return remoteDataSource.get(
             urlPath = "mobile/constant/static",
             params = null,
-            body = null
         )
     }
 

@@ -18,14 +18,20 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
+import com.khawi.base.acceptOfferKey
 import com.khawi.base.acceptedKey
+import com.khawi.base.cancelByDriverKey
+import com.khawi.base.cancelByUserKey
 import com.khawi.base.cancelledKey
+import com.khawi.base.finishKey
 import com.khawi.base.finishedKey
 import com.khawi.base.formatDate
 import com.khawi.base.hideDialog
 import com.khawi.base.initLoading
 import com.khawi.base.loadImage
+import com.khawi.base.newKey
 import com.khawi.base.showDialog
+import com.khawi.base.startKey
 import com.khawi.databinding.FragmentRequestDetailsBinding
 import com.khawi.model.Day
 import com.khawi.model.Order
@@ -196,11 +202,42 @@ class RequestDetailsFragment : Fragment() {
         binding.requestsContainer.visibility = View.GONE
         binding.rateUser.visibility = View.GONE
         binding.rateDriver.visibility = View.GONE
+        binding.startBtn.visibility = View.GONE
         binding.sendBtn.visibility = View.VISIBLE
         if (args.isOrder) {
             binding.sendBtn.visibility = View.GONE
 //            if (order?.user?.id == user?.id)
 //                binding.edit.visibility = View.VISIBLE
+            if (newStatus()) {
+                binding.sendBtn.visibility = View.VISIBLE
+                binding.sendBtn.text = getString(R.string.cancel_trip)
+                binding.sendBtn.setOnClickListener {
+                    cancelBottomSheet()
+                }
+            }
+            if (endTripStatus()) {
+                binding.sendBtn.visibility = View.VISIBLE
+                binding.sendBtn.text = getString(R.string.end_trip)
+                binding.sendBtn.setOnClickListener {
+                    viewModel.viewModelScope.launch {
+                        viewModel.changeOrderStatusBody(
+                            orderId = order?.id ?: "",
+                            status = finishKey
+                        )
+                    }
+                }
+            }
+            if (newStatusWithOfferAccepted()) {
+                binding.startBtn.visibility = View.VISIBLE
+                binding.startBtn.setOnClickListener {
+                    viewModel.viewModelScope.launch {
+                        viewModel.changeOrderStatusBody(
+                            orderId = order?.id ?: "",
+                            status = startKey
+                        )
+                    }
+                }
+            }
 
             binding.orderStatus.visibility = View.VISIBLE
             binding.orderStatus.text = when (order?.status) {
@@ -240,6 +277,33 @@ class RequestDetailsFragment : Fragment() {
         }
     }
 
+    private fun cancelBottomSheet() {
+        val bottomSheet = BottomSheetDialog(requireContext())
+        val rootView =
+            layoutInflater.inflate(R.layout.bottomsheet_cancel, binding.container, false)
+        bottomSheet.setContentView(rootView)
+
+        val reasonETRate = rootView.findViewById<EditText>(R.id.reasonETRate)
+
+        val sendCancelBtn = rootView.findViewById<TextView>(R.id.sendCancelBtn)
+
+        sendCancelBtn.setOnClickListener {
+            viewModel.viewModelScope.launch {
+                viewModel.changeOrderStatusBody(
+                    order?.id ?: "",
+                    if (order?.orderType == 1 && ((order?.user?.id ?: "") == (user?.id ?: "")))
+                        cancelByDriverKey
+                    else
+                        cancelByUserKey,
+                    reasonETRate.text.toString()
+                )
+            }
+            bottomSheet.dismiss()
+        }
+
+        bottomSheet.show()
+    }
+
     private fun rateBottomSheet() {
         val bottomSheet = BottomSheetDialog(requireContext())
         val rootView =
@@ -268,5 +332,18 @@ class RequestDetailsFragment : Fragment() {
         }
 
         bottomSheet.show()
+    }
+
+    private fun newStatus(): Boolean {
+        return order?.status == newKey
+    }
+
+    private fun endTripStatus(): Boolean {
+        return order?.status == acceptedKey
+    }
+
+    private fun newStatusWithOfferAccepted(): Boolean {
+        val offersAccepted = order?.offers?.filter { it.status == acceptOfferKey }
+        return order?.user?.id == user?.id && order?.orderType == 1 && order?.status == newKey && (offersAccepted?.isNotEmpty() == true)
     }
 }

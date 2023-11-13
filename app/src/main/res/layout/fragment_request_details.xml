@@ -635,10 +635,27 @@
         </androidx.core.widget.NestedScrollView>
 
         <TextView
-            android:id="@+id/sendBtn"
+            android:id="@+id/startBtn"
             android:layout_width="0dp"
             android:layout_height="51dp"
             android:layout_marginStart="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/button_main"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:text="@string/start_trip"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/sendBtn"
+            app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/sendBtn"
+            android:layout_width="0dp"
+            android:layout_height="51dp"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="24dp"
             android:background="@drawable/button_main"
@@ -648,8 +665,9 @@
             android:textColor="@color/white"
             android:textSize="15sp"
             android:textStyle="bold"
+            app:layout_goneMarginStart="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/startBtn" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

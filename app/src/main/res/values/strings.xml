@@ -148,4 +148,10 @@
     <string name="alert">تنبيه</string>
     <string name="close_">الغاء</string>
     <string name="added_amount">اضافة رصيد</string>
+    <string name="start_trip">بدء الرحلة</string>
+    <string name="cancel_trip">الغاء الرحلة</string>
+    <string name="cancel_reason">سبب الالغاء</string>
+    <string name="end_trip">انهاء الرحلة</string>
+    <string name="are_you_want_accept">هل تريد قبول العملية؟</string>
+    <string name="are_you_want_reject">هل تريد رفض العملية؟</string>
 </resources>
