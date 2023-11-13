@@ -128,7 +128,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="7:30 صباحاً"
                         android:textColor="@color/textColor"
                         android:textSize="11sp" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -161,7 +160,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="15 ربيع الأول، 1445"
                         android:textColor="@color/textColor"
                         android:textSize="11sp" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -222,6 +220,12 @@
                         android:textSize="11sp" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/groupNote"
+                    android:layout_width="5dp"
+                    android:layout_height="5dp"
+                    app:constraint_referenced_ids="noteTitle,note" />
+
                 <TextView
                     android:id="@+id/noteTitle"
                     android:layout_width="wrap_content"
@@ -241,14 +245,157 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="20dp"
                     android:background="@drawable/bg_edit_text"
+                    android:gravity="end"
                     android:padding="10dp"
-                    android:text="السيارة مكيفة و مريحة ستنال اعجابكم.
-انا مهتم جداً بالنظافة والالتزام في المواعيد."
                     android:textColor="@color/textColor"
                     android:textSize="11sp"
                     app:layout_constraintTop_toBottomOf="@+id/noteTitle" />
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/carInformationContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/note">
 
+                    <TextView
+                        android:id="@+id/carInformationTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:text="@string/car_information"
+                        android:textColor="@color/textColor"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/carTypeContainer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:gravity="end"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        app:layout_constraintEnd_toEndOf="@+id/carInformationTitle"
+                        app:layout_constraintStart_toEndOf="@+id/carModelContainer"
+                        app:layout_constraintTop_toBottomOf="@+id/carInformationTitle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/car_type"
+                            android:textColor="#A4ACAD"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/carType"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textColor="@color/textColor"
+                            android:textSize="11sp" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/carModelContainer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="17dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:gravity="end"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        app:layout_constraintEnd_toStartOf="@+id/carTypeContainer"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/carInformationTitle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/car_model"
+                            android:textColor="#A4ACAD"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/carModel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textColor="@color/textColor"
+                            android:textSize="11sp" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/carColorContainer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:gravity="end"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        app:layout_constraintEnd_toEndOf="@+id/carInformationTitle"
+                        app:layout_constraintStart_toEndOf="@+id/carPlateContainer"
+                        app:layout_constraintTop_toBottomOf="@+id/carTypeContainer">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/car_color"
+                            android:textColor="#A4ACAD"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/carColor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textColor="@color/textColor"
+                            android:textSize="11sp" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/carPlateContainer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="17dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:gravity="end"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/carColorContainer"
+                        app:layout_constraintEnd_toStartOf="@+id/carColorContainer"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/carColorContainer">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/car_plate"
+                            android:textColor="#A4ACAD"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/carPlate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textColor="@color/textColor"
+                            android:textSize="11sp" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>

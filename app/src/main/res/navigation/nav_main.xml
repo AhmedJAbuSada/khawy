@@ -27,7 +27,15 @@
     <fragment
         android:id="@+id/notifications"
         android:name="com.khawi.ui.main.notifications.NotificationsFragment"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_notifications">
+        <action
+            android:id="@+id/action_notifications_to_requestDetailsFragment"
+            app:destination="@id/requestDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/orders"
         android:name="com.khawi.ui.main.orders.OrdersFragment"
@@ -84,17 +92,9 @@
         android:name="com.khawi.ui.request_details.RequestDetailsFragment"
         tools:layout="@layout/fragment_request_details">
         <argument
-            android:name="isDeliver"
-            android:defaultValue="true"
-            app:argType="boolean" />
-        <argument
             android:name="isOrder"
             android:defaultValue="true"
             app:argType="boolean" />
-        <argument
-            android:name="orderStatus"
-            android:defaultValue=""
-            app:argType="string" />
         <argument
             android:name="orderObj"
             android:defaultValue="@null"
@@ -157,11 +157,16 @@
     <fragment
         android:id="@+id/joinDetailsFragment"
         android:name="com.khawi.ui.join_details.JoinDetailsFragment"
-        tools:layout="@layout/fragment_join_details" >
+        tools:layout="@layout/fragment_join_details">
         <argument
             android:name="joinObj"
+            android:defaultValue="@null"
             app:argType="com.khawi.model.Offer"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
+
+        <argument
+            android:name="isOfferDeliver"
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
 </navigation>

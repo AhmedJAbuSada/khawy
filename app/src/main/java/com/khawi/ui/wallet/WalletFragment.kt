@@ -145,7 +145,7 @@ class WalletFragment : Fragment() {
     }
 
     private fun addAmountBottomSheet() {
-        val bottomSheet = BottomSheetDialog(requireContext())
+        val bottomSheet = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
         val rootView =
             layoutInflater.inflate(R.layout.bottomsheet_add_amount, binding.container, false)
         bottomSheet.setContentView(rootView)

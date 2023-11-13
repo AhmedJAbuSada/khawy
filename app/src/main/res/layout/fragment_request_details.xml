@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -190,6 +189,69 @@
                         android:textSize="11sp" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/priceContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_edit_text"
+                    android:gravity="end"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tripTimeContainer">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/price"
+                        android:textColor="#A4ACAD"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/textColor"
+                        android:textSize="11sp" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/priceOfferContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_edit_text"
+                    android:gravity="end"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/priceContainer">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/offer_price"
+                        android:textColor="#A4ACAD"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/priceOffer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/textColor"
+                        android:textSize="11sp" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/requestsContainer"
                     android:layout_width="match_parent"
@@ -197,7 +259,7 @@
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginTop="16dp"
                     android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@+id/tripTimeContainer">
+                    app:layout_constraintTop_toBottomOf="@+id/priceOfferContainer">
 
                     <TextView
                         android:id="@+id/requestsTitle"
@@ -491,6 +553,12 @@
                             android:textSize="11sp" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/driverNoteGroup"
+                        android:layout_width="5dp"
+                        android:layout_height="5dp"
+                        app:constraint_referenced_ids="driverNoteTitle,driverNote" />
+
                     <TextView
                         android:id="@+id/driverNoteTitle"
                         android:layout_width="wrap_content"
@@ -510,6 +578,7 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="20dp"
                         android:background="@drawable/bg_edit_text"
+                        android:gravity="end"
                         android:padding="10dp"
                         android:textColor="@color/textColor"
                         android:textSize="11sp"
@@ -603,6 +672,12 @@
                             android:textSize="11sp" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/noteGroup"
+                        android:layout_width="5dp"
+                        android:layout_height="5dp"
+                        app:constraint_referenced_ids="noteTitle,note" />
+
                     <TextView
                         android:id="@+id/noteTitle"
                         android:layout_width="wrap_content"
@@ -622,6 +697,7 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="20dp"
                         android:background="@drawable/bg_edit_text"
+                        android:gravity="end"
                         android:padding="10dp"
                         android:textColor="@color/textColor"
                         android:textSize="11sp"
@@ -644,14 +720,15 @@
             android:background="@drawable/button_main"
             android:elevation="5dp"
             android:gravity="center"
-            android:visibility="gone"
             android:text="@string/start_trip"
             android:textColor="@color/white"
             android:textSize="15sp"
             android:textStyle="bold"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/sendBtn"
             app:layout_constraintStart_toStartOf="parent" />
+
         <TextView
             android:id="@+id/sendBtn"
             android:layout_width="0dp"
@@ -665,9 +742,9 @@
             android:textColor="@color/white"
             android:textSize="15sp"
             android:textStyle="bold"
-            app:layout_goneMarginStart="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/startBtn" />
+            app:layout_constraintStart_toEndOf="@+id/startBtn"
+            app:layout_goneMarginStart="24dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

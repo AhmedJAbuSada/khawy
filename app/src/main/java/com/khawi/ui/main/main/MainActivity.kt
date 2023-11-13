@@ -78,11 +78,11 @@ class MainActivity : AppCompatActivity() {
             binding.requestsFormGroup.visibility = View.GONE
         }
         binding.deliverFormContainer.setOnClickListener {
-            navController?.navigate(NavGraphDirections.actionRequestFormFragment(false))
+            navController?.navigate(NavGraphDirections.actionRequestFormFragment(true))
             binding.requestsFormGroup.visibility = View.GONE
         }
         binding.joinFormContainer.setOnClickListener {
-            navController?.navigate(NavGraphDirections.actionRequestFormFragment(true))
+            navController?.navigate(NavGraphDirections.actionRequestFormFragment(false))
             binding.requestsFormGroup.visibility = View.GONE
         }
     }

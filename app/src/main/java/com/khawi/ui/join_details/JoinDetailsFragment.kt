@@ -144,6 +144,8 @@ class JoinDetailsFragment : Fragment() {
         binding.tripDate.text = offer?.dtDate?.formatDate() ?: ""
         binding.price.text = "${offer?.price} ${getString(R.string.currancy)}"
         binding.note.text = offer?.notes ?: ""
+        if ((offer?.notes ?: "").isEmpty())
+            binding.groupNote.visibility = View.GONE
 
         binding.showMap.setOnClickListener {
             startActivity(
@@ -168,6 +170,15 @@ class JoinDetailsFragment : Fragment() {
         if (offer?.status == addOfferKey) {
             binding.acceptBtn.visibility = View.VISIBLE
             binding.rejectBtn.visibility = View.VISIBLE
+        }
+
+        binding.carInformationContainer.visibility = View.GONE
+        if (args.isOfferDeliver) {
+            binding.carInformationContainer.visibility = View.VISIBLE
+            binding.carType.text = offer?.user?.carType ?: ""
+            binding.carModel.text = offer?.user?.carModel ?: ""
+            binding.carColor.text = offer?.user?.carColor ?: ""
+            binding.carPlate.text = offer?.user?.carNumber ?: ""
         }
     }
 }

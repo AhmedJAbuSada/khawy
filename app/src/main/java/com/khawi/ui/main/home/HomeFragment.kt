@@ -80,7 +80,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         viewModel.userMutableLiveData.observe(viewLifecycleOwner) {
             it?.let {
                 user = it
-                binding.userImg.loadImage(requireContext(), user?.image?:"")
+                binding.userImg.loadImage(requireContext(), user?.image ?: "")
                 binding.username.text = "${user?.fullName} .."
             }
         }
@@ -157,7 +157,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun deliverBottomSheet(order: Order) {
-        val bottomSheet = BottomSheetDialog(requireContext())
+        val bottomSheet = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
         val rootView =
             layoutInflater.inflate(R.layout.bottomsheet_deliver_form, binding.container, false)
         bottomSheet.setContentView(rootView)
@@ -188,7 +188,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         showDetails.setOnClickListener {
             findNavController().navigate(
                 HomeFragmentDirections.actionHomeToRequestDetailsFragment(
-                    isDeliver = order.orderType == 2,
                     orderObj = order,
                     isOrder = order.user?.id == user?.id
                 )
@@ -200,7 +199,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun joinBottomSheet(order: Order) {
-        val bottomSheet = BottomSheetDialog(requireContext())
+        val bottomSheet = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
         val rootView =
             layoutInflater.inflate(R.layout.bottomsheet_join_form, binding.container, false)
         bottomSheet.setContentView(rootView)
@@ -225,7 +224,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         showDetails.setOnClickListener {
             findNavController().navigate(
                 HomeFragmentDirections.actionHomeToRequestDetailsFragment(
-                    isDeliver = order.orderType == 2,
                     orderObj = order,
                     isOrder = order.user?.id == user?.id
                 )
@@ -278,7 +276,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                     BitmapDescriptorFactory.fromBitmap(
                         getSelectedMarkerBitmapFromView(
                             markerView,
-                            dataObject.orderType == 1
+                            dataObject.orderType == 2
                         )
                     )
                 )
@@ -329,11 +327,21 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         googleMap?.setOnCameraIdleListener {
             Handler(Looper.getMainLooper()).postDelayed({}, 2000)
-            val latlng = googleMap?.cameraPosition?.target
-            latlng?.let {
-                viewModel.viewModelScope.launch {
-                    viewModel.getOrders(it.latitude.toString(), it.longitude.toString())
-                }
+            getOrders()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (_binding != null)
+            getOrders()
+    }
+
+    private fun getOrders() {
+        val latlng = googleMap?.cameraPosition?.target
+        latlng?.let {
+            viewModel.viewModelScope.launch {
+                viewModel.getOrders(it.latitude.toString(), it.longitude.toString())
             }
         }
     }

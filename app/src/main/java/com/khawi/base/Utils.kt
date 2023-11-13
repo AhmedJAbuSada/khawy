@@ -388,7 +388,7 @@ fun Context.deliverBottomSheet(
     buttonText: String,
     clickAction: () -> Unit
 ) {
-    val bottomSheet = BottomSheetDialog(this)
+    val bottomSheet = BottomSheetDialog(this, R.style.AppBottomSheetDialogTheme)
     val rootView =
         layoutInflater.inflate(R.layout.bottomsheet_success_request, container, false)
     bottomSheet.setContentView(rootView)

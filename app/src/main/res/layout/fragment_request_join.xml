@@ -181,7 +181,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:text="@string/trip_date"
-                        android:textAlignment="viewEnd"
+                        android:gravity="end"
                         android:textColor="#666666"
                         android:textSize="16sp" />
 
@@ -212,7 +212,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:text="@string/trip_time"
-                        android:textAlignment="viewEnd"
+                        android:gravity="end"
                         android:textColor="#666666"
                         android:textSize="16sp" />
 

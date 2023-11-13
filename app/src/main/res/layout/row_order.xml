@@ -61,6 +61,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="17dp"
         android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:lines="1"
         android:textColor="#141F1F"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="@+id/orderDate"

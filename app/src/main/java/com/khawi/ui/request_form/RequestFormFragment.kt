@@ -181,7 +181,6 @@ class RequestFormFragment : Fragment() {
                 for (value in selectedDays) {
                     listDays.add(value.name ?: "")
                 }
-                val stringDays = "$listDays"
                 viewModel.viewModelScope.launch {
                     viewModel.addOrder(
                         AddOrderBody(
@@ -200,7 +199,7 @@ class RequestFormFragment : Fragment() {
                             minPrice = minPrice,
                             price = price,
                             isRepeated = binding.dailyCheckBox.isChecked,
-                            days = stringDays,
+                            days = listDays,
                             orderType = if (isDeliver) 2 else 1,
                             maxPassenger = (binding.maxSeatsET.text.toString()).toInt(),
                             notes = binding.noteET.text.toString(),

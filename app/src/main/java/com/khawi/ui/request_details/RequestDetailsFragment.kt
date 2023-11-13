@@ -30,6 +30,7 @@ import com.khawi.base.hideDialog
 import com.khawi.base.initLoading
 import com.khawi.base.loadImage
 import com.khawi.base.newKey
+import com.khawi.base.ratedKey
 import com.khawi.base.showDialog
 import com.khawi.base.startKey
 import com.khawi.databinding.FragmentRequestDetailsBinding
@@ -78,8 +79,14 @@ class RequestDetailsFragment : Fragment() {
         }
         viewModel.successLiveData.observe(viewLifecycleOwner) {
             if (it?.status == true) {
-                order = it.data
-                fillInfo()
+                if (it.data != null) {
+                    order = it.data
+                    fillInfo()
+                } else {
+                    viewModel.viewModelScope.launch {
+                        viewModel.getOrders(args.orderObj?.id ?: "")
+                    }
+                }
             }
         }
 
@@ -105,9 +112,8 @@ class RequestDetailsFragment : Fragment() {
             listDays.add(Day(name = getString(R.string.wednesday), select = false))
             listDays.add(Day(name = getString(R.string.thursday), select = false))
             listDays.add(Day(name = getString(R.string.friday), select = false))
-            val selectedDays = Gson().fromJson(order?.days!![0], Array<String>::class.java)
             for (value in listDays) {
-                for (valueInner in selectedDays) {
+                for (valueInner in order?.days!!) {
                     if (valueInner.contains(value.name ?: ""))
                         value.select = true
                 }
@@ -118,7 +124,6 @@ class RequestDetailsFragment : Fragment() {
             adapter.items = listDays
             binding.recyclerViewDays.adapter = adapter
         }
-
 
         binding.tripDateTop.text = order?.dtDate?.formatDate() ?: ""
         binding.tripName.text = "${getString(R.string.trip_title)}: ${order?.title ?: ""}"
@@ -154,7 +159,7 @@ class RequestDetailsFragment : Fragment() {
 
         binding.joinContainer.visibility = View.GONE
         binding.deliverContainer.visibility = View.GONE
-        if (args.isDeliver) {
+        if (order?.orderType == 2) {
             binding.sendBtn.text = getString(R.string.apply_deliver)
             binding.deliverContainer.visibility = View.VISIBLE
             binding.sendBtn.setOnClickListener {
@@ -168,9 +173,11 @@ class RequestDetailsFragment : Fragment() {
             binding.personImage.loadImage(requireContext(), order?.user?.image ?: "")
             binding.personName.text = order?.user?.fullName ?: ""
             binding.seatRequest.text = "${order?.maxPassenger ?: 0} ${getString(R.string.seats)}"
+            binding.price.text = "${order?.price ?: ""} ${getString(R.string.currancy)}"
             binding.note.text = order?.notes ?: ""
-
-        } else {
+            if ((order?.notes ?: "").isEmpty())
+                binding.noteGroup.visibility = View.GONE
+        } else if (order?.orderType == 1) {
             binding.sendBtn.text = getString(R.string.join_now)
             binding.joinContainer.visibility = View.VISIBLE
             binding.sendBtn.setOnClickListener {
@@ -187,7 +194,6 @@ class RequestDetailsFragment : Fragment() {
                 order?.user?.rate?.toFloat() ?: 0f
             else 0f
 
-
             binding.carType.text = order?.user?.carType ?: ""
             binding.carModel.text = order?.user?.carModel ?: ""
             binding.carColor.text = order?.user?.carColor ?: ""
@@ -195,6 +201,20 @@ class RequestDetailsFragment : Fragment() {
 
             binding.seat.text = "${order?.maxPassenger ?: 0} ${getString(R.string.seats)}"
             binding.driverNote.text = order?.notes ?: ""
+            if ((order?.notes ?: "").isEmpty())
+                binding.driverNoteGroup.visibility = View.GONE
+            binding.price.text =
+                "(${order?.minPrice ?: ""} - ${order?.maxPrice ?: ""}) ${getString(R.string.currancy)}"
+        }
+
+        binding.priceOfferContainer.visibility = View.GONE
+        val offersAccepted = order?.offers?.filter { it.status == acceptOfferKey }
+        if (offersAccepted?.isNotEmpty() == true) {
+            val myOffer = offersAccepted[0]
+            if ((myOffer.user?.id ?: "") == (user?.id ?: "")) {
+                binding.priceOfferContainer.visibility = View.VISIBLE
+                binding.priceOffer.text = "${myOffer.price} ${getString(R.string.currancy)}"
+            }
         }
 
         binding.edit.visibility = View.GONE
@@ -206,9 +226,7 @@ class RequestDetailsFragment : Fragment() {
         binding.sendBtn.visibility = View.VISIBLE
         if (args.isOrder) {
             binding.sendBtn.visibility = View.GONE
-//            if (order?.user?.id == user?.id)
-//                binding.edit.visibility = View.VISIBLE
-            if (newStatus()) {
+            if (canCancel()) {
                 binding.sendBtn.visibility = View.VISIBLE
                 binding.sendBtn.text = getString(R.string.cancel_trip)
                 binding.sendBtn.setOnClickListener {
@@ -241,30 +259,39 @@ class RequestDetailsFragment : Fragment() {
 
             binding.orderStatus.visibility = View.VISIBLE
             binding.orderStatus.text = when (order?.status) {
+                ratedKey -> getString(R.string.finished)
                 finishedKey -> getString(R.string.finished)
-                cancelledKey -> getString(R.string.cancelled)
+                cancelByUserKey -> getString(R.string.cancelled)
+                cancelByDriverKey -> getString(R.string.cancelled)
                 acceptedKey -> getString(R.string.open_order)
                 else -> getString(R.string.new_order)
             }
 
             if (order?.status == finishedKey) {
-                binding.rateUser.visibility = View.VISIBLE
+//                binding.rateUser.visibility = View.VISIBLE
                 binding.rateDriver.visibility = View.VISIBLE
             }
 
-            order?.offers?.let {
-                if (it.isNotEmpty()) {
-                    binding.requestsContainer.visibility = View.VISIBLE
-
-                    val adapterUserRequest = UserRequestAdapter(requireContext()) { item, _ ->
-                        findNavController().navigate(
-                            RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
-                                joinObj = item
+            if ((order?.user?.id ?: "") == (user?.id ?: "")) {
+                order?.offers?.let {
+                    if (it.isNotEmpty()) {
+                        binding.requestsContainer.visibility = View.VISIBLE
+                        binding.requestsTitle.text =
+                            if (order?.orderType == 2)
+                                getString(R.string.requests_delivery)
+                            else
+                                getString(R.string.requests_join)
+                        val adapterUserRequest = UserRequestAdapter(requireContext()) { item, _ ->
+                            findNavController().navigate(
+                                RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
+                                    joinObj = item,
+                                    isOfferDeliver = order?.orderType == 2
+                                )
                             )
-                        )
+                        }
+                        adapterUserRequest.items = it
+                        binding.recyclerViewRequests.adapter = adapterUserRequest
                     }
-                    adapterUserRequest.items = it
-                    binding.recyclerViewRequests.adapter = adapterUserRequest
                 }
             }
         }
@@ -278,7 +305,7 @@ class RequestDetailsFragment : Fragment() {
     }
 
     private fun cancelBottomSheet() {
-        val bottomSheet = BottomSheetDialog(requireContext())
+        val bottomSheet = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
         val rootView =
             layoutInflater.inflate(R.layout.bottomsheet_cancel, binding.container, false)
         bottomSheet.setContentView(rootView)
@@ -305,7 +332,7 @@ class RequestDetailsFragment : Fragment() {
     }
 
     private fun rateBottomSheet() {
-        val bottomSheet = BottomSheetDialog(requireContext())
+        val bottomSheet = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
         val rootView =
             layoutInflater.inflate(R.layout.bottomsheet_rate, binding.container, false)
         bottomSheet.setContentView(rootView)
@@ -334,16 +361,22 @@ class RequestDetailsFragment : Fragment() {
         bottomSheet.show()
     }
 
-    private fun newStatus(): Boolean {
-        return order?.status == newKey
+    private fun canCancel(): Boolean {
+        return order?.status == newKey || order?.status == acceptedKey
     }
 
     private fun endTripStatus(): Boolean {
-        return order?.status == acceptedKey
+        return order?.status == startKey
     }
 
     private fun newStatusWithOfferAccepted(): Boolean {
         val offersAccepted = order?.offers?.filter { it.status == acceptOfferKey }
-        return order?.user?.id == user?.id && order?.orderType == 1 && order?.status == newKey && (offersAccepted?.isNotEmpty() == true)
+        val iShouldDrive = if (order?.orderType == 2 && offersAccepted?.isNotEmpty() == true) {
+            ((offersAccepted[0].user?.id ?: "") == (user?.id ?: ""))
+        } else if (order?.orderType == 1 && offersAccepted?.isNotEmpty() == true) {
+            ((order?.user?.id ?: "") == (user?.id ?: ""))
+        } else
+            false
+        return order?.status == acceptedKey && iShouldDrive
     }
 }

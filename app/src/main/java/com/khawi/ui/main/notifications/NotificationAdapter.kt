@@ -55,9 +55,9 @@ class NotificationAdapter(
                 holder.actionNotificationContainer.visibility = View.VISIBLE
                 holder.iconIV.background = ContextCompat.getDrawable(ctx, R.drawable.bg_orange_12r)
                 holder.iconIV.setImageResource(R.drawable.order_notification)
-                holder.notificationTitle.text = item.title ?: ""
-                holder.notificationContent.text = item.msg ?: ""
-                holder.notificationTime.text = item.dtDate?.formatDateTime() ?: ""
+                holder.notificationActionTitle.text = item.title ?: ""
+                holder.notificationActionContent.text = item.msg ?: ""
+                holder.notificationActionTime.text = item.dtDate?.formatDateTime() ?: ""
             }
 
             else -> {

@@ -65,10 +65,10 @@ data class Order(
     val createAt: String? = null,
     @SerialName("user")
     val user: UserModel? = null,
-    @SerialName("loc")
-    val loc: Loc? = null,
-    @SerialName("passengers")
-    val passengers: MutableList<String>? = null,
+//    @SerialName("loc")
+//    val loc: Loc? = null,
+//    @SerialName("passengers")
+//    val passengers: MutableList<String>? = null,
     @SerialName("offers")
     val offers: MutableList<Offer>? = null,
 ) : Parcelable

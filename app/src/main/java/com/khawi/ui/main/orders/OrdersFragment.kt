@@ -57,9 +57,7 @@ class OrdersFragment : Fragment() {
         adapter = OrderAdapter(requireContext()) { item, _ ->
             findNavController().navigate(
                 OrdersFragmentDirections.actionOrdersFragmentToRequestDetailsFragment(
-                    isDeliver = item.orderType == 2,
                     isOrder = true,
-                    orderStatus = item.status ?: "",
                     orderObj = item
                 )
             )
@@ -109,13 +107,11 @@ class OrdersFragment : Fragment() {
         viewModel.successLiveData.observe(viewLifecycleOwner) {
             totalPages = it?.pagination?.totalPages ?: 0
             isLastPage = page >= totalPages
-            if (it?.data?.isNotEmpty() == true) {
-                adapter?.submitList(it.data)
-            }
+            adapter?.submitList(it?.data)
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            page = 1
+            page = 0
             fillList()
         }
     }
@@ -123,6 +119,14 @@ class OrdersFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (_binding != null) {
+            tabPosition = 0
+            fillList()
+        }
     }
 
     private fun fillList() {

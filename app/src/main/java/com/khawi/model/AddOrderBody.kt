@@ -37,7 +37,7 @@ data class AddOrderBody(
     @SerialName("is_repeated")
     val isRepeated: Boolean? = null,
     @SerialName("days")
-    val days: String? = null,
+    val days: MutableList<String>? = null,
     @SerialName("orderType")
     val orderType: Int? = null,
     @SerialName("max_passenger")
