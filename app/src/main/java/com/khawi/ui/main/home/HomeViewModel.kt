@@ -63,10 +63,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun getOrders(lat: String, lng: String) {
+    suspend fun getOrders(lat: String, lng: String, address: String? = null) {
         val params = HashMap<String, String>()
         params["lat"] = lat
         params["lng"] = lng
+        if (address != null)
+            params["address"] = address
         repository.showMap(params)
     }
 }

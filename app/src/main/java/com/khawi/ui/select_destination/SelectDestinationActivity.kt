@@ -10,13 +10,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.beust.klaxon.JsonArray
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Parser
-import com.beust.klaxon.array
-import com.beust.klaxon.get
-import com.beust.klaxon.obj
-import com.beust.klaxon.string
 import com.birjuvachhani.locus.Locus
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -28,15 +21,16 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.maps.DirectionsApi
+import com.google.maps.GeoApiContext
 import com.khawi.R
 import com.khawi.base.BaseActivity
 import com.khawi.base.getAddress
 import com.khawi.base.parcelable
+import com.khawi.base.startKey
 import com.khawi.databinding.ActivitySelectDestinationBinding
+import com.khawi.model.Order
 import dagger.hilt.android.AndroidEntryPoint
-import org.jetbrains.anko.async
-import org.jetbrains.anko.uiThread
-import java.net.URL
 
 
 @AndroidEntryPoint
@@ -48,18 +42,21 @@ class SelectDestinationActivity : BaseActivity(), OnMapReadyCallback {
     private var latlngMyLocation: LatLng? = null
     private var latlngStart: LatLng? = null
     private var latlngEnd: LatLng? = null
+    private var order: Order? = null
+
 
     companion object {
         const val latLongStartKey = "lat_long_start"
         const val latLongEndKey = "lat_long_end"
         const val isPreviewKey = "is_preview"
+        const val orderKey = "order"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySelectDestinationBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        order = intent.parcelable(orderKey)
         isPreview = intent.getBooleanExtra(isPreviewKey, false)
         binding.buttonGroup.visibility =
             if (isPreview)
@@ -117,6 +114,8 @@ class SelectDestinationActivity : BaseActivity(), OnMapReadyCallback {
             }
             handleMarkers()
         }
+
+        trackingDriver()
     }
 
     override fun onMapReady(p0: GoogleMap) {
@@ -203,92 +202,69 @@ class SelectDestinationActivity : BaseActivity(), OnMapReadyCallback {
 
 
     private fun drawRout() {
-        val url = getURL(latlngStart!!, latlngEnd!!)
+        // Define list to get all LatLng for the route
+        val path: MutableList<LatLng> = ArrayList()
 
-        val LatLongB = LatLngBounds.Builder()
-        val options = PolylineOptions()
-        options.color(Color.parseColor("#006E85"))
-        options.width(5f)
-        async {
-            // Connect to URL, download content and convert into string asynchronously
-            val result = URL(url).readText()
-            uiThread {
-                // When API call is done, create parser and convert into JsonObjec
-                val parser = Parser()
-                val stringBuilder: StringBuilder = StringBuilder(result)
-                val json: JsonObject = parser.parse(stringBuilder) as JsonObject
-                // get to the correct element in JsonObject
-                val routes = json.array<JsonObject>("routes")
-                if (!routes.isNullOrEmpty()) {
-                    val points = routes["legs"]["steps"][0] as JsonArray<JsonObject>
-                    // For every element in the JsonArray, decode the polyline string and pass all points to a List
-                    val polypts =
-                        points.flatMap { decodePoly(it.obj("polyline")?.string("points")!!) }
-                    // Add  points to polyline and bounds
-                    options.add(latlngStart)
-                    LatLongB.include(latlngStart!!)
-                    for (point in polypts) {
-                        options.add(point)
-                        LatLongB.include(point)
+        // Execute Directions API request
+        val context = GeoApiContext.Builder()
+            .apiKey(getString(R.string.api_key))
+            .build()
+        val req = DirectionsApi.getDirections(context, "${latlngStart?.latitude},${latlngStart?.longitude}", "${latlngEnd?.latitude},${latlngEnd?.longitude}")
+        try {
+            val res = req.await()
+
+            // Loop through legs and steps to get encoded polylines of each step
+            if (res.routes != null && res.routes.isNotEmpty()) {
+                val route = res.routes[0]
+
+                if (route.legs != null) {
+                    for (i in route.legs.indices) {
+                        val leg = route.legs[i]
+                        if (leg.steps != null) {
+                            for (j in leg.steps.indices) {
+                                val step = leg.steps[j]
+                                if (step.steps != null && step.steps.isNotEmpty()) {
+                                    for (k in step.steps.indices) {
+                                        val step1 = step.steps[k]
+                                        val points1 = step1.polyline
+                                        if (points1 != null) {
+                                            // Decode polyline and add points to list of route coordinates
+                                            val coords1 = points1.decodePath()
+                                            for (coord1 in coords1) {
+                                                path.add(LatLng(coord1.lat, coord1.lng))
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    val points = step.polyline
+                                    if (points != null) {
+                                        // Decode polyline and add points to list of route coordinates
+                                        val coords = points.decodePath()
+                                        for (coord in coords) {
+                                            path.add(LatLng(coord.lat, coord.lng))
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                    options.add(latlngEnd)
-                    LatLongB.include(latlngEnd!!)
-                    // build bounds
-                    val bounds = LatLongB.build()
-                    // add polyline to the map
-                    googleMap?.addPolyline(options)
-                    // show map with route centered
-                    googleMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
                 }
             }
-        }
-    }
-
-    private fun getURL(from: LatLng, to: LatLng): String {
-        val origin = "origin=" + from.latitude + "," + from.longitude
-        val dest = "destination=" + to.latitude + "," + to.longitude
-        val sensor = "sensor=false"
-        val params = "$origin&$dest&$sensor"
-        return "https://maps.googleapis.com/maps/api/directions/json?$params"
-    }
-
-    private fun decodePoly(encoded: String): List<LatLng> {
-        val poly = ArrayList<LatLng>()
-        var index = 0
-        val len = encoded.length
-        var lat = 0
-        var lng = 0
-
-        while (index < len) {
-            var b: Int
-            var shift = 0
-            var result = 0
-            do {
-                b = encoded[index++].toInt() - 63
-                result = result or (b and 0x1f shl shift)
-                shift += 5
-            } while (b >= 0x20)
-            val dlat = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            lat += dlat
-
-            shift = 0
-            result = 0
-            do {
-                b = encoded[index++].toInt() - 63
-                result = result or (b and 0x1f shl shift)
-                shift += 5
-            } while (b >= 0x20)
-            val dlng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            lng += dlng
-
-            val p = LatLng(
-                lat.toDouble() / 1E5,
-                lng.toDouble() / 1E5
-            )
-            poly.add(p)
+        } catch (ex: Exception) {
+            ex.printStackTrace()
         }
 
-        return poly
+        // Draw the polyline
+        if (path.isNotEmpty()) {
+            val opts = PolylineOptions().addAll(path).color(Color.parseColor("#006E85")).width(10f)
+            googleMap?.addPolyline(opts)
+            val bounds = LatLngBounds.builder()
+                .include(latlngStart!!)
+                .include(latlngEnd!!).build()
+            googleMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 80))
+        }
+
+
     }
 
     private fun generateBitmapDescriptorFromRes(resId: Int): BitmapDescriptor {
@@ -307,5 +283,11 @@ class SelectDestinationActivity : BaseActivity(), OnMapReadyCallback {
         val canvas = Canvas(bitmap)
         drawable.draw(canvas)
         return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+    private fun trackingDriver() {
+        if (order?.status == startKey) {
+
+        }
     }
 }

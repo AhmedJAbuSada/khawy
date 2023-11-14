@@ -157,4 +157,5 @@
     <string name="requests_delivery">طلبات التوصيل</string>
     <string name="offer_price">السعر المرسل</string>
     <string name="offer_accepted">العروض المقبولة</string>
+    <string name="api_key">AIzaSyBG2O9nhPoHxemxdMh4NX8pBa32cd0Kc1Q</string>
 </resources>

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
@@ -15,7 +16,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.gson.Gson
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
 import com.khawi.base.acceptOfferKey
@@ -23,7 +23,6 @@ import com.khawi.base.acceptedKey
 import com.khawi.base.addOfferKey
 import com.khawi.base.cancelByDriverKey
 import com.khawi.base.cancelByUserKey
-import com.khawi.base.cancelledKey
 import com.khawi.base.finishKey
 import com.khawi.base.finishedKey
 import com.khawi.base.formatDate
@@ -139,6 +138,7 @@ class RequestDetailsFragment : Fragment() {
         binding.showMap.setOnClickListener {
             startActivity(
                 Intent(requireContext(), SelectDestinationActivity::class.java)
+                    .putExtra(SelectDestinationActivity.orderKey, order)
                     .putExtra(SelectDestinationActivity.isPreviewKey, true)
                     .putExtra(
                         SelectDestinationActivity.latLongStartKey, LatLng(
@@ -259,14 +259,44 @@ class RequestDetailsFragment : Fragment() {
             }
 
             binding.orderStatus.visibility = View.VISIBLE
-            binding.orderStatus.text = when (order?.status) {
-                ratedKey -> getString(R.string.finished)
-                finishedKey -> getString(R.string.finished)
-                cancelByUserKey -> getString(R.string.cancelled)
-                cancelByDriverKey -> getString(R.string.cancelled)
-                acceptedKey -> getString(R.string.open_order)
-                else -> getString(R.string.new_order)
+            when (order?.status) {
+                ratedKey -> {
+                    binding.orderStatus.text = getString(R.string.finished)
+                    binding.orderStatus.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_green_corner_all_12r)
+                    binding.orderStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.green2))
+                }
+
+                finishedKey -> {
+                    binding.orderStatus.text = getString(R.string.finished)
+                    binding.orderStatus.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_green_corner_all_12r)
+                    binding.orderStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.green2))
+                }
+
+                cancelByUserKey -> {
+                    binding.orderStatus.text = getString(R.string.cancelled)
+                    binding.orderStatus.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_red_corner_all_12r)
+                    binding.orderStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.red2))
+                }
+
+                cancelByDriverKey -> {
+                    binding.orderStatus.text = getString(R.string.cancelled)
+                    binding.orderStatus.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_red_corner_all_12r)
+                    binding.orderStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.red2))
+                }
+
+                acceptedKey -> {
+                    binding.orderStatus.text = getString(R.string.open_order)
+                    binding.orderStatus.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_blue_corner_all_12r)
+                    binding.orderStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.blue))
+                }
+
+                else -> {
+                    binding.orderStatus.text = getString(R.string.new_order)
+                    binding.orderStatus.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_blue_corner_all_12r)
+                    binding.orderStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.blue))
+                }
             }
+
 
             if (order?.status == finishedKey) {
 //                binding.rateUser.visibility = View.VISIBLE

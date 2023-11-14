@@ -22,6 +22,7 @@
             android:id="@+id/markerIV"
             android:layout_width="46dp"
             android:layout_height="46dp"
+            android:visibility="gone"
             android:src="@drawable/selecting_start_marker"
             app:layout_constraintBottom_toBottomOf="@+id/map"
             app:layout_constraintEnd_toEndOf="@+id/map"

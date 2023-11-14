@@ -56,29 +56,41 @@
             app:layout_constraintEnd_toStartOf="@+id/hiTV"
             app:layout_constraintTop_toTopOf="@+id/hiTV" />
 
-        <EditText
+        <TextView
             android:id="@+id/searchET"
             android:layout_width="0dp"
             android:layout_height="56dp"
-            android:layout_marginHorizontal="24dp"
             android:layout_marginTop="12dp"
+            android:layout_marginEnd="24dp"
             android:background="@drawable/bg_edit_text"
-            android:drawableEnd="@drawable/search"
             android:drawablePadding="16dp"
             android:gravity="center_vertical"
             android:hint="@string/search_for_place"
-            android:imeOptions="actionSearch"
-            android:inputType="text"
             android:lines="1"
+            android:ellipsize="end"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:textColor="@color/textColor"
             android:textColorHint="@color/grey4"
             android:textSize="15sp"
+            app:drawableEndCompat="@drawable/search"
             app:layout_constraintEnd_toEndOf="@+id/topContainer"
-            app:layout_constraintStart_toStartOf="@+id/topContainer"
-            app:layout_constraintTop_toBottomOf="@+id/userImg" />
+            app:layout_constraintStart_toEndOf="@+id/clearSearchBtn"
+            app:layout_constraintTop_toBottomOf="@+id/userImg"
+            app:layout_goneMarginStart="24dp" />
 
+        <ImageView
+            android:id="@+id/clearSearchBtn"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:visibility="gone"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/close"
+            app:layout_constraintBottom_toBottomOf="@+id/searchET"
+            app:layout_constraintEnd_toStartOf="@+id/searchET"
+            app:layout_constraintStart_toStartOf="@+id/topContainer"
+            app:layout_constraintTop_toTopOf="@+id/searchET" />
 
         <TextView
             android:id="@+id/yourLocation"

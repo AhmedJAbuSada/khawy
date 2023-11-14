@@ -1,6 +1,7 @@
 package com.khawi.ui.main.home
 
 import android.Manifest
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -14,6 +15,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -27,6 +30,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.database.FirebaseDatabase
 import com.khawi.R
@@ -41,6 +48,7 @@ import com.willy.ratingbar.ScaleRatingBar
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), OnMapReadyCallback {
@@ -57,6 +65,31 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     //    private var selectedMarker: Marker? = null
     private var googleMap: GoogleMap? = null
 
+    private val startAutocomplete =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val intent = result.data
+                if (intent != null) {
+                    val place = Autocomplete.getPlaceFromIntent(intent)
+                    if (place.latLng != null)
+                        binding.searchET.text = place.address
+                    if (binding.searchET.text.toString().isNotEmpty()) {
+                        binding.clearSearchBtn.visibility = View.VISIBLE
+                        googleMap?.animateCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(
+                                    place.latLng?.latitude ?: 0.0,
+                                    place.latLng?.longitude ?: 0.0
+                                ),
+                                15f
+                            )
+                        )
+                        getOrders()
+                    }
+                }
+            }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,6 +101,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (!Places.isInitialized()) {
+            Places.initialize(requireContext(), getString(R.string.api_key), Locale.ENGLISH);
+        }
         Locus.getCurrentLocation(requireContext()) { result ->
             result.location?.let {
                 if (isFirst) {
@@ -109,19 +145,46 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 )
             )
         }
+
+        binding.searchET.setOnClickListener {
+            searchPlace()
+        }
+
+        binding.clearSearchBtn.setOnClickListener {
+            binding.searchET.text = ""
+            binding.clearSearchBtn.visibility = View.GONE
+            getOrders()
+        }
+    }
+
+    private fun searchPlace() {
+        val fields = listOf(
+            Place.Field.ID,
+            Place.Field.NAME,
+            Place.Field.ADDRESS,
+            Place.Field.ADDRESS_COMPONENTS,
+            Place.Field.LAT_LNG,
+            Place.Field.TYPES
+        )
+        // Start the autocomplete intent.
+        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+            .build(requireContext())
+        startAutocomplete.launch(intent)
     }
 
     private fun addUserLocation() {
         val database = FirebaseDatabase.getInstance().getReference(userLocationTable)
-        database.child(user?.id?:"").setValue(UserLocation(
-            driverName = user?.fullName,
-            driverPhone = user?.phoneNumber,
-            g = generateRandomString(),
-            l = mutableListOf("$latitude", "$longitude")
-        ))
+        database.child(user?.id ?: "").setValue(
+            UserLocation(
+                driverName = user?.fullName,
+                driverPhone = user?.phoneNumber,
+                g = generateRandomString(),
+                l = mutableListOf("$latitude", "$longitude")
+            )
+        )
     }
 
-    private  fun generateRandomString(): String {
+    private fun generateRandomString(): String {
         val charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         return (1..10)
             .map { charset.random() }
@@ -359,9 +422,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     private fun getOrders() {
         val latlng = googleMap?.cameraPosition?.target
+        val address = if (binding.searchET.text.toString().isNotEmpty())
+            binding.searchET.text.toString()
+        else
+            null
         latlng?.let {
             viewModel.viewModelScope.launch {
-                viewModel.getOrders(it.latitude.toString(), it.longitude.toString())
+                viewModel.getOrders(it.latitude.toString(), it.longitude.toString(), address)
             }
         }
     }
