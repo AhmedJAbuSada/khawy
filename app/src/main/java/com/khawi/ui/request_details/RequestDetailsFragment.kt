@@ -20,6 +20,7 @@ import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
 import com.khawi.base.acceptOfferKey
 import com.khawi.base.acceptedKey
+import com.khawi.base.addOfferKey
 import com.khawi.base.cancelByDriverKey
 import com.khawi.base.cancelByUserKey
 import com.khawi.base.cancelledKey
@@ -275,22 +276,57 @@ class RequestDetailsFragment : Fragment() {
             if ((order?.user?.id ?: "") == (user?.id ?: "")) {
                 order?.offers?.let {
                     if (it.isNotEmpty()) {
-                        binding.requestsContainer.visibility = View.VISIBLE
-                        binding.requestsTitle.text =
-                            if (order?.orderType == 2)
-                                getString(R.string.requests_delivery)
-                            else
-                                getString(R.string.requests_join)
-                        val adapterUserRequest = UserRequestAdapter(requireContext()) { item, _ ->
-                            findNavController().navigate(
-                                RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
-                                    joinObj = item,
-                                    isOfferDeliver = order?.orderType == 2
-                                )
-                            )
+                        val offers = it.filter { it.status == addOfferKey }.toMutableList()
+                        val offersAcceptedList =
+                            it.filter { it.status == acceptOfferKey }.toMutableList()
+
+                        if (offers.isNotEmpty()) {
+                            binding.requestsContainer.visibility = View.VISIBLE
+                            binding.requestsTitle.text =
+                                if (order?.orderType == 2)
+                                    getString(R.string.requests_delivery)
+                                else
+                                    getString(R.string.requests_join)
+                            val adapterUserRequest =
+                                UserRequestAdapter(
+                                    requireContext(),
+                                    false
+                                ) { item, _, type ->
+                                    if (type == UserRequestAdapter.ClickType.OPEN) {
+                                        findNavController().navigate(
+                                            RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
+                                                joinObj = item,
+                                                isOfferDeliver = order?.orderType == 2
+                                            )
+                                        )
+                                    }
+                                }
+                            adapterUserRequest.items = offers
+                            binding.recyclerViewRequests.adapter = adapterUserRequest
                         }
-                        adapterUserRequest.items = it
-                        binding.recyclerViewRequests.adapter = adapterUserRequest
+
+                        if (offersAcceptedList.isNotEmpty()) {
+                            binding.requestsAcceptedContainer.visibility = View.VISIBLE
+                            val adapterUserRequestAccepted =
+                                UserRequestAdapter(
+                                    requireContext(),
+                                    (order?.status == finishedKey && order?.orderType == 2)
+                                ) { item, _, type ->
+                                    if (type == UserRequestAdapter.ClickType.OPEN) {
+                                        findNavController().navigate(
+                                            RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
+                                                joinObj = item,
+                                                isOfferDeliver = order?.orderType == 2
+                                            )
+                                        )
+                                    } else if (type == UserRequestAdapter.ClickType.RATE) {
+                                        rateBottomSheet()
+                                    }
+                                }
+                            adapterUserRequestAccepted.items = offersAcceptedList
+                            binding.recyclerViewRequestsAccepted.adapter =
+                                adapterUserRequestAccepted
+                        }
                     }
                 }
             }

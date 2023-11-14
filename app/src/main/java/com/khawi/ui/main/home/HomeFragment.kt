@@ -26,14 +26,16 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.database.FirebaseDatabase
 import com.khawi.R
 import com.khawi.base.formatDate
 import com.khawi.base.loadImage
+import com.khawi.base.userLocationTable
 import com.khawi.databinding.FragmentHomeBinding
 import com.khawi.model.Order
+import com.khawi.model.UserLocation
 import com.khawi.model.db.user.UserModel
 import com.willy.ratingbar.ScaleRatingBar
 import dagger.hilt.android.AndroidEntryPoint
@@ -71,6 +73,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 if (isFirst) {
                     latitude = it.latitude
                     longitude = it.longitude
+                    addUserLocation()
                     handleMap()
                 }
             }
@@ -106,6 +109,23 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 )
             )
         }
+    }
+
+    private fun addUserLocation() {
+        val database = FirebaseDatabase.getInstance().getReference(userLocationTable)
+        database.child(user?.id?:"").setValue(UserLocation(
+            driverName = user?.fullName,
+            driverPhone = user?.phoneNumber,
+            g = generateRandomString(),
+            l = mutableListOf("$latitude", "$longitude")
+        ))
+    }
+
+    private  fun generateRandomString(): String {
+        val charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        return (1..10)
+            .map { charset.random() }
+            .joinToString("")
     }
 
     private fun handleMap() {

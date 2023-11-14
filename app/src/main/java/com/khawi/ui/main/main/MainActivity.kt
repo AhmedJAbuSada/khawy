@@ -85,8 +85,8 @@ class MainActivity : AppCompatActivity() {
             navController?.navigate(NavGraphDirections.actionRequestFormFragment(false))
             binding.requestsFormGroup.visibility = View.GONE
         }
-    }
 
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
