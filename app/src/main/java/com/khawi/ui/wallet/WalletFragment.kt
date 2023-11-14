@@ -1,6 +1,7 @@
 package com.khawi.ui.wallet
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -155,10 +156,10 @@ class WalletFragment : Fragment() {
         sendBtn.setOnClickListener {
             val amount = amountET.text.toString()
             if (amount.isNotEmpty()) {
-                viewModel.viewModelScope.launch {
-                    viewModel.addAmount(amount)
-                }
-//                openPaymentGateway(amount)
+//                viewModel.viewModelScope.launch {
+//                    viewModel.addAmount(amount)
+//                }
+                openPaymentGateway(amount)
                 bottomSheet.dismiss()
             } else {
                 getString(R.string.error_amount_empty).showAlertMessage(context = requireContext(),
@@ -179,10 +180,14 @@ class WalletFragment : Fragment() {
 
     private fun openPaymentGateway(amount: String) {
         try {
-            val profileId = "88646" // test
-//            val profileId = "94514" // live
-            val serverKey = "SKJN2DKWTD-JGLHWBTNWK-JKMJHJW2ZD"
-            val clientKey = "CRKMQQ-R77P6T-BHV27Q-TV2RN2"
+            // test
+            val profileId = "88646"
+            val serverKey = "SZJN2DKWTG-JDHMTD6T2L-KZJKMN6GKH"
+            val clientKey = "C7KMQQ-R7BR6D-HN7DG7-KQKMRQ"
+//            // live
+//            val profileId = "94514"
+//            val serverKey = "SKJN2DKWTD-JGLHWBTNWK-JKMJHJW2ZD"
+//            val clientKey = "CRKMQQ-R77P6T-BHV27Q-TV2RN2"
             val locale = PaymentSdkLanguageCode.AR
             val screenTitle = getString(R.string.app_name)
             val cartDesc = getString(R.string.app_name)
@@ -225,7 +230,7 @@ class WalletFragment : Fragment() {
                     .build()
             startCardPayment(requireActivity(), configData, object : CallbackPaymentInterface {
                 override fun onError(error: PaymentSdkError) {
-
+                    Log.e("error payment", "code: ${error.code}, msg: ${error.msg}")
                 }
 
                 override fun onPaymentCancel() {
