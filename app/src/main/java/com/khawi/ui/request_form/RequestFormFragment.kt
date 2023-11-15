@@ -116,10 +116,12 @@ class RequestFormFragment : Fragment() {
             binding.title.text = getString(R.string.deliver_form)
             binding.priceET.visibility = View.VISIBLE
             binding.maxSeatsET.hint = getString(R.string.seats_counts)
+            binding.sendBtn.text = getString(R.string.apply_deliver)
         } else {
             binding.title.text = getString(R.string.join_form)
             binding.joinGroup.visibility = View.VISIBLE
             binding.maxSeatsET.hint = getString(R.string.maximum_seats)
+            binding.sendBtn.text = getString(R.string.apply_join)
         }
 
         binding.recyclerViewDays.visibility = View.GONE

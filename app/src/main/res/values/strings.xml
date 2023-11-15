@@ -158,4 +158,5 @@
     <string name="offer_price">السعر المرسل</string>
     <string name="offer_accepted">العروض المقبولة</string>
     <string name="api_key">AIzaSyBG2O9nhPoHxemxdMh4NX8pBa32cd0Kc1Q</string>
+    <string name="error_paymet">حدث خطأ اثناء عملية الدفع يرجى المحاولة مرة أخرى</string>
 </resources>

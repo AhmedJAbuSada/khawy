@@ -230,7 +230,16 @@ class WalletFragment : Fragment() {
                     .build()
             startCardPayment(requireActivity(), configData, object : CallbackPaymentInterface {
                 override fun onError(error: PaymentSdkError) {
-                    Log.e("error payment", "code: ${error.code}, msg: ${error.msg}")
+                    getString(R.string.error_paymet).showAlertMessage(context = requireContext(),
+                        title = getString(R.string.error),
+                        confirmText = getString(R.string.Ok),
+                        type = SweetAlertDialog.ERROR_TYPE,
+                        onCancelClick = {
+
+                        },
+                        onConfirmClick = {
+
+                        })
                 }
 
                 override fun onPaymentCancel() {

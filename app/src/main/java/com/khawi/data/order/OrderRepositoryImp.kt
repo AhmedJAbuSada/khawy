@@ -55,9 +55,9 @@ class OrderRepositoryImp @Inject constructor(
             }
         }
 
-    override suspend fun changeOfferStatusBody(offerId: String, body: ChangeStatusBody) =
+    override suspend fun changeOfferStatusBody(orderId: String, body: ChangeStatusBody) =
         withContext(dispatcherProvider.io()) {
-            when (val result = remoteDataSource.changeOfferStatusBody(offerId, body)) {
+            when (val result = remoteDataSource.changeOfferStatusBody(orderId, body)) {
                 is AdvanceResult.Success -> {
                     val item = result.data
                     item.v = System.currentTimeMillis()

@@ -13,7 +13,7 @@ import java.io.File
 interface OrderRepository {
     suspend fun addOrder(body: AddOrderBody)
     suspend fun addOffer(orderId: String, body: AddOrderBody)
-    suspend fun changeOfferStatusBody(offerId: String, body: ChangeStatusBody)
+    suspend fun changeOfferStatusBody(orderId: String, body: ChangeStatusBody)
     suspend fun changeOrderStatusBody(orderId: String, body: ChangeStatusBody)
     suspend fun addRateBody(orderId: String, body: AddRateBody)
     suspend fun showMap(params: HashMap<String, String>)

@@ -86,6 +86,8 @@ class MainActivity : AppCompatActivity() {
             binding.requestsFormGroup.visibility = View.GONE
         }
 
+        if (intent.hasExtra("notification"))
+            binding.bottomView.selectedItemId = R.id.notifications
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

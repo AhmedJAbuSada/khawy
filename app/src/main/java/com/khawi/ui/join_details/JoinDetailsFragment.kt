@@ -85,6 +85,7 @@ class JoinDetailsFragment : Fragment() {
                 onConfirmClick = {
                     viewModel.viewModelScope.launch {
                         viewModel.changeOfferStatusBody(
+                            args.orderObj?.id ?: "",
                             offer?.id ?: "",
                             acceptOfferKey
                         )
@@ -103,6 +104,7 @@ class JoinDetailsFragment : Fragment() {
                 onConfirmClick = {
                     viewModel.viewModelScope.launch {
                         viewModel.changeOfferStatusBody(
+                            args.orderObj?.id ?: "",
                             offer?.id ?: "",
                             rejectOfferKey
                         )

@@ -15,7 +15,6 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.khawi.MainApplication
 import com.khawi.R
 import com.khawi.SplashActivity
 import java.util.Random
@@ -28,28 +27,14 @@ class MyFcmListenerService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        var title: String?
-        var type: String?
-        var id: String?
+        val title: String?
         val data = message.data
         try {
             title = message.notification?.title ?: (data["title"] ?: "")
-//            id = data["data"]
-//            type = data["type"]
 
-            Log.e("FCM", "onMessageReceived: ${message.notification}")
-//            val isChat = (type == "message" && data.containsKey("data"))
-
-//            if (type != null) {
+            Log.e("FCM", "onMessageReceived: ${message.notification.toString()}")
             val intent = Intent(applicationContext, SplashActivity::class.java)
-//                if (isChat) {
-//                    intent = Intent(applicationContext, ChatActivity::class.java)
-//                        .putExtra(
-//                            ChatActivity.chatIdKey,
-//                            data["data"]
-//                        )
-//                }
-//                if (MainApplication.applicationContext().chatNotificationId != id) {
+            intent.putExtra("notification", "notification")
             showNotification(
                 if (!TextUtils.isEmpty(title))
                     title
@@ -57,10 +42,6 @@ class MyFcmListenerService : FirebaseMessagingService() {
                 message.notification?.body ?: "",
                 intent
             )
-//                } else {
-//                    trackMessagingLiveData.postValue("message ${System.currentTimeMillis()}")
-//                }
-//            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

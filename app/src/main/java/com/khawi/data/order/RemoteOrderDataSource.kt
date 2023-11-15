@@ -76,14 +76,14 @@ class RemoteOrderDataSource @Inject constructor(
     }
 
     suspend fun changeOfferStatusBody(
-        offerId: String,
+        orderId: String,
         body: ChangeStatusBody
     ): AdvanceResult<BaseResponse<Order?>> {
         val token = repository.getUser()?.token ?: ""
         val header = HashMap<String, String>()
         header["token"] = token
         return remoteDataSource.post(
-            urlPath = "mobile/order/offer/update/$offerId",
+            urlPath = "mobile/order/offer/update/$orderId",
             headers = header,
             params = null,
             body = body

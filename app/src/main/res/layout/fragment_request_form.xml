@@ -240,7 +240,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:text="@string/trip_date"
-                        android:gravity="end"
+                        android:gravity="right"
                         android:textColor="#666666"
                         android:textSize="16sp" />
 
@@ -271,7 +271,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:text="@string/trip_time"
-                        android:gravity="end"
+                        android:gravity="right"
                         android:textColor="#666666"
                         android:textSize="16sp" />
 
@@ -368,7 +368,6 @@
             android:background="@drawable/button_main"
             android:elevation="5dp"
             android:gravity="center"
-            android:text="@string/apply_join"
             android:textColor="@color/white"
             android:textSize="15sp"
             android:textStyle="bold"

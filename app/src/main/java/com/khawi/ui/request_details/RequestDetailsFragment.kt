@@ -79,7 +79,7 @@ class RequestDetailsFragment : Fragment() {
         }
         viewModel.successLiveData.observe(viewLifecycleOwner) {
             if (it?.status == true) {
-                if (it.data != null) {
+                if (it.data != null && it.data?.id != null) {
                     order = it.data
                     fillInfo()
                 } else {
@@ -262,43 +262,91 @@ class RequestDetailsFragment : Fragment() {
             when (order?.status) {
                 ratedKey -> {
                     binding.orderStatus.text = getString(R.string.finished)
-                    binding.orderStatus.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_green_corner_all_12r)
-                    binding.orderStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.green2))
+                    binding.orderStatus.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.bg_green_corner_all_12r
+                    )
+                    binding.orderStatus.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.green2
+                        )
+                    )
                 }
 
                 finishedKey -> {
                     binding.orderStatus.text = getString(R.string.finished)
-                    binding.orderStatus.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_green_corner_all_12r)
-                    binding.orderStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.green2))
+                    binding.orderStatus.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.bg_green_corner_all_12r
+                    )
+                    binding.orderStatus.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.green2
+                        )
+                    )
                 }
 
                 cancelByUserKey -> {
                     binding.orderStatus.text = getString(R.string.cancelled)
-                    binding.orderStatus.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_red_corner_all_12r)
-                    binding.orderStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.red2))
+                    binding.orderStatus.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.bg_red_corner_all_12r
+                    )
+                    binding.orderStatus.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.red2
+                        )
+                    )
                 }
 
                 cancelByDriverKey -> {
                     binding.orderStatus.text = getString(R.string.cancelled)
-                    binding.orderStatus.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_red_corner_all_12r)
-                    binding.orderStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.red2))
+                    binding.orderStatus.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.bg_red_corner_all_12r
+                    )
+                    binding.orderStatus.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.red2
+                        )
+                    )
                 }
 
                 acceptedKey -> {
                     binding.orderStatus.text = getString(R.string.open_order)
-                    binding.orderStatus.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_blue_corner_all_12r)
-                    binding.orderStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.blue))
+                    binding.orderStatus.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.bg_blue_corner_all_12r
+                    )
+                    binding.orderStatus.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.blue
+                        )
+                    )
                 }
 
                 else -> {
                     binding.orderStatus.text = getString(R.string.new_order)
-                    binding.orderStatus.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_blue_corner_all_12r)
-                    binding.orderStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.blue))
+                    binding.orderStatus.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.bg_blue_corner_all_12r
+                    )
+                    binding.orderStatus.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.blue
+                        )
+                    )
                 }
             }
 
 
-            if (order?.status == finishedKey) {
+            if (order?.status == finishedKey && ((order?.user?.id ?: "") != (user?.id ?: ""))) {
 //                binding.rateUser.visibility = View.VISIBLE
                 binding.rateDriver.visibility = View.VISIBLE
             }
@@ -325,6 +373,7 @@ class RequestDetailsFragment : Fragment() {
                                     if (type == UserRequestAdapter.ClickType.OPEN) {
                                         findNavController().navigate(
                                             RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
+                                                orderObj = order,
                                                 joinObj = item,
                                                 isOfferDeliver = order?.orderType == 2
                                             )
@@ -336,21 +385,24 @@ class RequestDetailsFragment : Fragment() {
                         }
 
                         if (offersAcceptedList.isNotEmpty()) {
+                            val isOrderFinished =
+                                (order?.status == finishedKey && order?.orderType == 2)
                             binding.requestsAcceptedContainer.visibility = View.VISIBLE
                             val adapterUserRequestAccepted =
                                 UserRequestAdapter(
                                     requireContext(),
-                                    (order?.status == finishedKey && order?.orderType == 2)
+                                    isOrderFinished
                                 ) { item, _, type ->
                                     if (type == UserRequestAdapter.ClickType.OPEN) {
                                         findNavController().navigate(
                                             RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
+                                                orderObj = order,
                                                 joinObj = item,
                                                 isOfferDeliver = order?.orderType == 2
                                             )
                                         )
                                     } else if (type == UserRequestAdapter.ClickType.RATE) {
-                                        rateBottomSheet()
+                                        rateBottomSheet(item.user)
                                     }
                                 }
                             adapterUserRequestAccepted.items = offersAcceptedList
@@ -363,10 +415,10 @@ class RequestDetailsFragment : Fragment() {
         }
 
         binding.rateUser.setOnClickListener {
-            rateBottomSheet()
+            rateBottomSheet(order?.user)
         }
         binding.rateDriver.setOnClickListener {
-            rateBottomSheet()
+            rateBottomSheet(order?.user)
         }
     }
 
@@ -397,7 +449,7 @@ class RequestDetailsFragment : Fragment() {
         bottomSheet.show()
     }
 
-    private fun rateBottomSheet() {
+    private fun rateBottomSheet(userModel: UserModel?) {
         val bottomSheet = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
         val rootView =
             layoutInflater.inflate(R.layout.bottomsheet_rate, binding.container, false)
@@ -408,8 +460,8 @@ class RequestDetailsFragment : Fragment() {
         val ratingBarRate = rootView.findViewById<ScaleRatingBar>(R.id.ratingBarRate)
         val noteETRate = rootView.findViewById<EditText>(R.id.noteETRate)
 
-        userImageRate.loadImage(requireContext(), order?.user?.image ?: "")
-        usernameRate.text = order?.user?.fullName ?: ""
+        userImageRate.loadImage(requireContext(), userModel?.image ?: "")
+        usernameRate.text = userModel?.fullName ?: ""
 
         val rateBtn = rootView.findViewById<TextView>(R.id.rateBtn)
 
@@ -428,7 +480,8 @@ class RequestDetailsFragment : Fragment() {
     }
 
     private fun canCancel(): Boolean {
-        return order?.status == newKey || order?.status == acceptedKey
+        return ((order?.user?.id ?: "") == (user?.id ?: "") && order?.status == newKey)
+                || (order?.status == acceptedKey)
     }
 
     private fun endTripStatus(): Boolean {
@@ -437,12 +490,11 @@ class RequestDetailsFragment : Fragment() {
 
     private fun newStatusWithOfferAccepted(): Boolean {
         val offersAccepted = order?.offers?.filter { it.status == acceptOfferKey }
-        val iShouldDrive = if (order?.orderType == 2 && offersAccepted?.isNotEmpty() == true) {
+        return if (order?.orderType == 2 && offersAccepted?.isNotEmpty() == true && order?.status == acceptedKey) {
             ((offersAccepted[0].user?.id ?: "") == (user?.id ?: ""))
-        } else if (order?.orderType == 1 && offersAccepted?.isNotEmpty() == true) {
+        } else if (order?.orderType == 1 && offersAccepted?.isNotEmpty() == true && order?.status == newKey) {
             ((order?.user?.id ?: "") == (user?.id ?: ""))
         } else
             false
-        return order?.status == acceptedKey && iShouldDrive
     }
 }

@@ -165,6 +165,12 @@
             app:nullable="true" />
 
         <argument
+            android:name="orderObj"
+            android:defaultValue="@null"
+            app:argType="com.khawi.model.Order"
+            app:nullable="true" />
+
+        <argument
             android:name="isOfferDeliver"
             android:defaultValue="false"
             app:argType="boolean" />

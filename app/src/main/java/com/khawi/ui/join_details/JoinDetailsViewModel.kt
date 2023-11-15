@@ -63,10 +63,11 @@ class JoinDetailsViewModel @Inject constructor(
         }
     }
 
-    suspend fun changeOfferStatusBody(offerId: String, status: String, note: String? = null) {
+    suspend fun changeOfferStatusBody(orderId: String,offerId: String, status: String, note: String? = null) {
         _progressLiveData.postValue(true)
         repository.changeOfferStatusBody(
-            offerId, ChangeStatusBody(
+            orderId, ChangeStatusBody(
+                offer = offerId,
                 status = status,
                 canceledNote = note
             )

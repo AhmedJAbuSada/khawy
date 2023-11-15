@@ -2,6 +2,7 @@ package com.khawi
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import com.khawi.base.BaseActivity
 import com.khawi.base.getPreferenceBoolean
 import com.khawi.base.walkthrough_key
@@ -29,28 +30,21 @@ class SplashActivity : BaseActivity() {
 
         Timer().schedule(object : TimerTask() {
             override fun run() {
-//                val bundle = intent.extras
-//                val id = bundle?.getString("data")
-//                val type = bundle?.getString("type")
-//                if (!id.isNullOrEmpty() && !type.isNullOrEmpty()) {
-//                    if (type == "message") {
-//                        startActivity(
-//                            Intent(applicationContext, ChatActivity::class.java)
-//                                .putExtra(
-//                                    ChatActivity.chatIdKey,
-//                                    id
-//                                )
-//                        )
-//                    }
-//                } else
-                if (getPreferenceBoolean(walkthrough_key)) {
+                val bundle = intent.extras
+                val notification = bundle?.getString("notification")
+                if (!notification.isNullOrEmpty()) {
+                    startActivity(
+                        Intent(this@SplashActivity, MainActivity::class.java)
+                            .putExtra("notification", "notification")
+                    )
+                } else if (getPreferenceBoolean(walkthrough_key)) {
                     val user = repository.getUser()
                     val intent = Intent(
                         this@SplashActivity,
                         if (user != null && user.isVerify == true)
                             MainActivity::class.java
                         else
-                        LoginActivity::class.java
+                            LoginActivity::class.java
                     )
                     startActivity(intent)
                 } else {
