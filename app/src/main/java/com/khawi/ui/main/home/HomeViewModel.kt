@@ -22,11 +22,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     val userMutableLiveData = MutableLiveData<UserModel>()
 
-    init {
-        getUser()
-    }
-
-    private fun getUser() {
+    fun getUser() {
         userMutableLiveData.postValue(userRepository.getUser())
     }
 

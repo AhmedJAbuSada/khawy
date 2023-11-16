@@ -41,17 +41,17 @@ class WalletAdapter(
 
         val amount = item.total ?: 0.0
         holder.transactionIcon.setImageResource(
-            if (amount > 0)
+            if (item.details == "شحن المحفظة الالكترونية")
                 R.drawable.transfer_up
             else
                 R.drawable.transfer_down
         )
 
-        holder.transactionName.text =
-            if (amount > 0)
-                ctx.getString(R.string.added_amount)
-            else
-                "${ctx.getString(R.string.amount_trip_number)} ${item.orderNo}"
+        holder.transactionName.text = item.details ?: ""
+//            if (amount > 0)
+//                ctx.getString(R.string.added_amount)
+//            else
+//                "${ctx.getString(R.string.amount_trip_number)} ${item.orderNo}"
         holder.transactionAmount.text = "$amount ${ctx.getString(R.string.currancy)}"
 
         holder.itemView.setOnClickListener {

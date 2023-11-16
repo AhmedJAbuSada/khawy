@@ -116,6 +116,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             result.error?.let { }
         }
 
+        viewModel.getUser()
         viewModel.userMutableLiveData.observe(viewLifecycleOwner) {
             it?.let {
                 user = it
@@ -179,7 +180,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 driverName = user?.fullName,
                 driverPhone = user?.phoneNumber,
                 g = generateRandomString(),
-                l = mutableListOf("$latitude", "$longitude")
+                l = mutableListOf(latitude, longitude)
             )
         )
     }

@@ -44,6 +44,7 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         loading = requireActivity().initLoading()
 
+        viewModel.getUser()
         viewModel.userMutableLiveData.observe(viewLifecycleOwner) {
             it?.let {
                 binding.userImage.loadImage(requireContext(), it.image)

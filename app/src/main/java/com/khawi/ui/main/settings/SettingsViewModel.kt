@@ -20,11 +20,7 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
     val userMutableLiveData = MutableLiveData<UserModel>()
 
-    init {
-        getUser()
-    }
-
-    private fun getUser() {
+    fun getUser() {
         userMutableLiveData.postValue(repository.getUser())
     }
 
