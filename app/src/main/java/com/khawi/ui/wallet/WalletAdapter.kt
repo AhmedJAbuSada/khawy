@@ -10,9 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.khawi.R
-import com.khawi.model.Order
 import com.khawi.model.Wallet
-import com.khawi.ui.main.orders.OrderAdapter
 
 
 class WalletAdapter(
@@ -41,7 +39,8 @@ class WalletAdapter(
 
         val amount = item.total ?: 0.0
         holder.transactionIcon.setImageResource(
-            if (item.details == "شحن المحفظة الالكترونية")
+//            if (item.details == "شحن المحفظة الالكترونية")
+            if (amount > 0)
                 R.drawable.transfer_up
             else
                 R.drawable.transfer_down

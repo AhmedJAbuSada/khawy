@@ -423,13 +423,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     private fun getOrders() {
         val latlng = googleMap?.cameraPosition?.target
-        val address = if (binding.searchET.text.toString().isNotEmpty())
-            binding.searchET.text.toString()
-        else
-            null
+//        val address = if (binding.searchET.text.toString().isNotEmpty())
+//            binding.searchET.text.toString()
+//        else
+//            null
         latlng?.let {
             viewModel.viewModelScope.launch {
-                viewModel.getOrders(it.latitude.toString(), it.longitude.toString(), address)
+                viewModel.getOrders(it.latitude.toString(), it.longitude.toString(), null)
             }
         }
     }

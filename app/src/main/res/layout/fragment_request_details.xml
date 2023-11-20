@@ -378,6 +378,21 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/userImage" />
 
+                    <TextView
+                        android:id="@+id/callDriver"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/button_main"
+                        android:paddingHorizontal="24dp"
+                        android:paddingVertical="6dp"
+                        android:text="@string/call"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/rateDriver" />
+
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/userImage"
                         android:layout_width="40dp"
@@ -621,7 +636,7 @@
                     android:id="@+id/deliverContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:layout_constraintTop_toBottomOf="@+id/recyclerViewDays">
 
                     <TextView
@@ -644,12 +659,28 @@
                         android:background="@drawable/button_main"
                         android:paddingHorizontal="24dp"
                         android:paddingVertical="6dp"
+                        android:visibility="gone"
                         android:text="@string/rate"
                         android:textColor="@color/white"
                         android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="@+id/personImage"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/personImage" />
+
+                    <TextView
+                        android:id="@+id/callClient"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:background="@drawable/button_main"
+                        android:paddingHorizontal="24dp"
+                        android:paddingVertical="6dp"
+                        android:text="@string/call"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/personImage"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/personImage"  />
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/personImage"

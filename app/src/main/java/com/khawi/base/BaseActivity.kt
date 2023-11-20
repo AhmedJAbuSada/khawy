@@ -2,7 +2,9 @@ package com.khawi.base
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -48,6 +50,5 @@ open class BaseActivity : AppCompatActivity() {
         overrideConfiguration?.setLocale(locale)
         super.applyOverrideConfiguration(overrideConfiguration)
     }
-
 
 }

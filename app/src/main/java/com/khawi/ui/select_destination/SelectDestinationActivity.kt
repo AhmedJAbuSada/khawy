@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.location.Location
 import android.os.Bundle
 import android.view.View
 import androidx.core.app.ActivityCompat
@@ -19,17 +20,25 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.maps.DirectionsApi
 import com.google.maps.GeoApiContext
 import com.khawi.R
 import com.khawi.base.BaseActivity
+import com.khawi.base.LocationService
 import com.khawi.base.getAddress
 import com.khawi.base.parcelable
 import com.khawi.base.startKey
+import com.khawi.base.trackingTable
 import com.khawi.databinding.ActivitySelectDestinationBinding
 import com.khawi.model.Order
+import com.khawi.model.TrackingLocation
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -43,7 +52,7 @@ class SelectDestinationActivity : BaseActivity(), OnMapReadyCallback {
     private var latlngStart: LatLng? = null
     private var latlngEnd: LatLng? = null
     private var order: Order? = null
-
+    private var marker: Marker? = null
 
     companion object {
         const val latLongStartKey = "lat_long_start"
@@ -209,7 +218,11 @@ class SelectDestinationActivity : BaseActivity(), OnMapReadyCallback {
         val context = GeoApiContext.Builder()
             .apiKey(getString(R.string.api_key))
             .build()
-        val req = DirectionsApi.getDirections(context, "${latlngStart?.latitude},${latlngStart?.longitude}", "${latlngEnd?.latitude},${latlngEnd?.longitude}")
+        val req = DirectionsApi.getDirections(
+            context,
+            "${latlngStart?.latitude},${latlngStart?.longitude}",
+            "${latlngEnd?.latitude},${latlngEnd?.longitude}"
+        )
         try {
             val res = req.await()
 
@@ -287,7 +300,28 @@ class SelectDestinationActivity : BaseActivity(), OnMapReadyCallback {
 
     private fun trackingDriver() {
         if (order?.status == startKey) {
+            val database = FirebaseDatabase.getInstance().getReference(trackingTable)
+            database.child(order?.id ?: "").addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    for (dataSnapshotChild in dataSnapshot.children) {
+                        val data = dataSnapshotChild.getValue(TrackingLocation::class.java)
+                        if (data != null) {
+                            if (marker == null) {
+                                val markerOptions = MarkerOptions()
+                                    .position(LatLng(data.lat ?: 0.0, data.lng ?: 0.0))
+                                    .icon(generateBitmapDescriptorFromRes(R.drawable.car))
+                                marker = googleMap?.addMarker(markerOptions)
+                            } else {
+                                marker?.position = LatLng(data.lat ?: 0.0, data.lng ?: 0.0)
+                            }
+                        }
+                    }
+                }
 
+                override fun onCancelled(databaseError: DatabaseError) {
+                    databaseError.toException().printStackTrace()
+                }
+            })
         }
     }
 }

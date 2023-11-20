@@ -1,6 +1,7 @@
 package com.khawi.ui.request_details
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +34,8 @@ import com.khawi.base.newKey
 import com.khawi.base.ratedKey
 import com.khawi.base.showDialog
 import com.khawi.base.startKey
+import com.khawi.base.startTrackingService
+import com.khawi.base.stopTrackingService
 import com.khawi.databinding.FragmentRequestDetailsBinding
 import com.khawi.model.Day
 import com.khawi.model.Order
@@ -41,6 +44,7 @@ import com.khawi.ui.select_destination.SelectDestinationActivity
 import com.willy.ratingbar.ScaleRatingBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class RequestDetailsFragment : Fragment() {
@@ -178,9 +182,18 @@ class RequestDetailsFragment : Fragment() {
             binding.note.text = order?.notes ?: ""
             if ((order?.notes ?: "").isEmpty())
                 binding.noteGroup.visibility = View.GONE
+
+            binding.callClient.visibility = View.GONE
+            if (order?.status == startKey || order?.status == acceptedKey)
+                binding.callClient.visibility = View.VISIBLE
+
+            binding.callClient.setOnClickListener {
+                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${user?.phoneNumber}"))
+                startActivity(intent)
+            }
+
         } else if (order?.orderType == 1) {
             binding.sendBtn.text = getString(R.string.join_now)
-            binding.joinContainer.visibility = View.VISIBLE
             binding.sendBtn.setOnClickListener {
                 findNavController().navigate(
                     RequestDetailsFragmentDirections.actionRequestDetailsFragmentToRequestJoinFragment(
@@ -188,24 +201,12 @@ class RequestDetailsFragment : Fragment() {
                     )
                 )
             }
-
-            binding.userImage.loadImage(requireContext(), order?.user?.image ?: "")
-            binding.username.text = order?.user?.fullName ?: ""
-            binding.ratingBar.rating = if (order?.user?.rate?.isNotEmpty() == true)
-                order?.user?.rate?.toFloat() ?: 0f
-            else 0f
-
-            binding.carType.text = order?.user?.carType ?: ""
-            binding.carModel.text = order?.user?.carModel ?: ""
-            binding.carColor.text = order?.user?.carColor ?: ""
-            binding.carPlate.text = order?.user?.carNumber ?: ""
-
-            binding.seat.text = "${order?.maxPassenger ?: 0} ${getString(R.string.seats)}"
-            binding.driverNote.text = order?.notes ?: ""
-            if ((order?.notes ?: "").isEmpty())
-                binding.driverNoteGroup.visibility = View.GONE
-            binding.price.text =
+            showDriverInfo(
+                order?.user,
+                "${order?.maxPassenger ?: 0} ${getString(R.string.seats)}",
+                order?.notes ?: "",
                 "(${order?.minPrice ?: ""} - ${order?.maxPrice ?: ""}) ${getString(R.string.currancy)}"
+            )
         }
 
         binding.priceOfferContainer.visibility = View.GONE
@@ -238,6 +239,7 @@ class RequestDetailsFragment : Fragment() {
                 binding.sendBtn.visibility = View.VISIBLE
                 binding.sendBtn.text = getString(R.string.end_trip)
                 binding.sendBtn.setOnClickListener {
+                    requireActivity().stopTrackingService()
                     viewModel.viewModelScope.launch {
                         viewModel.changeOrderStatusBody(
                             orderId = order?.id ?: "",
@@ -249,6 +251,7 @@ class RequestDetailsFragment : Fragment() {
             if (newStatusWithOfferAccepted()) {
                 binding.startBtn.visibility = View.VISIBLE
                 binding.startBtn.setOnClickListener {
+                    requireActivity().startTrackingService(order)
                     viewModel.viewModelScope.launch {
                         viewModel.changeOrderStatusBody(
                             orderId = order?.id ?: "",
@@ -385,29 +388,40 @@ class RequestDetailsFragment : Fragment() {
                         }
 
                         if (offersAcceptedList.isNotEmpty()) {
-                            val isOrderFinished =
-                                (order?.status == finishedKey && order?.orderType == 2)
-                            binding.requestsAcceptedContainer.visibility = View.VISIBLE
-                            val adapterUserRequestAccepted =
-                                UserRequestAdapter(
-                                    requireContext(),
-                                    isOrderFinished
-                                ) { item, _, type ->
-                                    if (type == UserRequestAdapter.ClickType.OPEN) {
-                                        findNavController().navigate(
-                                            RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
-                                                orderObj = order,
-                                                joinObj = item,
-                                                isOfferDeliver = order?.orderType == 2
+                            if (order?.orderType == 1) {
+//                                val isOrderFinished =
+//                                    (order?.status == finishedKey && order?.orderType == 2)
+                                binding.requestsAcceptedContainer.visibility = View.VISIBLE
+                                val adapterUserRequestAccepted =
+                                    UserRequestAdapter(
+                                        requireContext(),
+                                        false
+                                    ) { item, _, type ->
+                                        if (type == UserRequestAdapter.ClickType.OPEN) {
+                                            findNavController().navigate(
+                                                RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
+                                                    orderObj = order,
+                                                    joinObj = item,
+                                                    isOfferDeliver = order?.orderType == 2
+                                                )
                                             )
-                                        )
-                                    } else if (type == UserRequestAdapter.ClickType.RATE) {
-                                        rateBottomSheet(item.user)
+                                        } else if (type == UserRequestAdapter.ClickType.RATE) {
+                                            rateBottomSheet(item.user)
+                                        }
                                     }
-                                }
-                            adapterUserRequestAccepted.items = offersAcceptedList
-                            binding.recyclerViewRequestsAccepted.adapter =
-                                adapterUserRequestAccepted
+                                adapterUserRequestAccepted.items = offersAcceptedList
+                                binding.recyclerViewRequestsAccepted.adapter =
+                                    adapterUserRequestAccepted
+                            } else {
+                                binding.requestsContainer.visibility = View.GONE
+                                binding.requestsAcceptedContainer.visibility = View.GONE
+                                showDriverInfo(
+                                    offersAcceptedList[0].user,
+                                    "${order?.maxPassenger ?: 0} ${getString(R.string.seats)}",
+                                    offersAcceptedList[0].notes ?: "",
+                                    "${offersAcceptedList[0].price ?: ""} ${getString(R.string.currancy)}"
+                                )
+                            }
                         }
                     }
                 }
@@ -419,6 +433,39 @@ class RequestDetailsFragment : Fragment() {
         }
         binding.rateDriver.setOnClickListener {
             rateBottomSheet(order?.user)
+        }
+    }
+
+    private fun showDriverInfo(
+        user: UserModel?,
+        seatsText: String,
+        noteText: String,
+        priceText: String
+    ) {
+        binding.joinContainer.visibility = View.VISIBLE
+        binding.userImage.loadImage(requireContext(), user?.image ?: "")
+        binding.username.text = user?.fullName ?: ""
+        binding.ratingBar.rating = if (user?.rate?.isNotEmpty() == true)
+            user.rate.toFloat()
+        else 0f
+
+        binding.carType.text = user?.carType ?: ""
+        binding.carModel.text = user?.carModel ?: ""
+        binding.carColor.text = user?.carColor ?: ""
+        binding.carPlate.text = user?.carNumber ?: ""
+
+        binding.seat.text = seatsText
+        binding.driverNote.text = noteText
+        if (noteText.isEmpty())
+            binding.driverNoteGroup.visibility = View.GONE
+        binding.price.text = priceText
+
+        binding.callDriver.visibility = View.GONE
+        if (order?.status == startKey || order?.status == acceptedKey)
+            binding.callDriver.visibility = View.VISIBLE
+        binding.callDriver.setOnClickListener {
+            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${user?.phoneNumber}"))
+            startActivity(intent)
         }
     }
 

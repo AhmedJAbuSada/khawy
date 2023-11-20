@@ -34,6 +34,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
+import com.khawi.model.Order
 import java.net.InetAddress
 import java.net.MalformedURLException
 import java.net.NetworkInterface
@@ -432,4 +433,19 @@ fun String.formatDateTime(): String? {
     val format = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH)
 
     return formatZ.parse(this)?.let { date -> format.format(date) }
+}
+
+fun Activity.startTrackingService(order: Order?) {
+    val serviceIntent = Intent(this, LocationService::class.java)
+    serviceIntent.putExtra(LocationService.orderKey, order)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        startForegroundService(serviceIntent)
+    } else {
+        startService(serviceIntent)
+    }
+}
+
+fun Activity.stopTrackingService() {
+    val serviceIntent = Intent(this, LocationService::class.java)
+    stopService(serviceIntent)
 }

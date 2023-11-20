@@ -112,7 +112,9 @@ class RequestFormFragment : Fragment() {
 
         binding.priceET.visibility = View.GONE
         binding.joinGroup.visibility = View.GONE
+        binding.dailyCheckBoxContainer.visibility = View.VISIBLE
         if (isDeliver) {
+            binding.dailyCheckBoxContainer.visibility = View.GONE
             binding.title.text = getString(R.string.deliver_form)
             binding.priceET.visibility = View.VISIBLE
             binding.maxSeatsET.hint = getString(R.string.seats_counts)
@@ -406,7 +408,7 @@ class RequestFormFragment : Fragment() {
             )
             return false
         }
-        if (!binding.termsCheckBox.isChecked){
+        if (!binding.termsCheckBox.isChecked) {
             getString(R.string.accept_terms).showAlertMessage(
                 context = requireContext(),
                 title = getString(R.string.error),
