@@ -369,10 +369,7 @@ class RequestDetailsFragment : Fragment() {
                                 else
                                     getString(R.string.requests_join)
                             val adapterUserRequest =
-                                UserRequestAdapter(
-                                    requireContext(),
-                                    false
-                                ) { item, _, type ->
+                                UserRequestAdapter(requireContext()) { item, _, type ->
                                     if (type == UserRequestAdapter.ClickType.OPEN) {
                                         findNavController().navigate(
                                             RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
@@ -395,18 +392,30 @@ class RequestDetailsFragment : Fragment() {
                                 val adapterUserRequestAccepted =
                                     UserRequestAdapter(
                                         requireContext(),
-                                        false
+                                        canCall = order?.status == startKey
                                     ) { item, _, type ->
-                                        if (type == UserRequestAdapter.ClickType.OPEN) {
-                                            findNavController().navigate(
-                                                RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
-                                                    orderObj = order,
-                                                    joinObj = item,
-                                                    isOfferDeliver = order?.orderType == 2
+                                        when (type) {
+                                            UserRequestAdapter.ClickType.OPEN -> {
+                                                findNavController().navigate(
+                                                    RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
+                                                        orderObj = order,
+                                                        joinObj = item,
+                                                        isOfferDeliver = order?.orderType == 2
+                                                    )
                                                 )
-                                            )
-                                        } else if (type == UserRequestAdapter.ClickType.RATE) {
-                                            rateBottomSheet(item.user)
+                                            }
+
+                                            UserRequestAdapter.ClickType.RATE -> {
+                                                rateBottomSheet(item.user)
+                                            }
+
+                                            UserRequestAdapter.ClickType.CALL -> {
+                                                val intent = Intent(
+                                                    Intent.ACTION_DIAL,
+                                                    Uri.parse("tel:${item.user?.phoneNumber}")
+                                                )
+                                                startActivity(intent)
+                                            }
                                         }
                                     }
                                 adapterUserRequestAccepted.items = offersAcceptedList

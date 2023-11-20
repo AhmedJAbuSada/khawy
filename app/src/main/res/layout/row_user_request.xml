@@ -36,6 +36,20 @@
             android:text="@string/rate"
             android:textColor="@color/white"
             android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/callOfferBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:background="@drawable/button_main"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:text="@string/call"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <TextView

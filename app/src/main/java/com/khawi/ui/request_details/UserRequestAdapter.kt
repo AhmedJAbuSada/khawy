@@ -15,7 +15,7 @@ import com.khawi.model.Offer
 
 class UserRequestAdapter(
     private val ctx: Context,
-    private val isOrderFinished: Boolean,
+    private val canCall: Boolean = false,
     private val onClick: (item: Offer, position: Int, type: ClickType) -> Unit
 ) : RecyclerView.Adapter<UserRequestAdapter.ViewHolder>() {
 
@@ -33,11 +33,18 @@ class UserRequestAdapter(
         holder.showDetails.setOnClickListener {
             onClick.invoke(item, position, ClickType.OPEN)
         }
-        holder.rateOfferBtn.visibility = View.GONE
-        if (item.status == acceptOfferKey && isOrderFinished)
-            holder.rateOfferBtn.visibility = View.VISIBLE
-        holder.rateOfferBtn.setOnClickListener {
-            onClick.invoke(item, position, ClickType.RATE)
+//        holder.rateOfferBtn.visibility = View.GONE
+//        if (item.status == acceptOfferKey && isOrderFinished)
+//            holder.rateOfferBtn.visibility = View.VISIBLE
+//        holder.rateOfferBtn.setOnClickListener {
+//            onClick.invoke(item, position, ClickType.RATE)
+//        }
+
+        holder.callOfferBtn.visibility = View.GONE
+        if (item.status == acceptOfferKey && canCall)
+            holder.callOfferBtn.visibility = View.VISIBLE
+        holder.callOfferBtn.setOnClickListener {
+            onClick.invoke(item, position, ClickType.CALL)
         }
     }
 
@@ -47,13 +54,15 @@ class UserRequestAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var showDetails: TextView
-        var rateOfferBtn: TextView
+//        var rateOfferBtn: TextView
+        var callOfferBtn: TextView
         var username: TextView
         var userImage: ImageView
 
 
         init {
-            rateOfferBtn = itemView.findViewById(R.id.rateOfferBtn)
+            callOfferBtn = itemView.findViewById(R.id.callOfferBtn)
+//            rateOfferBtn = itemView.findViewById(R.id.rateOfferBtn)
             showDetails = itemView.findViewById(R.id.showDetails)
             username = itemView.findViewById(R.id.username)
             userImage = itemView.findViewById(R.id.userImage)
@@ -61,6 +70,6 @@ class UserRequestAdapter(
     }
 
     enum class ClickType {
-        OPEN, RATE
+        OPEN, RATE, CALL
     }
 }
