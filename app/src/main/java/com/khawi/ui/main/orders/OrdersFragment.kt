@@ -14,6 +14,7 @@ import com.khawi.R
 import com.khawi.base.cancelledKey
 import com.khawi.base.finishedKey
 import com.khawi.base.newKey
+import com.khawi.base.safeNavigate
 import com.khawi.custom_view.PaginationScrollListener
 import com.khawi.databinding.FragmentOrdersBinding
 import com.khawi.model.Order
@@ -55,7 +56,7 @@ class OrdersFragment : Fragment() {
         )
 
         adapter = OrderAdapter(requireContext()) { item, _ ->
-            findNavController().navigate(
+            findNavController().safeNavigate(
                 OrdersFragmentDirections.actionOrdersFragmentToRequestDetailsFragment(
                     isOrder = true,
                     orderObj = item

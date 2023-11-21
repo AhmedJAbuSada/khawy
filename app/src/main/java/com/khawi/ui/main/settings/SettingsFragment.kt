@@ -15,6 +15,7 @@ import com.khawi.R
 import com.khawi.base.hideDialog
 import com.khawi.base.initLoading
 import com.khawi.base.loadImage
+import com.khawi.base.safeNavigate
 import com.khawi.base.showAlertMessage
 import com.khawi.base.showDialog
 import com.khawi.databinding.FragmentSettingsBinding
@@ -52,11 +53,11 @@ class SettingsFragment : Fragment() {
             }
         }
         binding.updateProfile.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToUpdateProfileFragment())
+            findNavController().safeNavigate(SettingsFragmentDirections.actionSettingsFragmentToUpdateProfileFragment())
         }
 
         binding.walletContainer.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToWalletFragment())
+            findNavController().safeNavigate(SettingsFragmentDirections.actionSettingsFragmentToWalletFragment())
         }
         binding.aboutUsContainer.setOnClickListener {
             startActivity(
@@ -65,7 +66,7 @@ class SettingsFragment : Fragment() {
             )
         }
         binding.contactUsContainer.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToContactUsFragment())
+            findNavController().safeNavigate(SettingsFragmentDirections.actionSettingsFragmentToContactUsFragment())
         }
         binding.shareAppContainer.setOnClickListener {
             val sendIntent: Intent = Intent().apply {

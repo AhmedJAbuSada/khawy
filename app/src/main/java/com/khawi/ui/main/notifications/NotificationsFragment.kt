@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.khawi.R
 import com.khawi.base.formatDate
+import com.khawi.base.safeNavigate
 import com.khawi.custom_view.PaginationScrollListener
 import com.khawi.databinding.FragmentNotificationsBinding
 import com.khawi.model.Order
@@ -44,7 +45,7 @@ class NotificationsFragment : Fragment() {
 
         adapter = NotificationAdapter(requireContext()) { item, _ ->
             if (item.type == 1)
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     NotificationsFragmentDirections.actionNotificationsToRequestDetailsFragment(
                         isOrder = true,
                         orderObj = Order(id = item.bodyParams),

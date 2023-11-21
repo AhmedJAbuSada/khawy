@@ -32,6 +32,7 @@ import com.khawi.base.initLoading
 import com.khawi.base.loadImage
 import com.khawi.base.newKey
 import com.khawi.base.ratedKey
+import com.khawi.base.safeNavigate
 import com.khawi.base.showDialog
 import com.khawi.base.startKey
 import com.khawi.base.startTrackingService
@@ -168,7 +169,7 @@ class RequestDetailsFragment : Fragment() {
             binding.sendBtn.text = getString(R.string.apply_deliver)
             binding.deliverContainer.visibility = View.VISIBLE
             binding.sendBtn.setOnClickListener {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     RequestDetailsFragmentDirections.actionRequestDetailsFragmentToRequestDeliverFragment(
                         orderObj = order
                     )
@@ -195,7 +196,7 @@ class RequestDetailsFragment : Fragment() {
         } else if (order?.orderType == 1) {
             binding.sendBtn.text = getString(R.string.join_now)
             binding.sendBtn.setOnClickListener {
-                findNavController().navigate(
+                findNavController().safeNavigate(
                     RequestDetailsFragmentDirections.actionRequestDetailsFragmentToRequestJoinFragment(
                         orderObj = order
                     )
@@ -371,7 +372,7 @@ class RequestDetailsFragment : Fragment() {
                             val adapterUserRequest =
                                 UserRequestAdapter(requireContext()) { item, _, type ->
                                     if (type == UserRequestAdapter.ClickType.OPEN) {
-                                        findNavController().navigate(
+                                        findNavController().safeNavigate(
                                             RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
                                                 orderObj = order,
                                                 joinObj = item,
@@ -396,7 +397,7 @@ class RequestDetailsFragment : Fragment() {
                                     ) { item, _, type ->
                                         when (type) {
                                             UserRequestAdapter.ClickType.OPEN -> {
-                                                findNavController().navigate(
+                                                findNavController().safeNavigate(
                                                     RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
                                                         orderObj = order,
                                                         joinObj = item,

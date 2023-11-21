@@ -39,6 +39,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.khawi.R
 import com.khawi.base.formatDate
 import com.khawi.base.loadImage
+import com.khawi.base.safeNavigate
 import com.khawi.base.userLocationTable
 import com.khawi.databinding.FragmentHomeBinding
 import com.khawi.model.Order
@@ -270,7 +271,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         val showDetails = rootView.findViewById<TextView>(R.id.showDetails)
         showDetails.setOnClickListener {
-            findNavController().navigate(
+            findNavController().safeNavigate(
                 HomeFragmentDirections.actionHomeToRequestDetailsFragment(
                     orderObj = order,
                     isOrder = order.user?.id == user?.id
@@ -306,7 +307,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         val showDetails = rootView.findViewById<TextView>(R.id.showDetails)
         showDetails.setOnClickListener {
-            findNavController().navigate(
+            findNavController().safeNavigate(
                 HomeFragmentDirections.actionHomeToRequestDetailsFragment(
                     orderObj = order,
                     isOrder = order.user?.id == user?.id
