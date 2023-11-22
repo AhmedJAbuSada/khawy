@@ -1,7 +1,6 @@
 package com.khawi.ui.wallet
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,8 +29,6 @@ import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionDetails
 import com.payment.paymentsdk.sharedclasses.interfaces.CallbackPaymentInterface
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @AndroidEntryPoint
 class WalletFragment : Fragment() {
@@ -46,6 +43,8 @@ class WalletFragment : Fragment() {
     private var totalPages = 0
     private var isLoading: Boolean = false
     private var isLastPage: Boolean = false
+    private var amount = ""
+    private var bottomSheet : BottomSheetDialog?=null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -118,7 +117,25 @@ class WalletFragment : Fragment() {
 
         viewModel.successLiveData.observe(viewLifecycleOwner) {
             if (it?.status == true) {
+                amount = ""
                 callRequest()
+            }
+        }
+
+        viewModel.successLiveDataCoupon.observe(viewLifecycleOwner) {
+            if (it?.status == true) {
+                openPaymentGateway("${it.data?.finalTotal ?: 0.0}")
+            } else {
+                it?.message?.showAlertMessage(context = requireContext(),
+                    title = getString(R.string.error),
+                    confirmText = getString(R.string.Ok),
+                    type = SweetAlertDialog.ERROR_TYPE,
+                    onCancelClick = {
+
+                    },
+                    onConfirmClick = {
+
+                    })
             }
         }
 
@@ -146,21 +163,25 @@ class WalletFragment : Fragment() {
     }
 
     private fun addAmountBottomSheet() {
-        val bottomSheet = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
+         bottomSheet = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
         val rootView =
             layoutInflater.inflate(R.layout.bottomsheet_add_amount, binding.container, false)
-        bottomSheet.setContentView(rootView)
+        bottomSheet?.setContentView(rootView)
 
         val amountET = rootView.findViewById<EditText>(R.id.amountET)
+        val couponET = rootView.findViewById<EditText>(R.id.couponET)
         val sendBtn = rootView.findViewById<TextView>(R.id.sendBtn)
         sendBtn.setOnClickListener {
-            val amount = amountET.text.toString()
+            amount = amountET.text.toString()
+            val coupon = couponET.text.toString()
             if (amount.isNotEmpty()) {
-//                viewModel.viewModelScope.launch {
-//                    viewModel.addAmount(amount)
-//                }
-                openPaymentGateway(amount)
-                bottomSheet.dismiss()
+                if (coupon.isNotEmpty()) {
+                    viewModel.viewModelScope.launch {
+                        viewModel.checkCoupon(amount, coupon)
+                    }
+                } else {
+                    openPaymentGateway(amount)
+                }
             } else {
                 getString(R.string.error_amount_empty).showAlertMessage(context = requireContext(),
                     title = getString(R.string.error),
@@ -175,10 +196,11 @@ class WalletFragment : Fragment() {
             }
         }
 
-        bottomSheet.show()
+        bottomSheet?.show()
     }
 
     private fun openPaymentGateway(amount: String) {
+        bottomSheet?.dismiss()
         try {
             // test
             val profileId = "88646"

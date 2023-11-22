@@ -28,7 +28,7 @@ class VerificationCodeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            authRepository.getUserFlow().collect{
+            authRepository.getUserFlow().collect {
                 when (it) {
                     is BaseState.NetworkError -> {
                         _progressLiveData.postValue(false)
@@ -52,11 +52,11 @@ class VerificationCodeViewModel @Inject constructor(
         }
     }
 
-    suspend fun verifyPhone(code: String) {
+    suspend fun verifyPhone(code: String, by: String? = null) {
         val user = repository.getUser()
         user?.let {
             _progressLiveData.postValue(true)
-            authRepository.verifyPhone(it.id, it.phoneNumber ?: "", code)
+            authRepository.verifyPhone(it.id, it.phoneNumber ?: "", code, by)
         }
     }
 

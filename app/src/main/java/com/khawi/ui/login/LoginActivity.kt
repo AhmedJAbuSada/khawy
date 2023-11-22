@@ -24,10 +24,17 @@ class LoginActivity : BaseActivity() {
 
     private val viewModel: LoginViewModel by viewModels()
 
+    companion object {
+        const val referralKey = "referral"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (intent.hasExtra(referralKey))
+            viewModel.referralIdLiveData.postValue(intent.getStringExtra(referralKey))
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_login) as NavHostFragment

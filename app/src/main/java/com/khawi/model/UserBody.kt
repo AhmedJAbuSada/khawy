@@ -34,4 +34,6 @@ data class UserBody(
     val carColor: String? = null,
     @SerialName("carNumber")
     val carNumber: String? = null,
+    @SerialName("by")
+    val by: String? = null,
 )

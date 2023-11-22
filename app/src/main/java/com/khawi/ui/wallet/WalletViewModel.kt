@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.khawi.data.order.OrderRepository
 import com.khawi.data.wallet.WalletRepository
 import com.khawi.model.BaseResponse
+import com.khawi.model.Coupon
 import com.khawi.model.Order
 import com.khawi.model.Wallet
 import com.khawi.model.WalletBody
@@ -31,6 +32,9 @@ class WalletViewModel @Inject constructor(
     private val _successLiveDataList = MutableLiveData<BaseResponse<MutableList<Wallet>?>?>()
     val successLiveDataList: LiveData<BaseResponse<MutableList<Wallet>?>?> = _successLiveDataList
 
+    private val _successLiveDataCoupon = MutableLiveData<BaseResponse<Coupon?>?>()
+    val successLiveDataCoupon: LiveData<BaseResponse<Coupon?>?> = _successLiveDataCoupon
+
     private val _successLiveData = MutableLiveData<BaseResponse<Wallet?>?>()
     val successLiveData: LiveData<BaseResponse<Wallet?>?> = _successLiveData
 
@@ -40,6 +44,30 @@ class WalletViewModel @Inject constructor(
     val params = mutableMapOf<String, String>()
 
     init {
+        viewModelScope.launch {
+            repository.getCouponFlow().collect {
+
+                when (it) {
+                    is BaseState.NetworkError -> {
+                        _progressLiveData.postValue(false)
+                    }
+
+                    is BaseState.EmptyResult -> {
+                        _progressLiveData.postValue(false)
+                    }
+
+                    is BaseState.ItemsLoaded -> {
+                        it.items?.let { item ->
+                            _progressLiveData.postValue(false)
+                            _successLiveDataCoupon.postValue(item)
+                        }
+                    }
+
+                    else -> {
+                    }
+                }
+            }
+        }
         viewModelScope.launch {
             repository.getWalletListFlow().collect {
 
@@ -103,6 +131,16 @@ class WalletViewModel @Inject constructor(
         repository.addAmount(
             WalletBody(
                 amount = amount
+            )
+        )
+    }
+
+    suspend fun checkCoupon(amount: String, coupon:String) {
+        _progressLiveData.postValue(true)
+        repository.checkCoupon(
+            WalletBody(
+                amount = amount,
+                coupon = coupon
             )
         )
     }

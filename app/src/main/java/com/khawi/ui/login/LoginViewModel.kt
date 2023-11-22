@@ -9,6 +9,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor() : ViewModel() {
 
+    val referralIdLiveData = MutableLiveData<String>()
     val phoneLiveData = MutableLiveData("")
     val imageMutableLiveData = MutableLiveData<File>()
 

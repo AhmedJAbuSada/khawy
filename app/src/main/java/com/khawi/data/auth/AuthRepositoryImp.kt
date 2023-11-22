@@ -2,6 +2,7 @@ package com.khawi.data.auth
 
 import com.advance.threading.DispatcherProvider
 import com.khawi.model.BaseResponse
+import com.khawi.model.Referral
 import com.khawi.model.db.user.UserModel
 import com.khawi.network_base.model.AdvanceResult
 import com.khawi.network_base.model.BaseState
@@ -18,6 +19,23 @@ class AuthRepositoryImp @Inject constructor(
 ) : AuthRepository {
 
     private val _event = MutableStateFlow<BaseState<BaseResponse<UserModel?>?>>(BaseState.Idle())
+    private val _eventReferral = MutableStateFlow<BaseState<BaseResponse<Referral?>?>>(BaseState.Idle())
+
+    override suspend fun referral() =
+        withContext(dispatcherProvider.io()) {
+            when (val result = remoteDataSource.referral()) {
+                is AdvanceResult.Success -> {
+                    val item = result.data
+                    item.v = System.currentTimeMillis()
+                    _eventReferral.emit(BaseState.ItemsLoaded(item))
+                    Timber.d("results here res ${result.data}")
+                }
+
+                is AdvanceResult.Error -> {
+                    Timber.d("something went wrong ${result.fault}")
+                }
+            }
+        }
 
     override suspend fun loginByPhone(
         fcmToken: String,
@@ -41,9 +59,9 @@ class AuthRepositoryImp @Inject constructor(
             }
         }
 
-    override suspend fun verifyPhone(id: String, phone: String, code: String) =
+    override suspend fun verifyPhone(id: String, phone: String, code: String, by: String?) =
         withContext(dispatcherProvider.io()) {
-            when (val result = remoteDataSource.verifyPhone(id, phone, code)) {
+            when (val result = remoteDataSource.verifyPhone(id, phone, code, by)) {
                 is AdvanceResult.Success -> {
                     val item = result.data
                     item.v = System.currentTimeMillis()
@@ -130,6 +148,7 @@ class AuthRepositoryImp @Inject constructor(
     }
 
     override suspend fun getUserFlow() = _event.asStateFlow()
+    override suspend fun getReferralFlow() = _eventReferral.asStateFlow()
 
 
 }

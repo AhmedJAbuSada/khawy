@@ -104,7 +104,7 @@ class VerificationFragment : Fragment() {
             val code = binding.codePinView.text.toString()
             if (code.isNotEmpty()) {
                 viewModel.viewModelScope.launch {
-                    viewModel.verifyPhone(code)
+                    viewModel.verifyPhone(code, loginViewModel.referralIdLiveData.value)
                 }
             } else {
                 getString(R.string.error_verification_empty).showAlertMessage(

@@ -1,6 +1,7 @@
 package com.khawi.data.wallet
 
 import com.khawi.model.BaseResponse
+import com.khawi.model.Coupon
 import com.khawi.model.Wallet
 import com.khawi.model.WalletBody
 import com.khawi.model.db.user.UserRepository
@@ -30,6 +31,18 @@ class RemoteWalletDataSource @Inject constructor(
         header["token"] = token
         return remoteDataSource.post(
             urlPath = "mobile/user/wallet",
+            headers = header,
+            params = null,
+            body = body
+        )
+    }
+
+    suspend fun checkCoupon(body: WalletBody): AdvanceResult<BaseResponse<Coupon?>> {
+        val token = repository.getUser()?.token ?: ""
+        val header = HashMap<String, String>()
+        header["token"] = token
+        return remoteDataSource.post(
+            urlPath = "mobile/check/coupon",
             headers = header,
             params = null,
             body = body

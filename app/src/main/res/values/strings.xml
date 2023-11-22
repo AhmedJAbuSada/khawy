@@ -161,4 +161,5 @@
     <string name="error_paymet">حدث خطأ اثناء عملية الدفع يرجى المحاولة مرة أخرى</string>
     <string name="call">اتصال</string>
     <string name="tracking_location">تتبع المكان</string>
+    <string name="coupon">الكوبون</string>
 </resources>

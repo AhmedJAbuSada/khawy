@@ -8,4 +8,6 @@ import kotlinx.serialization.Serializable
 data class WalletBody(
     @SerialName("amount")
     val amount: String? = null,
+    @SerialName("coupon")
+    val coupon: String? = null,
 )

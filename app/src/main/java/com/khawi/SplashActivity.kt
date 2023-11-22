@@ -1,8 +1,10 @@
 package com.khawi
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData
 import com.khawi.base.BaseActivity
 import com.khawi.base.getPreferenceBoolean
 import com.khawi.base.walkthrough_key
@@ -27,7 +29,38 @@ class SplashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        handleDynamicLinks()
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleDynamicLinks()
+    }
+
+    private fun handleDynamicLinks() {
+        FirebaseDynamicLinks.getInstance()
+            .getDynamicLink(intent)
+            .addOnSuccessListener(this) { pendingDynamicLinkData: PendingDynamicLinkData? ->
+                // Get deep link from result (may be null if no link is found)
+                var deepLink: Uri? = null
+                if (pendingDynamicLinkData != null) {
+                    deepLink = pendingDynamicLinkData.link
+                    val referralId = deepLink?.getQueryParameter("referal_id")
+                    if (referralId != null) {
+                        goNext(referralId)
+                    }
+                } else
+                    goNext()
+
+            }
+            .addOnFailureListener(this) { e ->
+                goNext()
+                e.printStackTrace()
+            }
+    }
+
+    private fun goNext(referralId: String? = null) {
         Timer().schedule(object : TimerTask() {
             override fun run() {
                 val bundle = intent.extras
@@ -39,13 +72,14 @@ class SplashActivity : BaseActivity() {
                     )
                 } else if (getPreferenceBoolean(walkthrough_key)) {
                     val user = repository.getUser()
-                    val intent = Intent(
-                        this@SplashActivity,
-                        if (user != null && user.isVerify == true)
-                            MainActivity::class.java
-                        else
-                            LoginActivity::class.java
-                    )
+                    val intent: Intent
+                    if (user != null && user.isVerify == true) {
+                        intent = Intent(this@SplashActivity, MainActivity::class.java)
+                    } else {
+                        intent = Intent(this@SplashActivity, LoginActivity::class.java)
+                        if (referralId != null)
+                            intent.putExtra(LoginActivity.referralKey, referralId)
+                    }
                     startActivity(intent)
                 } else {
                     val intent = Intent(this@SplashActivity, WalkthroughActivity::class.java)

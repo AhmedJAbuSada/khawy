@@ -63,8 +63,10 @@ class RequestFormFragment : Fragment() {
     private val registerForActivityResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
-                latlngStart = result.data?.parcelable(SelectDestinationActivity.latLongStartKey)
-                latlngEnd = result.data?.parcelable(SelectDestinationActivity.latLongEndKey)
+                if (result.data?.hasExtra(SelectDestinationActivity.latLongStartKey) == true)
+                    latlngStart = result.data?.parcelable(SelectDestinationActivity.latLongStartKey)
+                if (result.data?.hasExtra(SelectDestinationActivity.latLongEndKey) == true)
+                    latlngEnd = result.data?.parcelable(SelectDestinationActivity.latLongEndKey)
                 if (latlngStart != null && latlngEnd != null) {
                     binding.tripMapIV.setImageResource(R.drawable.edit)
                     binding.tripMapTV.text = getString(R.string.destination_selected)

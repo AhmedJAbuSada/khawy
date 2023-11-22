@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.khawi.data.auth.AuthRepository
 import com.khawi.model.BaseResponse
+import com.khawi.model.Referral
 import com.khawi.model.db.user.UserModel
 import com.khawi.model.db.user.UserRepository
 import com.khawi.network_base.model.BaseState
@@ -27,10 +28,37 @@ class SettingsViewModel @Inject constructor(
     private val _successLiveData = MutableLiveData<BaseResponse<UserModel?>?>()
     val successLiveData: LiveData<BaseResponse<UserModel?>?> = _successLiveData
 
+    private val _successLiveDataReferral = MutableLiveData<BaseResponse<Referral?>?>()
+    val successLiveDataReferral: LiveData<BaseResponse<Referral?>?> = _successLiveDataReferral
+
     private val _progressLiveData = MutableLiveData<Boolean>()
     val progressLiveData: MutableLiveData<Boolean> = _progressLiveData
 
     init {
+        viewModelScope.launch {
+            authRepository.getReferralFlow().collect {
+                when (it) {
+                    is BaseState.NetworkError -> {
+                        _progressLiveData.postValue(false)
+                    }
+
+                    is BaseState.EmptyResult -> {
+                        _progressLiveData.postValue(false)
+                    }
+
+                    is BaseState.ItemsLoaded -> {
+                        it.items?.let { item ->
+                            _progressLiveData.postValue(false)
+                            _successLiveDataReferral.postValue(item)
+
+                        }
+                    }
+
+                    else -> {
+                    }
+                }
+            }
+        }
         viewModelScope.launch {
             authRepository.getUserFlow().collect {
                 when (it) {
@@ -55,6 +83,11 @@ class SettingsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    suspend fun referral() {
+        _progressLiveData.postValue(true)
+        authRepository.referral()
     }
 
     suspend fun logout() {

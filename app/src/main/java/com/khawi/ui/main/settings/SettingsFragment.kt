@@ -69,15 +69,9 @@ class SettingsFragment : Fragment() {
             findNavController().safeNavigate(SettingsFragmentDirections.actionSettingsFragmentToContactUsFragment())
         }
         binding.shareAppContainer.setOnClickListener {
-            val sendIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(
-                    Intent.EXTRA_TEXT,
-                    "https://play.google.com/store/apps/details?id=${requireActivity().packageName}"
-                )
-                type = "text/plain"
+            viewModel.viewModelScope.launch {
+                viewModel.referral()
             }
-            startActivity(Intent.createChooser(sendIntent, null))
         }
         binding.termsConditionsContainer.setOnClickListener {
             startActivity(
@@ -113,6 +107,20 @@ class SettingsFragment : Fragment() {
                     Intent(requireContext(), LoginActivity::class.java)
                 )
                 requireActivity().finishAffinity()
+            }
+        }
+        viewModel.successLiveDataReferral.observe(viewLifecycleOwner) {
+            if (it?.status == true) {
+                val sendIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(
+                        Intent.EXTRA_TEXT,
+                        it.data?.shortLink ?: ""
+//                        "https://play.google.com/store/apps/details?id=${requireActivity().packageName}"
+                    )
+                    type = "text/plain"
+                }
+                startActivity(Intent.createChooser(sendIntent, null))
             }
         }
     }

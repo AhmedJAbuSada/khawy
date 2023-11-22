@@ -87,6 +87,7 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-dynamic-links")
 
     // hilt
     implementation "com.google.dagger:hilt-android:2.45"

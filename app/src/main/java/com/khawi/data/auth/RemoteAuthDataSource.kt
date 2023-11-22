@@ -1,6 +1,7 @@
 package com.khawi.data.auth
 
 import com.khawi.model.BaseResponse
+import com.khawi.model.Referral
 import com.khawi.model.UserBody
 import com.khawi.model.db.user.UserModel
 import com.khawi.model.db.user.UserRepository
@@ -16,6 +17,19 @@ class RemoteAuthDataSource @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val repository: UserRepository,
 ) {
+
+    suspend fun referral(): AdvanceResult<BaseResponse<Referral?>> {
+        val token = repository.getUser()?.token ?: ""
+        val header = HashMap<String, String>()
+        header["token"] = token
+        val body = UserBody()
+        return remoteDataSource.post(
+            urlPath = "mobile/user/referal",
+            headers = header,
+            params = null,
+            body = body
+        )
+    }
 
     suspend fun loginByPhone(
         fcmToken: String,
@@ -42,12 +56,14 @@ class RemoteAuthDataSource @Inject constructor(
     suspend fun verifyPhone(
         id: String,
         phone: String,
-        code: String
+        code: String,
+        by: String?,
     ): AdvanceResult<BaseResponse<UserModel?>> {
         val body = UserBody(
             phoneNumber = phone,
             id = id,
             verifyCode = code,
+            by = by,
         )
         return remoteDataSource.post(
             urlPath = "mobile/user/verify",
