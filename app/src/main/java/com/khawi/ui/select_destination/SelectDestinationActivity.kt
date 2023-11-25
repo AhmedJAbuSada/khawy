@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
-import android.location.Location
 import android.os.Bundle
 import android.view.View
 import androidx.core.app.ActivityCompat
@@ -31,9 +30,7 @@ import com.google.maps.DirectionsApi
 import com.google.maps.GeoApiContext
 import com.khawi.R
 import com.khawi.base.BaseActivity
-import com.khawi.base.LocationService
 import com.khawi.base.getAddress
-import com.khawi.base.parcelable
 import com.khawi.base.startKey
 import com.khawi.base.trackingTable
 import com.khawi.databinding.ActivitySelectDestinationBinding
@@ -65,15 +62,15 @@ class SelectDestinationActivity : BaseActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         binding = ActivitySelectDestinationBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        order = intent.parcelable(orderKey)
+        order = intent.getParcelableExtra(orderKey) as? Order
         isPreview = intent.getBooleanExtra(isPreviewKey, false)
         binding.buttonGroup.visibility =
             if (isPreview)
                 View.GONE
             else
                 View.VISIBLE
-        latlngStart = intent.parcelable(latLongStartKey)
-        latlngEnd = intent.parcelable(latLongEndKey)
+        latlngStart = intent.getParcelableExtra(latLongStartKey) as? LatLng
+        latlngEnd = intent.getParcelableExtra(latLongEndKey) as? LatLng
 
         Locus.getCurrentLocation(this) { result ->
             result.location?.let {

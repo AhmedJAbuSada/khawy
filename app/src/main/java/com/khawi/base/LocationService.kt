@@ -61,7 +61,7 @@ class LocationService : Service() {
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        order = intent?.parcelable(orderKey)
+        order = intent?.getParcelableExtra(orderKey) as? Order
         val action = intent?.action
         when (action) {
             ACTION_STOP_SERVICE -> {

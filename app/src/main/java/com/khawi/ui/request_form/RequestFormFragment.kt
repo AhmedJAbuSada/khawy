@@ -18,7 +18,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.CompositeDateValidator
-import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -29,7 +28,6 @@ import com.khawi.base.deliverBottomSheet
 import com.khawi.base.getAddress
 import com.khawi.base.hideDialog
 import com.khawi.base.initLoading
-import com.khawi.base.parcelable
 import com.khawi.base.showAlertMessage
 import com.khawi.base.showDialog
 import com.khawi.databinding.FragmentRequestFormBinding
@@ -63,10 +61,14 @@ class RequestFormFragment : Fragment() {
     private val registerForActivityResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
-                if (result.data?.hasExtra(SelectDestinationActivity.latLongStartKey) == true)
-                    latlngStart = result.data?.parcelable(SelectDestinationActivity.latLongStartKey)
-                if (result.data?.hasExtra(SelectDestinationActivity.latLongEndKey) == true)
-                    latlngEnd = result.data?.parcelable(SelectDestinationActivity.latLongEndKey)
+                if (result.data?.hasExtra(SelectDestinationActivity.latLongStartKey) == true) {
+                    latlngStart =
+                        result.data?.getParcelableExtra(SelectDestinationActivity.latLongStartKey) as? LatLng
+                }
+                if (result.data?.hasExtra(SelectDestinationActivity.latLongEndKey) == true) {
+                    latlngEnd =
+                        result.data?.getParcelableExtra(SelectDestinationActivity.latLongEndKey) as? LatLng
+                }
                 if (latlngStart != null && latlngEnd != null) {
                     binding.tripMapIV.setImageResource(R.drawable.edit)
                     binding.tripMapTV.text = getString(R.string.destination_selected)
