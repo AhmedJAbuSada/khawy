@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.khawi.data.order.OrderRepository
+import com.khawi.model.AddOrderBody
 import com.khawi.model.AddRateBody
 import com.khawi.model.BaseResponse
 import com.khawi.model.ChangeStatusBody
@@ -84,6 +85,32 @@ class RequestDetailsViewModel @Inject constructor(
             orderId, AddRateBody(
                 rateFromUser = rate,
                 noteFromUser = note
+            )
+        )
+    }
+
+    fun addJoin(orderId: String) = viewModelScope.launch {
+        _progressLiveData.postValue(true)
+        repository.addOffer(orderId, AddOrderBody())
+    }
+
+    fun addOffer(orderId: String) = viewModelScope.launch {
+        _progressLiveData.postValue(true)
+        repository.addOffer(orderId, AddOrderBody())
+    }
+
+    fun changeOfferStatusBody(
+        orderId: String,
+        offerId: String,
+        status: String,
+        note: String? = null
+    ) = viewModelScope.launch {
+        _progressLiveData.postValue(true)
+        repository.changeOfferStatusBody(
+            orderId, ChangeStatusBody(
+                offer = offerId,
+                status = status,
+                canceledNote = note
             )
         )
     }

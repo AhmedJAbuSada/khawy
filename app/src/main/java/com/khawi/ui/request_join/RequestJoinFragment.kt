@@ -117,7 +117,7 @@ class RequestJoinFragment : Fragment() {
         val minPrice = order?.minPrice
         val maxPrice = order?.maxPrice
         val message =
-            "${getString(R.string.price_must_between)} ($minPrice - $maxPrice ${getString(R.string.currancy)})"
+            "${getString(R.string.price_must_between)} ($minPrice - $maxPrice ${getString(R.string.currency)})"
         binding.priceRangeAlert.text = message
 
         binding.recyclerViewDays.visibility = View.GONE
@@ -291,7 +291,7 @@ class RequestJoinFragment : Fragment() {
             val price = binding.priceET.text.toString().toDouble()
             if (price < minPrice || price > maxPrice) {
                 val message =
-                    "${getString(R.string.price_must_between)} ($minPrice - $maxPrice ${getString(R.string.currancy)})"
+                    "${getString(R.string.price_must_between)} ($minPrice - $maxPrice ${getString(R.string.currency)})"
                 message.showAlertMessage(
                     context = requireContext(),
                     title = getString(R.string.error),

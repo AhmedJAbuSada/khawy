@@ -75,6 +75,8 @@ class SelectDestinationActivity : BaseActivity(), OnMapReadyCallback {
         Locus.getCurrentLocation(this) { result ->
             result.location?.let {
                 latlngMyLocation = LatLng(it.latitude, it.longitude)
+                if (latlngStart == null)
+                    latlngStart = latlngMyLocation
                 handleMap()
             }
             result.error?.let { }
@@ -173,10 +175,13 @@ class SelectDestinationActivity : BaseActivity(), OnMapReadyCallback {
             binding.markerIV.setImageResource(R.drawable.selecting_start_marker)
         else
             binding.markerIV.visibility = View.GONE
+        binding.selectBtn.text = getString(R.string.select_start)
+        binding.selectBtn.background = ContextCompat.getDrawable(this , R.drawable.button_blue)
 
         latlngStart?.let { latlngStart ->
             binding.markerIV.setImageResource(R.drawable.end_marker)
             binding.selectBtn.text = getString(R.string.select_end)
+            binding.selectBtn.background = ContextCompat.getDrawable(this , R.drawable.button_main)
             binding.startDestinationET.text = latlngStart.getAddress(this)
             if (!isPreview)
                 binding.startDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(
@@ -185,7 +190,7 @@ class SelectDestinationActivity : BaseActivity(), OnMapReadyCallback {
             googleMap?.clear()
             val markerOptions = MarkerOptions()
                 .position(latlngStart)
-                .icon(generateBitmapDescriptorFromRes(R.drawable.selected_start_marker))
+                .icon(generateBitmapDescriptorFromRes(R.drawable.selecting_start_marker))
             googleMap?.addMarker(markerOptions)
             binding.endDestinationGroup.visibility = View.VISIBLE
         }
@@ -193,6 +198,7 @@ class SelectDestinationActivity : BaseActivity(), OnMapReadyCallback {
         latlngEnd?.let { latlngEnd ->
             binding.markerIV.visibility = View.GONE
             binding.selectBtn.text = getString(R.string.save_changes)
+            binding.selectBtn.background = ContextCompat.getDrawable(this , R.drawable.button_main)
             binding.endDestinationET.text = latlngEnd.getAddress(this)
             if (!isPreview)
                 binding.endDestinationET.setCompoundDrawablesRelativeWithIntrinsicBounds(

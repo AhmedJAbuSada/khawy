@@ -76,9 +76,8 @@
             <ImageView
                 android:layout_width="47dp"
                 android:layout_height="47dp"
-                android:background="@drawable/circle_white"
                 android:scaleType="centerInside"
-                android:src="@drawable/car_form" />
+                android:src="@drawable/car_marker" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -103,9 +102,8 @@
             <ImageView
                 android:layout_width="47dp"
                 android:layout_height="47dp"
-                android:background="@drawable/circle_white"
                 android:scaleType="centerInside"
-                android:src="@drawable/join_form" />
+                android:src="@drawable/join_marker" />
 
             <TextView
                 android:layout_width="wrap_content"

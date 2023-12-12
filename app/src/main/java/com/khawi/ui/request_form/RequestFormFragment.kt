@@ -25,7 +25,9 @@ import com.google.android.material.timepicker.TimeFormat
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
 import com.khawi.base.deliverBottomSheet
+import com.khawi.base.errorMessage
 import com.khawi.base.getAddress
+import com.khawi.base.getAddressTitle
 import com.khawi.base.hideDialog
 import com.khawi.base.initLoading
 import com.khawi.base.showAlertMessage
@@ -114,18 +116,22 @@ class RequestFormFragment : Fragment() {
             setupTimePicker()
         }
 
+        binding.tripTimeContainer.visibility = View.GONE
+        binding.tripDateContainer.visibility = View.GONE
         binding.priceET.visibility = View.GONE
         binding.joinGroup.visibility = View.GONE
         binding.dailyCheckBoxContainer.visibility = View.VISIBLE
+        binding.priceET.visibility = View.VISIBLE
         if (isDeliver) {
             binding.dailyCheckBoxContainer.visibility = View.GONE
             binding.title.text = getString(R.string.deliver_form)
-            binding.priceET.visibility = View.VISIBLE
             binding.maxSeatsET.hint = getString(R.string.seats_counts)
             binding.sendBtn.text = getString(R.string.apply_deliver)
         } else {
+            binding.tripTimeContainer.visibility = View.VISIBLE
+            binding.tripDateContainer.visibility = View.VISIBLE
             binding.title.text = getString(R.string.join_form)
-            binding.joinGroup.visibility = View.VISIBLE
+//            binding.joinGroup.visibility = View.VISIBLE
             binding.maxSeatsET.hint = getString(R.string.maximum_seats)
             binding.sendBtn.text = getString(R.string.apply_join)
         }
@@ -169,26 +175,31 @@ class RequestFormFragment : Fragment() {
 
         binding.sendBtn.setOnClickListener {
             if (validation()) {
-                val maxPrice =
-                    if (!isDeliver)
-                        binding.maximumPriceET.text.toString()
-                    else
-                        null
-                val minPrice =
-                    if (!isDeliver)
-                        binding.minimumPriceET.text.toString()
-                    else
-                        null
-                val price =
-                    if (isDeliver)
-                        binding.priceET.text.toString()
-                    else
-                        null
+//                val maxPrice =
+//                    if (!isDeliver)
+//                        binding.maximumPriceET.text.toString()
+//                    else
+//                        null
+//                val minPrice =
+//                    if (!isDeliver)
+//                        binding.minimumPriceET.text.toString()
+//                    else
+//                        null
+                val price = binding.priceET.text.toString()
+//                    if (isDeliver)
+//                        binding.priceET.text.toString()
+//                    else
+//                        null
                 val selectedDays = listDays.filter { it.select }
                 val listDays = mutableListOf<String>()
                 for (value in selectedDays) {
                     listDays.add(value.name ?: "")
                 }
+                val title =
+                    if (binding.tripSubjectET.text.toString().isNotEmpty())
+                        binding.tripSubjectET.text.toString()
+                    else
+                        latlngStart?.getAddressTitle(requireContext())
                 viewModel.viewModelScope.launch {
                     viewModel.addOrder(
                         AddOrderBody(
@@ -202,9 +213,9 @@ class RequestFormFragment : Fragment() {
                             fLng = latlngStart?.longitude,
                             tLat = latlngEnd?.latitude,
                             tLng = latlngEnd?.longitude,
-                            title = binding.tripSubjectET.text.toString(),
-                            maxPrice = maxPrice,
-                            minPrice = minPrice,
+                            title = title,
+                            maxPrice = null,
+                            minPrice = null,
                             price = price,
                             isRepeated = binding.dailyCheckBox.isChecked,
                             days = listDays,
@@ -235,6 +246,8 @@ class RequestFormFragment : Fragment() {
                 ) {
                     findNavController().popBackStack()
                 }
+            } else {
+                it?.message?.errorMessage(requireContext())
             }
         }
     }
@@ -260,7 +273,7 @@ class RequestFormFragment : Fragment() {
         materialDatePicker.addOnPositiveButtonClickListener {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = it
-            tripDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            tripDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
                 .format(calendar.time)
             binding.tripDate.text = tripDate
         }
@@ -279,28 +292,28 @@ class RequestFormFragment : Fragment() {
         materialTimeBuilder.addOnPositiveButtonClickListener {
             val selectedHour = materialTimeBuilder.hour
             val selectedMinute = materialTimeBuilder.minute
-            tripTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+            tripTime = String.format(Locale.ENGLISH, "%02d:%02d", selectedHour, selectedMinute)
             binding.tripTime.text = tripTime
         }
         materialTimeBuilder.show(childFragmentManager, "MATERIAL_DATE_PICKER")
     }
 
     private fun validation(): Boolean {
-        if (binding.tripSubjectET.text.toString().isEmpty()) {
-            getString(R.string.error_trip_subject_empty).showAlertMessage(
-                context = requireContext(),
-                title = getString(R.string.error),
-                confirmText = getString(R.string.Ok),
-                type = SweetAlertDialog.ERROR_TYPE,
-                onCancelClick = {
-
-                },
-                onConfirmClick = {
-
-                }
-            )
-            return false
-        }
+//        if (binding.tripSubjectET.text.toString().isEmpty()) {
+//            getString(R.string.error_trip_subject_empty).showAlertMessage(
+//                context = requireContext(),
+//                title = getString(R.string.error),
+//                confirmText = getString(R.string.Ok),
+//                type = SweetAlertDialog.ERROR_TYPE,
+//                onCancelClick = {
+//
+//                },
+//                onConfirmClick = {
+//
+//                }
+//            )
+//            return false
+//        }
         if (latlngStart == null || latlngEnd == null) {
             getString(R.string.select_the_destination_on_the_map).showAlertMessage(
                 context = requireContext(),
@@ -316,7 +329,7 @@ class RequestFormFragment : Fragment() {
             )
             return false
         }
-        if (isDeliver && binding.priceET.text.toString().isEmpty()) {
+        if (/*isDeliver && */binding.priceET.text.toString().isEmpty()) {
             getString(R.string.error_price_empty).showAlertMessage(
                 context = requireContext(),
                 title = getString(R.string.error),
@@ -331,24 +344,24 @@ class RequestFormFragment : Fragment() {
             )
             return false
         }
-        if (!isDeliver
-            && (binding.minimumPriceET.text.toString().isEmpty()
-                    || binding.maximumPriceET.text.toString().isEmpty())
-        ) {
-            getString(R.string.error_price_empty).showAlertMessage(
-                context = requireContext(),
-                title = getString(R.string.error),
-                confirmText = getString(R.string.Ok),
-                type = SweetAlertDialog.ERROR_TYPE,
-                onCancelClick = {
-
-                },
-                onConfirmClick = {
-
-                }
-            )
-            return false
-        }
+//        if (!isDeliver
+//            && (binding.minimumPriceET.text.toString().isEmpty()
+//                    || binding.maximumPriceET.text.toString().isEmpty())
+//        ) {
+//            getString(R.string.error_price_empty).showAlertMessage(
+//                context = requireContext(),
+//                title = getString(R.string.error),
+//                confirmText = getString(R.string.Ok),
+//                type = SweetAlertDialog.ERROR_TYPE,
+//                onCancelClick = {
+//
+//                },
+//                onConfirmClick = {
+//
+//                }
+//            )
+//            return false
+//        }
         if (binding.dailyCheckBox.isChecked) {
             val selectedDays = listDays.filter { it.select }
             if (selectedDays.isEmpty()) {

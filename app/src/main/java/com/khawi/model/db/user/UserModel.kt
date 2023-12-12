@@ -15,7 +15,9 @@ data class UserModel(
     @ColumnInfo("id")
     val id: String = "",
     @ColumnInfo("isVerify")
-    val isVerify: Boolean? = true,
+    val isVerify: Boolean? = false,
+    @ColumnInfo("isApprove")
+    val isApprove: Boolean? = false,
     @ColumnInfo("address")
     val address: String? = "",
     @ColumnInfo("createAt")
@@ -54,4 +56,16 @@ data class UserModel(
     val rate: String? = "",
     @ColumnInfo("orders")
     val orders: String? = "",
+    @ColumnInfo("identityImage")
+    val identityImage: String? = "",
+    @ColumnInfo("licenseImage")
+    val licenseImage: String? = "",
+    @ColumnInfo("carFrontImage")
+    val carFrontImage: String? = "",
+    @ColumnInfo("carBackImage")
+    val carBackImage: String? = "",
+    @ColumnInfo("carRightImage")
+    val carRightImage: String? = "",
+    @ColumnInfo("carLeftImage")
+    val carLeftImage: String? = "",
 ): Parcelable

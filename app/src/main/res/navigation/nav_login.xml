@@ -5,7 +5,7 @@
     android:id="@+id/nav_login"
     app:startDestination="@id/phoneNumberFragment">
 
-   
+
     <fragment
         android:id="@+id/phoneNumberFragment"
         android:name="com.khawi.ui.login.phone_number.PhoneNumberFragment"
@@ -37,11 +37,22 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"  />
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/updateProfileFragment"
         android:name="com.khawi.ui.update_profile.UpdateProfileFragment"
         android:label="updateProfileFragment"
-        tools:layout="@layout/fragment_update_profile"/>
+        tools:layout="@layout/fragment_update_profile">
+        <action
+            android:id="@+id/action_updateProfileFragment_to_phoneNumberFragment"
+            app:destination="@id/phoneNumberFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/nav_login"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

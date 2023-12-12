@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.khawi.R
+import com.khawi.base.errorMessage
 import com.khawi.base.formatDate
 import com.khawi.base.showAlertMessage
 import com.khawi.custom_view.PaginationScrollListener
@@ -44,7 +45,7 @@ class WalletFragment : Fragment() {
     private var isLoading: Boolean = false
     private var isLastPage: Boolean = false
     private var amount = ""
-    private var bottomSheet : BottomSheetDialog?=null
+    private var bottomSheet: BottomSheetDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -107,7 +108,7 @@ class WalletFragment : Fragment() {
                 adapter?.submitList(it.data)
             }
             it?.total?.let { total ->
-                binding.totalBalance.text = "$total ${getString(R.string.currancy)}"
+                binding.totalBalance.text = "$total ${getString(R.string.currency)}"
             }
             it?.lastDate?.let { lastDate ->
                 if (lastDate.isNotEmpty() && lastDate != "0")
@@ -119,6 +120,8 @@ class WalletFragment : Fragment() {
             if (it?.status == true) {
                 amount = ""
                 callRequest()
+            } else {
+                it?.message?.errorMessage(requireContext())
             }
         }
 
@@ -126,16 +129,7 @@ class WalletFragment : Fragment() {
             if (it?.status == true) {
                 openPaymentGateway("${it.data?.finalTotal ?: 0.0}")
             } else {
-                it?.message?.showAlertMessage(context = requireContext(),
-                    title = getString(R.string.error),
-                    confirmText = getString(R.string.Ok),
-                    type = SweetAlertDialog.ERROR_TYPE,
-                    onCancelClick = {
-
-                    },
-                    onConfirmClick = {
-
-                    })
+                it?.message?.errorMessage(requireContext())
             }
         }
 
@@ -163,7 +157,7 @@ class WalletFragment : Fragment() {
     }
 
     private fun addAmountBottomSheet() {
-         bottomSheet = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
+        bottomSheet = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
         val rootView =
             layoutInflater.inflate(R.layout.bottomsheet_add_amount, binding.container, false)
         bottomSheet?.setContentView(rootView)

@@ -139,12 +139,12 @@ class JoinDetailsFragment : Fragment() {
     private fun fillInfo() {
         val user = offer?.user
         binding.username.text = user?.fullName ?: ""
-        binding.userImage.loadImage(requireContext(), user?.image ?: "")
+        binding.userImage.loadImage(user?.image ?: "")
         binding.tripInformation.text =
             "${getString(R.string.from)}: ${offer?.fAddress}\n${getString(R.string.to)}: ${offer?.tAddress}"
         binding.tripTime.text = offer?.dtTime ?: ""
         binding.tripDate.text = offer?.dtDate?.formatDate() ?: ""
-        binding.price.text = "${offer?.price} ${getString(R.string.currancy)}"
+        binding.price.text = "${offer?.price} ${getString(R.string.currency)}"
         binding.note.text = offer?.notes ?: ""
         if ((offer?.notes ?: "").isEmpty())
             binding.groupNote.visibility = View.GONE

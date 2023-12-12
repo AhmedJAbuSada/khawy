@@ -19,7 +19,8 @@ class AuthRepositoryImp @Inject constructor(
 ) : AuthRepository {
 
     private val _event = MutableStateFlow<BaseState<BaseResponse<UserModel?>?>>(BaseState.Idle())
-    private val _eventReferral = MutableStateFlow<BaseState<BaseResponse<Referral?>?>>(BaseState.Idle())
+    private val _eventReferral =
+        MutableStateFlow<BaseState<BaseResponse<Referral?>?>>(BaseState.Idle())
 
     override suspend fun referral() =
         withContext(dispatcherProvider.io()) {
@@ -117,6 +118,12 @@ class AuthRepositoryImp @Inject constructor(
         carModel: String?,
         carColor: String?,
         carNumber: String?,
+        identityImageFile: File?,
+        licenseImageFile: File?,
+        carFrontImageFile: File?,
+        carBackImageFile: File?,
+        carRightImageFile: File?,
+        carLeftImageFile: File?,
     ) = withContext(dispatcherProvider.io()) {
         when (val result =
             remoteDataSource.updateUser(
@@ -132,7 +139,13 @@ class AuthRepositoryImp @Inject constructor(
                 carType,
                 carModel,
                 carColor,
-                carNumber
+                carNumber,
+                identityImageFile,
+                licenseImageFile,
+                carFrontImageFile,
+                carBackImageFile,
+                carRightImageFile,
+                carLeftImageFile,
             )) {
             is AdvanceResult.Success -> {
                 val item = result.data

@@ -68,15 +68,17 @@ class PhoneNumberFragment : Fragment() {
             if (it?.status == true) {
                 it.data?.let { item ->
                     viewModel.addUser(item)
-                    if (item.isVerify == false)
+                    if (item.isApprove == false) {
+                        it.message?.errorMessage(requireContext())
+                    } else if (item.isVerify == false) {
                         findNavController().safeNavigate(
                             PhoneNumberFragmentDirections.actionPhoneNumberFragmentToVerificationFragment()
                         )
-                    else if (item.fullName.isNullOrEmpty())
+                    } else if (item.fullName.isNullOrEmpty()) {
                         findNavController().safeNavigate(
                             PhoneNumberFragmentDirections.actionPhoneNumberFragmentToUpdateProfileFragment()
                         )
-                    else {
+                    } else {
                         startActivity(
                             Intent(requireContext(), MainActivity::class.java)
                         )

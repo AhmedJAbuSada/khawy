@@ -14,7 +14,6 @@ import com.khawi.R
 import com.khawi.base.acceptedKey
 import com.khawi.base.cancelByDriverKey
 import com.khawi.base.cancelByUserKey
-import com.khawi.base.cancelledKey
 import com.khawi.base.finishedKey
 import com.khawi.base.formatDate
 import com.khawi.base.ratedKey
@@ -49,12 +48,12 @@ class OrderAdapter(
         holder.orderNumber.text = "${ctx.getString(R.string.trip_number)}: #${item.orderNo}"
         holder.orderDistance.text =
             "${ctx.getString(R.string.from)}: ${item.fAddress}\n${ctx.getString(R.string.to)}: ${item.tAddress}"
-        val price =
-            if (item.orderType == 2)
-                item.price ?: "0.0"
-            else
-                "(${item.minPrice ?: "0.0"} - ${item.maxPrice ?: "0.0"})"
-        holder.orderPrice.text = "$price ${ctx.getString(R.string.currancy)}"
+        val price = item.price ?: "0.0"
+//            if (item.orderType == 2)
+//                item.price ?: "0.0"
+//            else
+//                "(${item.minPrice ?: "0.0"} - ${item.maxPrice ?: "0.0"})"
+        holder.orderPrice.text = "$price ${ctx.getString(R.string.currency)}"
         when (item.status) {
             ratedKey -> {
                 holder.orderStatus.background =
@@ -62,6 +61,7 @@ class OrderAdapter(
                 holder.orderStatus.setTextColor(ContextCompat.getColor(ctx, R.color.green2))
                 holder.orderStatus.text = ctx.getString(R.string.finished)
             }
+
             finishedKey -> {
                 holder.orderStatus.background =
                     ContextCompat.getDrawable(ctx, R.drawable.bg_green_corner_12r)

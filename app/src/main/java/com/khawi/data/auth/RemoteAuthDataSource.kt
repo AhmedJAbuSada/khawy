@@ -105,6 +105,12 @@ class RemoteAuthDataSource @Inject constructor(
         carModel: String? = null,
         carColor: String? = null,
         carNumber: String? = null,
+        identityImageFile: File? = null,
+        licenseImageFile: File? = null,
+        carFrontImageFile: File? = null,
+        carBackImageFile: File? = null,
+        carRightImageFile: File? = null,
+        carLeftImageFile: File? = null,
     ): AdvanceResult<BaseResponse<UserModel?>> {
         val token = repository.getUser()?.token ?: ""
         val phone = phoneNumber ?: (repository.getUser()?.phoneNumber ?: "")
@@ -150,6 +156,36 @@ class RemoteAuthDataSource @Inject constructor(
                 }
                 carNumber?.let {
                     append("carNumber", carNumber)
+                }
+                identityImageFile?.let {
+                    append("identityImage", it.readBytes(), Headers.build {
+                        append(HttpHeaders.ContentDisposition, "filename=${it.name}")
+                    })
+                }
+                licenseImageFile?.let {
+                    append("licenseImage", it.readBytes(), Headers.build {
+                        append(HttpHeaders.ContentDisposition, "filename=${it.name}")
+                    })
+                }
+                carFrontImageFile?.let {
+                    append("carFrontImage", it.readBytes(), Headers.build {
+                        append(HttpHeaders.ContentDisposition, "filename=${it.name}")
+                    })
+                }
+                carBackImageFile?.let {
+                    append("carBackImage", it.readBytes(), Headers.build {
+                        append(HttpHeaders.ContentDisposition, "filename=${it.name}")
+                    })
+                }
+                carRightImageFile?.let {
+                    append("carRightImage", it.readBytes(), Headers.build {
+                        append(HttpHeaders.ContentDisposition, "filename=${it.name}")
+                    })
+                }
+                carLeftImageFile?.let {
+                    append("carLeftImage", it.readBytes(), Headers.build {
+                        append(HttpHeaders.ContentDisposition, "filename=${it.name}")
+                    })
                 }
             })
 

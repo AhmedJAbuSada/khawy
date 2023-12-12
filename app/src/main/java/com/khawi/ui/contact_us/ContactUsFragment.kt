@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
+import com.khawi.base.errorMessage
 import com.khawi.base.hideDialog
 import com.khawi.base.initLoading
 import com.khawi.base.showAlertMessage
@@ -89,6 +90,8 @@ class ContactUsFragment : Fragment() {
                     onConfirmClick = {
                         findNavController().popBackStack()
                     })
+            } else {
+                it?.message?.errorMessage(requireContext())
             }
         }
 

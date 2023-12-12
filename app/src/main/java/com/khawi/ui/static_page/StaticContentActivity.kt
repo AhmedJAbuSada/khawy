@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
 import com.khawi.base.BaseActivity
+import com.khawi.base.errorMessage
 import com.khawi.base.hideDialog
 import com.khawi.base.initLoading
 import com.khawi.base.showDialog
@@ -71,6 +72,8 @@ class StaticContentActivity : BaseActivity() {
                     }
 
                 }
+            } else {
+                it?.message?.errorMessage(this)
             }
         }
 

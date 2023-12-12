@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -24,6 +25,8 @@ import com.khawi.base.acceptedKey
 import com.khawi.base.addOfferKey
 import com.khawi.base.cancelByDriverKey
 import com.khawi.base.cancelByUserKey
+import com.khawi.base.checkTime
+import com.khawi.base.errorMessage
 import com.khawi.base.finishKey
 import com.khawi.base.finishedKey
 import com.khawi.base.formatDate
@@ -32,13 +35,15 @@ import com.khawi.base.initLoading
 import com.khawi.base.loadImage
 import com.khawi.base.newKey
 import com.khawi.base.ratedKey
-import com.khawi.base.safeNavigate
+import com.khawi.base.rejectOfferKey
+import com.khawi.base.showAlertMessage
 import com.khawi.base.showDialog
 import com.khawi.base.startKey
 import com.khawi.base.startTrackingService
 import com.khawi.base.stopTrackingService
 import com.khawi.databinding.FragmentRequestDetailsBinding
 import com.khawi.model.Day
+import com.khawi.model.Offer
 import com.khawi.model.Order
 import com.khawi.model.db.user.UserModel
 import com.khawi.ui.select_destination.SelectDestinationActivity
@@ -92,6 +97,8 @@ class RequestDetailsFragment : Fragment() {
                         viewModel.getOrders(args.orderObj?.id ?: "")
                     }
                 }
+            } else {
+                it?.message?.errorMessage(requireContext())
             }
         }
 
@@ -131,10 +138,12 @@ class RequestDetailsFragment : Fragment() {
         }
 
         binding.tripDateTop.text = order?.dtDate?.formatDate() ?: ""
-        binding.tripName.text = "${getString(R.string.trip_title)}: ${order?.title ?: ""}"
-        binding.tripInformation.text =
+        val tripNameText = "${getString(R.string.trip_title)}: ${order?.title ?: ""}"
+        binding.tripName.text = tripNameText
+        val tripInformationText =
             "${getString(R.string.from)}: ${order?.fAddress}\n${getString(R.string.to)}: ${order?.tAddress}"
-        binding.tripTime.text = order?.dtTime ?: ""
+        binding.tripInformation.text = tripInformationText
+        binding.tripTime.text = (order?.dtTime ?: "").checkTime(binding.tripTimeZone)
         binding.tripDate.text = order?.dtDate?.formatDate() ?: ""
 
         binding.back.setOnClickListener {
@@ -169,17 +178,20 @@ class RequestDetailsFragment : Fragment() {
             binding.sendBtn.text = getString(R.string.apply_deliver)
             binding.deliverContainer.visibility = View.VISIBLE
             binding.sendBtn.setOnClickListener {
-                findNavController().safeNavigate(
-                    RequestDetailsFragmentDirections.actionRequestDetailsFragmentToRequestDeliverFragment(
-                        orderObj = order
-                    )
-                )
+                viewModel.addOffer(order?.id ?: "")
+//                findNavController().safeNavigate(
+//                    RequestDetailsFragmentDirections.actionRequestDetailsFragmentToRequestDeliverFragment(
+//                        orderObj = order
+//                    )
+//                )
             }
 
-            binding.personImage.loadImage(requireContext(), order?.user?.image ?: "")
+            binding.personImage.loadImage(order?.user?.image ?: "")
             binding.personName.text = order?.user?.fullName ?: ""
-            binding.seatRequest.text = "${order?.maxPassenger ?: 0} ${getString(R.string.seats)}"
-            binding.price.text = "${order?.price ?: ""} ${getString(R.string.currancy)}"
+            val seatRequestText = "${order?.maxPassenger ?: 0} ${getString(R.string.seats)}"
+            binding.seatRequest.text = seatRequestText
+            val priceText = "${order?.price ?: ""} ${getString(R.string.currency)}"
+            binding.price.text = priceText
             binding.note.text = order?.notes ?: ""
             if ((order?.notes ?: "").isEmpty())
                 binding.noteGroup.visibility = View.GONE
@@ -196,17 +208,19 @@ class RequestDetailsFragment : Fragment() {
         } else if (order?.orderType == 1) {
             binding.sendBtn.text = getString(R.string.join_now)
             binding.sendBtn.setOnClickListener {
-                findNavController().safeNavigate(
-                    RequestDetailsFragmentDirections.actionRequestDetailsFragmentToRequestJoinFragment(
-                        orderObj = order
-                    )
-                )
+                viewModel.addJoin(order?.id ?: "")
+//                findNavController().safeNavigate(
+//                    RequestDetailsFragmentDirections.actionRequestDetailsFragmentToRequestJoinFragment(
+//                        orderObj = order
+//                    )
+//                )
             }
             showDriverInfo(
                 order?.user,
                 "${order?.maxPassenger ?: 0} ${getString(R.string.seats)}",
                 order?.notes ?: "",
-                "(${order?.minPrice ?: ""} - ${order?.maxPrice ?: ""}) ${getString(R.string.currancy)}"
+                "${order?.price ?: ""} ${getString(R.string.currency)}"
+//                "(${order?.minPrice ?: ""} - ${order?.maxPrice ?: ""}) ${getString(R.string.currency)}"
             )
         }
 
@@ -216,7 +230,8 @@ class RequestDetailsFragment : Fragment() {
             val myOffer = offersAccepted[0]
             if ((myOffer.user?.id ?: "") == (user?.id ?: "")) {
                 binding.priceOfferContainer.visibility = View.VISIBLE
-                binding.priceOffer.text = "${myOffer.price} ${getString(R.string.currancy)}"
+                val priceOfferText = "${myOffer.price} ${getString(R.string.currency)}"
+                binding.priceOffer.text = priceOfferText
             }
         }
 
@@ -358,9 +373,11 @@ class RequestDetailsFragment : Fragment() {
             if ((order?.user?.id ?: "") == (user?.id ?: "")) {
                 order?.offers?.let {
                     if (it.isNotEmpty()) {
-                        val offers = it.filter { it.status == addOfferKey }.toMutableList()
+                        val offers =
+                            it.filter { offer -> offer.status == addOfferKey }.toMutableList()
                         val offersAcceptedList =
-                            it.filter { it.status == acceptOfferKey }.toMutableList()
+                            it.filter { offerAccept -> offerAccept.status == acceptOfferKey }
+                                .toMutableList()
 
                         if (offers.isNotEmpty()) {
                             binding.requestsContainer.visibility = View.VISIBLE
@@ -370,15 +387,56 @@ class RequestDetailsFragment : Fragment() {
                                 else
                                     getString(R.string.requests_join)
                             val adapterUserRequest =
-                                UserRequestAdapter(requireContext()) { item, _, type ->
-                                    if (type == UserRequestAdapter.ClickType.OPEN) {
-                                        findNavController().safeNavigate(
-                                            RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
-                                                orderObj = order,
-                                                joinObj = item,
-                                                isOfferDeliver = order?.orderType == 2
-                                            )
-                                        )
+                                UserRequestAdapter(
+                                    requireContext(),
+                                    isRequest = true
+                                ) { item, _, type ->
+                                    when (type) {
+//                                        UserRequestAdapter.ClickType.OPEN -> {
+//                                            findNavController().safeNavigate(
+//                                                RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
+//                                                    orderObj = order,
+//                                                    joinObj = item,
+//                                                    isOfferDeliver = order?.orderType == 2
+//                                                )
+//                                            )
+//                                        }
+
+                                        UserRequestAdapter.ClickType.ACCEPT -> {
+                                            getString(R.string.are_you_want_accept).showAlertMessage(
+                                                context = requireContext(),
+                                                title = getString(R.string.alert),
+                                                confirmText = getString(R.string.Ok),
+                                                cancelText = getString(R.string.close_),
+                                                type = SweetAlertDialog.WARNING_TYPE,
+                                                onCancelClick = {
+
+                                                },
+                                                onConfirmClick = {
+                                                    viewModel.changeOfferStatusBody(
+                                                        order?.id ?: "",
+                                                        item.id ?: "",
+                                                        acceptOfferKey
+                                                    )
+                                                })
+                                        }
+
+                                        UserRequestAdapter.ClickType.REJECT -> {
+                                            getString(R.string.are_you_want_reject).showAlertMessage(
+                                                context = requireContext(),
+                                                title = getString(R.string.alert),
+                                                confirmText = getString(R.string.Ok),
+                                                cancelText = getString(R.string.close_),
+                                                type = SweetAlertDialog.WARNING_TYPE,
+                                                onCancelClick = {
+
+                                                },
+                                                onConfirmClick = {
+                                                    rejectBottomSheet(item)
+                                                })
+                                        }
+
+                                        else -> {}
                                     }
                                 }
                             adapterUserRequest.items = offers
@@ -397,13 +455,13 @@ class RequestDetailsFragment : Fragment() {
                                     ) { item, _, type ->
                                         when (type) {
                                             UserRequestAdapter.ClickType.OPEN -> {
-                                                findNavController().safeNavigate(
-                                                    RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
-                                                        orderObj = order,
-                                                        joinObj = item,
-                                                        isOfferDeliver = order?.orderType == 2
-                                                    )
-                                                )
+//                                                findNavController().safeNavigate(
+//                                                    RequestDetailsFragmentDirections.actionRequestDetailsFragmentToJoinDetailsFragment(
+//                                                        orderObj = order,
+//                                                        joinObj = item,
+//                                                        isOfferDeliver = order?.orderType == 2
+//                                                    )
+//                                                )
                                             }
 
                                             UserRequestAdapter.ClickType.RATE -> {
@@ -417,6 +475,9 @@ class RequestDetailsFragment : Fragment() {
                                                 )
                                                 startActivity(intent)
                                             }
+
+                                            UserRequestAdapter.ClickType.ACCEPT -> {}
+                                            UserRequestAdapter.ClickType.REJECT -> {}
                                         }
                                     }
                                 adapterUserRequestAccepted.items = offersAcceptedList
@@ -429,7 +490,7 @@ class RequestDetailsFragment : Fragment() {
                                     offersAcceptedList[0].user,
                                     "${order?.maxPassenger ?: 0} ${getString(R.string.seats)}",
                                     offersAcceptedList[0].notes ?: "",
-                                    "${offersAcceptedList[0].price ?: ""} ${getString(R.string.currancy)}"
+                                    "${offersAcceptedList[0].price ?: ""} ${getString(R.string.currency)}"
                                 )
                             }
                         }
@@ -453,7 +514,7 @@ class RequestDetailsFragment : Fragment() {
         priceText: String
     ) {
         binding.joinContainer.visibility = View.VISIBLE
-        binding.userImage.loadImage(requireContext(), user?.image ?: "")
+        binding.userImage.loadImage(user?.image ?: "")
         binding.username.text = user?.fullName ?: ""
         binding.ratingBar.rating = if (user?.rate?.isNotEmpty() == true)
             user.rate.toFloat()
@@ -506,6 +567,29 @@ class RequestDetailsFragment : Fragment() {
         bottomSheet.show()
     }
 
+    private fun rejectBottomSheet(item: Offer) {
+        val bottomSheet = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
+        val rootView =
+            layoutInflater.inflate(R.layout.bottomsheet_cancel, binding.container, false)
+        bottomSheet.setContentView(rootView)
+
+        val reasonETRate = rootView.findViewById<EditText>(R.id.reasonETRate)
+        reasonETRate.hint = getString(R.string.reject_reason)
+
+        val sendCancelBtn = rootView.findViewById<TextView>(R.id.sendCancelBtn)
+        sendCancelBtn.setOnClickListener {
+            viewModel.changeOfferStatusBody(
+                order?.id ?: "",
+                item.id ?: "",
+                rejectOfferKey,
+                reasonETRate.text.toString()
+            )
+            bottomSheet.dismiss()
+        }
+
+        bottomSheet.show()
+    }
+
     private fun rateBottomSheet(userModel: UserModel?) {
         val bottomSheet = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
         val rootView =
@@ -517,7 +601,7 @@ class RequestDetailsFragment : Fragment() {
         val ratingBarRate = rootView.findViewById<ScaleRatingBar>(R.id.ratingBarRate)
         val noteETRate = rootView.findViewById<EditText>(R.id.noteETRate)
 
-        userImageRate.loadImage(requireContext(), userModel?.image ?: "")
+        userImageRate.loadImage(userModel?.image ?: "")
         usernameRate.text = userModel?.fullName ?: ""
 
         val rateBtn = rootView.findViewById<TextView>(R.id.rateBtn)

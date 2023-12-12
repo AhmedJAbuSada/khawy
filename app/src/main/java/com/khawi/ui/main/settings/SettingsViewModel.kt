@@ -36,6 +36,9 @@ class SettingsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            getUser()
+        }
+        viewModelScope.launch {
             authRepository.getReferralFlow().collect {
                 when (it) {
                     is BaseState.NetworkError -> {

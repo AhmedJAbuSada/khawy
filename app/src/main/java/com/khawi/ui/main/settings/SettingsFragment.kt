@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
+import com.khawi.base.errorMessage
 import com.khawi.base.hideDialog
 import com.khawi.base.initLoading
 import com.khawi.base.loadImage
@@ -48,7 +49,7 @@ class SettingsFragment : Fragment() {
         viewModel.getUser()
         viewModel.userMutableLiveData.observe(viewLifecycleOwner) {
             it?.let {
-                binding.userImage.loadImage(requireContext(), it.image)
+                binding.userImage.loadImage(it.image)
                 binding.username.text = it.fullName
             }
         }
@@ -121,6 +122,8 @@ class SettingsFragment : Fragment() {
                     type = "text/plain"
                 }
                 startActivity(Intent.createChooser(sendIntent, null))
+            } else {
+                it?.message?.errorMessage(requireContext())
             }
         }
     }

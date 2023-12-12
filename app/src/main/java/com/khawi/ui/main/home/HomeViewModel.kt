@@ -34,6 +34,9 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            getUser()
+        }
+        viewModelScope.launch {
             repository.getOrderListFlow().collect {
 
                 when (it) {

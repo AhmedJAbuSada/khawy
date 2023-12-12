@@ -2,25 +2,22 @@ package com.khawi.network_base
 
 import com.advance.network.extensions.toFault
 import com.khawi.MainApplication
-import com.khawi.base.english_key
+import com.khawi.base.arabic_key
 import com.khawi.base.getPreference
 import com.khawi.base.language_key
 import com.khawi.network_base.NetworkConstants.BASE_URL
 import com.khawi.network_base.model.AdvanceError
 import com.khawi.network_base.model.AdvanceResult
-import io.ktor.client.*
+import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.ResponseException
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.prepareFormWithBinaryData
-import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.headers
 import io.ktor.client.request.parameter
 import io.ktor.client.request.prepareRequest
-import io.ktor.client.request.request
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
@@ -156,7 +153,7 @@ class RemoteDataSource @Inject constructor(
         headers {
             var language = MainApplication.applicationContext().getPreference(language_key)
             if (language.isEmpty())
-                language = english_key
+                language = arabic_key
             append(HttpHeaders.AcceptLanguage, language)
 
             if (request.headers != null)

@@ -109,7 +109,7 @@
     <string name="success_request_deliver_create">تم انشاء طلب التوصيل بنجاح</string>
     <string name="join_trip">الانضمام إلى الرحلة</string>
     <string name="price_must_between">يجب ان يكون السعر بين</string>
-    <string name="currancy">SAR</string>
+    <string name="currency">SAR</string>
     <string name="success_request_join_applied">تم تقديم طلب الانضمام بنجاح</string>
     <string name="destination_selected">تم تحديد الوجهة</string>
     <string name="requests_join">طلبات الانضمام</string>
@@ -162,4 +162,20 @@
     <string name="call">اتصال</string>
     <string name="tracking_location">تتبع المكان</string>
     <string name="coupon">الكوبون</string>
+    <string name="trip_subject_optional">عنوان الرحلة (اختياري)</string>
+    <string name="car_front_image">صورة السيارة من الامام</string>
+    <string name="car_back_image">صورة السيارة من الخلف</string>
+    <string name="car_right_image">صورة السيارة من اليمين</string>
+    <string name="car_left_image">صورة السيارة من اليسار</string>
+    <string name="identity_image">صورة الهوية</string>
+    <string name="license_image">صورة الرخصة</string>
+    <string name="error_identity_empty">حقل صورة الهوية مطلوبة</string>
+    <string name="error_license_empty">حقل صورة الرخصة مطلوبة</string>
+    <string name="error_car_front_empty">حقل صورة السيارة من الامام مطلوبة</string>
+    <string name="error_car_back_empty">حقل صورة السيارة من الخلف مطلوبة</string>
+    <string name="error_car_right_empty">حقل صورة السيارة من اليمين مطلوبة</string>
+    <string name="error_car_left_empty">حقل صورة السيارة من اليسار مطلوبة</string>
+    <string name="you_need_a_car">يجب ان يكون لديك سيارة لاستخدام هذه الخاصية</string>
+    <string name="reject_reason">سبب الرفض</string>
+    <string name="image_was_attached">تم اختيار الصورة</string>
 </resources>

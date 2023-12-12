@@ -1,7 +1,7 @@
 package com.khawi.base
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.ImageView
@@ -14,11 +14,17 @@ import com.khawi.R
 import java.text.SimpleDateFormat
 import java.util.Date
 
-fun ImageView.loadImage(context: Context, imageUrl: String?) {
-    Glide.with(context).load(imageUrl).placeholder(R.drawable.placeholder)
+fun ImageView.loadImage(imageUrl: String?) {
+    Glide.with(this.context).load(imageUrl).placeholder(R.drawable.placeholder)
         .error(R.drawable.placeholder).into(this)
 }
 
+fun ImageView.loadImage(imageUrl: Uri?) {
+    if (imageUrl != null) {
+        Glide.with(this.context).load(imageUrl).placeholder(R.drawable.placeholder)
+            .error(R.drawable.placeholder).into(this)
+    }
+}
 fun TextView.TimerCode(
     content: String,
     endContent: String,

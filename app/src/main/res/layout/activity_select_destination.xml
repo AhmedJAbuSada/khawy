@@ -97,7 +97,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginTop="24dp"
-            android:src="@drawable/selected_start_marker"
+            android:src="@drawable/selecting_start_marker"
             app:layout_constraintEnd_toEndOf="@+id/destinationRoute"
             app:layout_constraintTop_toBottomOf="@+id/destinationRoute" />
 
@@ -195,7 +195,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="24dp"
-            android:background="@drawable/button_main"
+            android:background="@drawable/button_blue"
             android:elevation="5dp"
             android:gravity="center"
             android:text="@string/select_start"

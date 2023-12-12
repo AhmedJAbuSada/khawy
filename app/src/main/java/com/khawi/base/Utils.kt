@@ -35,6 +35,7 @@ import com.google.gson.reflect.TypeToken
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
 import com.khawi.model.Order
+import java.lang.StringBuilder
 import java.net.InetAddress
 import java.net.MalformedURLException
 import java.net.NetworkInterface
@@ -421,6 +422,23 @@ fun LatLng.getAddress(context: Context): String {
     return address
 }
 
+fun LatLng.getAddressTitle(context: Context): String {
+    val geocoder = Geocoder(context, Locale.getDefault())
+    val addresses = geocoder.getFromLocation(
+        this.latitude,
+        this.longitude,
+        1
+    )
+    val address = StringBuilder()
+    if (addresses?.isNotEmpty() == true) {
+        if ((addresses[0].locality ?: "").isNotEmpty())
+            address.append(addresses[0].locality ?: "").append(" ")
+        if ((addresses[0].adminArea ?: "").isNotEmpty())
+            address.append(addresses[0].adminArea ?: "")
+    }
+    return address.toString()
+}
+
 fun String.formatDate(): String? {
     val formatZ = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
     val format = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
@@ -448,4 +466,16 @@ fun Activity.startTrackingService(order: Order?) {
 fun Activity.stopTrackingService() {
     val serviceIntent = Intent(this, LocationService::class.java)
     stopService(serviceIntent)
+}
+
+fun String.checkTime(tripTimeZone: TextView): String {
+    return if (this.contains("م")) {
+        tripTimeZone.text = "م"
+        this.replace("م", "")
+    } else if (this.contains("ص")) {
+        tripTimeZone.text = "ص"
+        this.replace("ص", "")
+    } else {
+        this
+    }
 }

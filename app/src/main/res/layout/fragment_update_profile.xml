@@ -142,9 +142,9 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/carInformationContainer"
                     android:layout_width="match_parent"
-                    android:visibility="gone"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <EditText
                         android:id="@+id/carTypeET"
@@ -202,7 +202,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
                         android:layout_marginTop="12dp"
-                        android:layout_marginBottom="24dp"
                         android:background="@drawable/bg_edit_text"
                         android:gravity="center_vertical"
                         android:hint="@string/car_plate"
@@ -214,6 +213,109 @@
                         android:textColor="@color/textColor"
                         android:textColorHint="@color/grey4"
                         android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/identityImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:drawablePadding="8dp"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:hint="@string/identity_image"
+                        android:lines="1"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="@color/textColor"
+                        android:textColorHint="@color/grey4"
+                        app:drawableEndCompat="@drawable/ic_uploud" />
+
+                    <TextView
+                        android:id="@+id/licenseImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:drawablePadding="8dp"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:hint="@string/license_image"
+                        android:lines="1"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="@color/textColor"
+                        android:textColorHint="@color/grey4"
+                        app:drawableEndCompat="@drawable/ic_uploud" />
+
+                    <TextView
+                        android:id="@+id/carFrontImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:drawablePadding="8dp"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:hint="@string/car_front_image"
+                        android:lines="1"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="@color/textColor"
+                        android:textColorHint="@color/grey4"
+                        app:drawableEndCompat="@drawable/ic_uploud" />
+
+                    <TextView
+                        android:id="@+id/carBackImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:drawablePadding="8dp"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:hint="@string/car_back_image"
+                        android:lines="1"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="@color/textColor"
+                        android:textColorHint="@color/grey4"
+                        app:drawableEndCompat="@drawable/ic_uploud" />
+
+                    <TextView
+                        android:id="@+id/carRightImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:drawablePadding="8dp"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:hint="@string/car_right_image"
+                        android:lines="1"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="@color/textColor"
+                        android:textColorHint="@color/grey4"
+                        app:drawableEndCompat="@drawable/ic_uploud" />
+
+                    <TextView
+                        android:id="@+id/carLeftImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="24dp"
+                        android:background="@drawable/bg_edit_text"
+                        android:drawablePadding="8dp"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:hint="@string/car_left_image"
+                        android:lines="1"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="@color/textColor"
+                        android:textColorHint="@color/grey4"
+                        app:drawableEndCompat="@drawable/ic_uploud" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>

@@ -34,7 +34,7 @@ class UpdateProfileViewModel @Inject constructor(
             getUser()
         }
         viewModelScope.launch {
-            authRepository.getUserFlow().collect{
+            authRepository.getUserFlow().collect {
                 when (it) {
                     is BaseState.NetworkError -> {
                         _progressLiveData.postValue(false)
@@ -76,6 +76,12 @@ class UpdateProfileViewModel @Inject constructor(
         carModel: String? = null,
         carColor: String? = null,
         carNumber: String? = null,
+        identityImageFile: File? = null,
+        licenseImageFile: File? = null,
+        carFrontImageFile: File? = null,
+        carBackImageFile: File? = null,
+        carRightImageFile: File? = null,
+        carLeftImageFile: File? = null,
     ) {
         _progressLiveData.postValue(true)
         val user = userMutableLiveData.value
@@ -93,7 +99,13 @@ class UpdateProfileViewModel @Inject constructor(
                 carType,
                 carModel,
                 carColor,
-                carNumber
+                carNumber,
+                identityImageFile,
+                licenseImageFile,
+                carFrontImageFile,
+                carBackImageFile,
+                carRightImageFile,
+                carLeftImageFile,
             )
         }
     }

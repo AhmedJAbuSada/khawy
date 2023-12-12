@@ -25,6 +25,12 @@ interface AuthRepository {
         carModel: String? = null,
         carColor: String? = null,
         carNumber: String? = null,
+        identityImageFile: File? = null,
+        licenseImageFile: File? = null,
+        carFrontImageFile: File? = null,
+        carBackImageFile: File? = null,
+        carRightImageFile: File? = null,
+        carLeftImageFile: File? = null,
     )
     suspend fun resendCode()
     suspend fun logout()

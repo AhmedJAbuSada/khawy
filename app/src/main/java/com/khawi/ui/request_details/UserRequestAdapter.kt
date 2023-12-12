@@ -15,6 +15,7 @@ import com.khawi.model.Offer
 
 class UserRequestAdapter(
     private val ctx: Context,
+    private val isRequest: Boolean = false,
     private val canCall: Boolean = false,
     private val onClick: (item: Offer, position: Int, type: ClickType) -> Unit
 ) : RecyclerView.Adapter<UserRequestAdapter.ViewHolder>() {
@@ -29,7 +30,7 @@ class UserRequestAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.username.text = item.user?.fullName ?: ""
-        holder.userImage.loadImage(ctx, item.user?.image ?: "")
+        holder.userImage.loadImage(item.user?.image ?: "")
         holder.showDetails.setOnClickListener {
             onClick.invoke(item, position, ClickType.OPEN)
         }
@@ -41,10 +42,24 @@ class UserRequestAdapter(
 //        }
 
         holder.callOfferBtn.visibility = View.GONE
-        if (item.status == acceptOfferKey && canCall)
+        if (item.status == acceptOfferKey && canCall) {
             holder.callOfferBtn.visibility = View.VISIBLE
-        holder.callOfferBtn.setOnClickListener {
-            onClick.invoke(item, position, ClickType.CALL)
+            holder.callOfferBtn.setOnClickListener {
+                onClick.invoke(item, position, ClickType.CALL)
+            }
+        }
+
+        holder.acceptBtn.visibility = View.GONE
+        holder.rejectBtn.visibility = View.GONE
+        if (isRequest) {
+            holder.acceptBtn.visibility = View.VISIBLE
+            holder.acceptBtn.setOnClickListener {
+                onClick.invoke(item, position, ClickType.ACCEPT)
+            }
+            holder.rejectBtn.visibility = View.VISIBLE
+            holder.rejectBtn.setOnClickListener {
+                onClick.invoke(item, position, ClickType.REJECT)
+            }
         }
     }
 
@@ -56,11 +71,15 @@ class UserRequestAdapter(
         var showDetails: TextView
 //        var rateOfferBtn: TextView
         var callOfferBtn: TextView
+        var acceptBtn: TextView
+        var rejectBtn: TextView
         var username: TextView
         var userImage: ImageView
 
 
         init {
+            acceptBtn = itemView.findViewById(R.id.acceptBtn)
+            rejectBtn = itemView.findViewById(R.id.rejectBtn)
             callOfferBtn = itemView.findViewById(R.id.callOfferBtn)
 //            rateOfferBtn = itemView.findViewById(R.id.rateOfferBtn)
             showDetails = itemView.findViewById(R.id.showDetails)
@@ -70,6 +89,6 @@ class UserRequestAdapter(
     }
 
     enum class ClickType {
-        OPEN, RATE, CALL
+        OPEN, RATE, CALL, ACCEPT, REJECT
     }
 }

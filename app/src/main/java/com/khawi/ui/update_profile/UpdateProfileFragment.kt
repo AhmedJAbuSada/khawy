@@ -1,12 +1,15 @@
 package com.khawi.ui.update_profile
 
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
@@ -26,9 +29,7 @@ import com.khawi.base.showDialog
 import com.khawi.base.validateEmail
 import com.khawi.databinding.FragmentUpdateProfileBinding
 import com.khawi.ui.login.LoginActivity
-import com.khawi.ui.login.LoginViewModel
 import com.khawi.ui.main.main.MainActivity
-import com.khawi.ui.main.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
@@ -38,17 +39,107 @@ class UpdateProfileFragment : Fragment() {
 
     private var _binding: FragmentUpdateProfileBinding? = null
     private val binding get() = _binding!!
-    private val loginViewModel: LoginViewModel by activityViewModels()
-    private val mainViewModel: MainViewModel by activityViewModels()
+//    private val loginViewModel: LoginViewModel by activityViewModels()
+//    private val mainViewModel: MainViewModel by activityViewModels()
 
     private val viewModel: UpdateProfileViewModel by viewModels()
     private var loading: KProgressHUD? = null
     private var imageFile: File? = null
     private var latlng: LatLng? = null
+    private var identityImageFile: File? = null
+    private var licenseImageFile: File? = null
+    private var carFrontImageFile: File? = null
+    private var carBackImageFile: File? = null
+    private var carRightImageFile: File? = null
+    private var carLeftImageFile: File? = null
 
-    companion object {
-        const val PROFILE_IMAGE_REQ_CODE = 101
-    }
+//    companion object {
+//        const val PROFILE_IMAGE_REQ_CODE = 101
+//    }
+
+    private val startForProfileImageResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            if (resultCode == Activity.RESULT_OK) {
+                val fileUri = data?.data!!
+                imageFile = fileUri.path?.let { File(it) }
+                binding.profileImageIV.loadImage(Uri.fromFile(imageFile))
+            }
+        }
+
+    private val identityImageFileResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            if (resultCode == Activity.RESULT_OK) {
+                val fileUri = data?.data!!
+                identityImageFile = fileUri.path?.let { File(it) }
+                binding.identityImage.text = identityImageFile?.name ?: ""
+            }
+        }
+
+    private val licenseImageFileResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            if (resultCode == Activity.RESULT_OK) {
+                val fileUri = data?.data!!
+                licenseImageFile = fileUri.path?.let { File(it) }
+                binding.licenseImage.text = licenseImageFile?.name ?: ""
+            }
+        }
+
+    private val carFrontImageFileResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            if (resultCode == Activity.RESULT_OK) {
+                val fileUri = data?.data!!
+                carFrontImageFile = fileUri.path?.let { File(it) }
+                binding.carFrontImage.text = carFrontImageFile?.name ?: ""
+            }
+        }
+
+    private val carBackImageFileResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            if (resultCode == Activity.RESULT_OK) {
+                val fileUri = data?.data!!
+                carBackImageFile = fileUri.path?.let { File(it) }
+                binding.carBackImage.text = carBackImageFile?.name ?: ""
+            }
+        }
+
+    private val carRightImageFileResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            if (resultCode == Activity.RESULT_OK) {
+                val fileUri = data?.data!!
+                carRightImageFile = fileUri.path?.let { File(it) }
+                binding.carRightImage.text = carRightImageFile?.name ?: ""
+            }
+        }
+
+    private val carLeftImageFileResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            if (resultCode == Activity.RESULT_OK) {
+                val fileUri = data?.data!!
+                carLeftImageFile = fileUri.path?.let { File(it) }
+                binding.carLeftImage.text = carLeftImageFile?.name ?: ""
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -71,6 +162,7 @@ class UpdateProfileFragment : Fragment() {
 
         viewModel.userMutableLiveData.observe(viewLifecycleOwner) {
             it?.let {
+                binding.profileImageIV.loadImage(it.image ?: "")
                 binding.fullNameET.setText(it.fullName)
                 binding.emailET.setText(it.email)
                 binding.haveCarCheckBox.isChecked = it.hasCar ?: false
@@ -82,6 +174,37 @@ class UpdateProfileFragment : Fragment() {
                     binding.carModelET.setText(it.carModel)
                     binding.carColorET.setText(it.carColor)
                     binding.carPlateET.setText(it.carNumber)
+
+                    binding.identityImage.text =
+                        if ((it.identityImage ?: "").isNotEmpty())
+                            getString(R.string.image_was_attached)
+                        else
+                            ""
+                    binding.licenseImage.text =
+                        if ((it.licenseImage ?: "").isNotEmpty())
+                            getString(R.string.image_was_attached)
+                        else
+                            ""
+                    binding.carFrontImage.text =
+                        if ((it.carFrontImage ?: "").isNotEmpty())
+                            getString(R.string.image_was_attached)
+                        else
+                            ""
+                    binding.carBackImage.text =
+                        if ((it.carBackImage ?: "").isNotEmpty())
+                            getString(R.string.image_was_attached)
+                        else
+                            ""
+                    binding.carRightImage.text =
+                        if ((it.carRightImage ?: "").isNotEmpty())
+                            getString(R.string.image_was_attached)
+                        else
+                            ""
+                    binding.carLeftImage.text =
+                        if ((it.carLeftImage ?: "").isNotEmpty())
+                            getString(R.string.image_was_attached)
+                        else
+                            ""
                 }
             }
         }
@@ -95,25 +218,73 @@ class UpdateProfileFragment : Fragment() {
         }
 
         binding.profileImageIV.setOnClickListener {
-            ImagePicker.with(requireActivity()).cropSquare()
-                .setImageProviderInterceptor { // Intercept ImageProvider
-//                    Log.d("ImagePicker", "Selected ImageProvider: " + imageProvider.name)
-                }.maxResultSize(200, 200).start(PROFILE_IMAGE_REQ_CODE)
+            ImagePicker.with(requireActivity())
+                .compress(512)
+                .createIntent { intent ->
+                    startForProfileImageResult.launch(intent)
+                }
+//                .setImageProviderInterceptor { // Intercept ImageProvider
+////                    Log.d("ImagePicker", "Selected ImageProvider: " + imageProvider.name)
+//                }.maxResultSize(200, 200).start(PROFILE_IMAGE_REQ_CODE)
         }
-        if (requireActivity() is LoginActivity)
-            loginViewModel.imageMutableLiveData.observe(viewLifecycleOwner) {
-                if (it != null) {
-                    binding.profileImageIV.loadImage(requireContext(), it.path)
-                    imageFile = it
+
+//        if (requireActivity() is LoginActivity)
+//            loginViewModel.imageMutableLiveData.observe(viewLifecycleOwner) {
+//                if (it != null) {
+//                    binding.profileImageIV.loadImage(requireContext(), it.path)
+//                    imageFile = it
+//                }
+//            }
+//        if (requireActivity() is MainActivity)
+//            mainViewModel.imageMutableLiveData.observe(viewLifecycleOwner) {
+//                if (it != null) {
+//                    binding.profileImageIV.loadImage(requireContext(), it.path)
+//                    imageFile = it
+//                }
+//            }
+
+        binding.identityImage.setOnClickListener {
+            ImagePicker.with(requireActivity())
+                .compress(512)
+                .createIntent { intent ->
+                    identityImageFileResult.launch(intent)
                 }
-            }
-        if (requireActivity() is MainActivity)
-            mainViewModel.imageMutableLiveData.observe(viewLifecycleOwner) {
-                if (it != null) {
-                    binding.profileImageIV.loadImage(requireContext(), it.path)
-                    imageFile = it
+        }
+        binding.licenseImage.setOnClickListener {
+            ImagePicker.with(requireActivity())
+                .compress(512)
+                .createIntent { intent ->
+                    licenseImageFileResult.launch(intent)
                 }
-            }
+        }
+        binding.carFrontImage.setOnClickListener {
+            ImagePicker.with(requireActivity())
+                .compress(512)
+                .createIntent { intent ->
+                    carFrontImageFileResult.launch(intent)
+                }
+        }
+        binding.carBackImage.setOnClickListener {
+            ImagePicker.with(requireActivity())
+                .compress(512)
+                .createIntent { intent ->
+                    carBackImageFileResult.launch(intent)
+                }
+        }
+        binding.carRightImage.setOnClickListener {
+            ImagePicker.with(requireActivity())
+                .compress(512)
+                .createIntent { intent ->
+                    carRightImageFileResult.launch(intent)
+                }
+        }
+        binding.carLeftImage.setOnClickListener {
+            ImagePicker.with(requireActivity())
+                .compress(512)
+                .createIntent { intent ->
+                    carLeftImageFileResult.launch(intent)
+                }
+        }
 
         binding.back.setOnClickListener {
             findNavController().popBackStack()
@@ -143,7 +314,13 @@ class UpdateProfileFragment : Fragment() {
                         carNumber = carPlate,
                         lat = (latlng?.latitude ?: 0.0).toString(),
                         lng = (latlng?.longitude ?: 0.0).toString(),
-                        address = latlng?.getAddress(requireContext()) ?: ""
+                        address = latlng?.getAddress(requireContext()) ?: "",
+                        identityImageFile = identityImageFile,
+                        licenseImageFile = licenseImageFile,
+                        carFrontImageFile = carFrontImageFile,
+                        carBackImageFile = carBackImageFile,
+                        carRightImageFile = carRightImageFile,
+                        carLeftImageFile = carLeftImageFile,
                     )
                 }
             }
@@ -157,7 +334,6 @@ class UpdateProfileFragment : Fragment() {
         viewModel.successLiveData.observe(viewLifecycleOwner) {
             if (it?.status == true) {
                 it.data?.let { item ->
-                    viewModel.addUser(item)
                     it.message?.showAlertMessage(context = requireContext(),
                         title = getString(R.string.success),
                         confirmText = getString(R.string.Ok),
@@ -165,14 +341,20 @@ class UpdateProfileFragment : Fragment() {
                         onCancelClick = {},
                         onConfirmClick = {
                             if (requireActivity() is MainActivity) {
+                                viewModel.addUser(item)
                                 findNavController().popBackStack()
                             } else {
-                                startActivity(
-                                    Intent(
-                                        requireContext(), MainActivity::class.java
+                                if (item.isApprove == true) {
+                                    viewModel.addUser(item)
+                                    startActivity(
+                                        Intent(
+                                            requireContext(), MainActivity::class.java
+                                        )
                                     )
-                                )
-                                (requireActivity() as LoginActivity).finishAffinity()
+                                    (requireActivity() as LoginActivity).finishAffinity()
+                                } else {
+                                    findNavController().navigate(R.id.action_updateProfileFragment_to_phoneNumberFragment)
+                                }
                             }
                         })
                 }
@@ -264,6 +446,84 @@ class UpdateProfileFragment : Fragment() {
             }
             if (binding.carPlateET.text.toString().isEmpty()) {
                 getString(R.string.error_car_plate_empty).showAlertMessage(context = requireContext(),
+                    title = getString(R.string.error),
+                    confirmText = getString(R.string.Ok),
+                    type = SweetAlertDialog.ERROR_TYPE,
+                    onCancelClick = {
+
+                    },
+                    onConfirmClick = {
+
+                    })
+                return false
+            }
+            if (binding.identityImage.text.toString().isEmpty()) {
+                getString(R.string.error_identity_empty).showAlertMessage(context = requireContext(),
+                    title = getString(R.string.error),
+                    confirmText = getString(R.string.Ok),
+                    type = SweetAlertDialog.ERROR_TYPE,
+                    onCancelClick = {
+
+                    },
+                    onConfirmClick = {
+
+                    })
+                return false
+            }
+            if (binding.licenseImage.text.toString().isEmpty()) {
+                getString(R.string.error_license_empty).showAlertMessage(context = requireContext(),
+                    title = getString(R.string.error),
+                    confirmText = getString(R.string.Ok),
+                    type = SweetAlertDialog.ERROR_TYPE,
+                    onCancelClick = {
+
+                    },
+                    onConfirmClick = {
+
+                    })
+                return false
+            }
+            if (binding.carFrontImage.text.toString().isEmpty()) {
+                getString(R.string.error_car_front_empty).showAlertMessage(context = requireContext(),
+                    title = getString(R.string.error),
+                    confirmText = getString(R.string.Ok),
+                    type = SweetAlertDialog.ERROR_TYPE,
+                    onCancelClick = {
+
+                    },
+                    onConfirmClick = {
+
+                    })
+                return false
+            }
+            if (binding.carBackImage.text.toString().isEmpty()) {
+                getString(R.string.error_car_back_empty).showAlertMessage(context = requireContext(),
+                    title = getString(R.string.error),
+                    confirmText = getString(R.string.Ok),
+                    type = SweetAlertDialog.ERROR_TYPE,
+                    onCancelClick = {
+
+                    },
+                    onConfirmClick = {
+
+                    })
+                return false
+            }
+            if (binding.carRightImage.text.toString().isEmpty()) {
+                getString(R.string.error_car_right_empty).showAlertMessage(context = requireContext(),
+                    title = getString(R.string.error),
+                    confirmText = getString(R.string.Ok),
+                    type = SweetAlertDialog.ERROR_TYPE,
+                    onCancelClick = {
+
+                    },
+                    onConfirmClick = {
+
+                    })
+                return false
+            }
+            if (binding.carLeftImage.text.toString().isEmpty()) {
+                getString(R.string.error_car_left_empty).showAlertMessage(context = requireContext(),
                     title = getString(R.string.error),
                     confirmText = getString(R.string.Ok),
                     type = SweetAlertDialog.ERROR_TYPE,

@@ -21,7 +21,7 @@ class ViewPager2Adapter(private val ctx: Context) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.images.loadImage(ctx, images[position].icon)
+        holder.images.loadImage(images[position].icon)
     }
 
     override fun getItemCount(): Int {

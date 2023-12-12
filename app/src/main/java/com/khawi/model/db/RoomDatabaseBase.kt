@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [UserModel::class],
-    version = 1, exportSchema = true
+    version = 2, exportSchema = true
 )
 abstract class RoomDatabaseBase : RoomDatabase() {
 

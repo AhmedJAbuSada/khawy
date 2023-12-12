@@ -37,6 +37,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.database.FirebaseDatabase
 import com.khawi.R
+import com.khawi.base.checkTime
 import com.khawi.base.formatDate
 import com.khawi.base.loadImage
 import com.khawi.base.safeNavigate
@@ -117,11 +118,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             result.error?.let { }
         }
 
-        viewModel.getUser()
         viewModel.userMutableLiveData.observe(viewLifecycleOwner) {
             it?.let {
                 user = it
-                binding.userImg.loadImage(requireContext(), user?.image ?: "")
+                binding.userImg.loadImage(user?.image ?: "")
                 binding.username.text = "${user?.fullName} .."
             }
         }
@@ -252,7 +252,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         val ratingBar = rootView.findViewById<ScaleRatingBar>(R.id.ratingBar)
 
         val ownerUser = order.user
-        userImage.loadImage(requireContext(), ownerUser?.image ?: "")
+        userImage.loadImage(ownerUser?.image ?: "")
         username.text = ownerUser?.fullName ?: ""
         ratingBar.rating = if (ownerUser?.rate?.isNotEmpty() == true)
             ownerUser.rate.toFloat()
@@ -294,15 +294,26 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         val userImage = rootView.findViewById<CircleImageView>(R.id.userImage)
         val username = rootView.findViewById<TextView>(R.id.username)
 
-        userImage.loadImage(requireContext(), ownerUser?.image ?: "")
+        userImage.loadImage(ownerUser?.image ?: "")
         username.text = ownerUser?.fullName ?: ""
 
         val tripInformation = rootView.findViewById<TextView>(R.id.tripInformation)
         val tripTime = rootView.findViewById<TextView>(R.id.tripTime)
+        val tripTimeZone = rootView.findViewById<TextView>(R.id.tripTimeZone)
         val tripDate = rootView.findViewById<TextView>(R.id.tripDate)
         tripInformation.text =
             "${getString(R.string.from)}: ${order.fAddress}\n${getString(R.string.to)}: ${order.tAddress}"
-        tripTime.text = order.dtTime ?: ""
+        tripTime.text = (order.dtTime ?: "").checkTime(tripTimeZone)
+//            if ((order.dtTime ?: "").contains("م")) {
+//                tripTimeZone.text = "م"
+//                (order.dtTime ?: "").replace("م", "")
+//            } else if ((order.dtTime ?: "").contains("ص")) {
+//                tripTimeZone.text = "ص"
+//                (order.dtTime ?: "").replace("ص", "")
+//            } else {
+//                order.dtTime ?: ""
+//            }
+
         tripDate.text = order.dtDate?.formatDate() ?: ""
 
         val showDetails = rootView.findViewById<TextView>(R.id.showDetails)

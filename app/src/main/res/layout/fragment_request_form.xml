@@ -55,7 +55,7 @@
                     android:layout_marginTop="24dp"
                     android:background="@drawable/bg_edit_text"
                     android:gravity="center_vertical"
-                    android:hint="@string/trip_subject"
+                    android:hint="@string/trip_subject_optional"
                     android:imeOptions="actionDone"
                     android:inputType="text"
                     android:lines="1"
@@ -225,6 +225,7 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingHorizontal="16dp"
+                    android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@+id/recyclerViewDays">
 
                     <ImageView
@@ -239,8 +240,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
-                        android:text="@string/trip_date"
                         android:gravity="right"
+                        android:text="@string/trip_date"
                         android:textColor="#666666"
                         android:textSize="16sp" />
 
@@ -256,6 +257,7 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingHorizontal="16dp"
+                    android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@+id/tripDateContainer">
 
                     <ImageView
@@ -270,8 +272,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
-                        android:text="@string/trip_time"
                         android:gravity="right"
+                        android:text="@string/trip_time"
                         android:textColor="#666666"
                         android:textSize="16sp" />
 
