@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
         navController = navHostFragment.navController
-
+        viewModel.getUser()
         binding.bottomView.itemIconTintList = null
 
         navController?.addOnDestinationChangedListener { _, destination, _ ->

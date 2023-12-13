@@ -24,6 +24,7 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
+import com.khawi.base.checkTime
 import com.khawi.base.deliverBottomSheet
 import com.khawi.base.errorMessage
 import com.khawi.base.getAddress
@@ -42,6 +43,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -292,7 +294,12 @@ class RequestFormFragment : Fragment() {
         materialTimeBuilder.addOnPositiveButtonClickListener {
             val selectedHour = materialTimeBuilder.hour
             val selectedMinute = materialTimeBuilder.minute
-            tripTime = String.format(Locale.ENGLISH, "%02d:%02d", selectedHour, selectedMinute)
+            val timeSelected =
+                String.format(Locale.ENGLISH, "%02d:%02d", selectedHour, selectedMinute)
+            val sdf24 = SimpleDateFormat("HH:mm", Locale.ENGLISH)
+            val sdf = SimpleDateFormat("hh:mm aa", Locale.ENGLISH)
+            val time = sdf.format(sdf24.parse(timeSelected) ?: Date()).lowercase()
+            tripTime = time.checkTime(binding.tripTimeZone)
             binding.tripTime.text = tripTime
         }
         materialTimeBuilder.show(childFragmentManager, "MATERIAL_DATE_PICKER")

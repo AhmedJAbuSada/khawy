@@ -469,7 +469,13 @@ fun Activity.stopTrackingService() {
 }
 
 fun String.checkTime(tripTimeZone: TextView): String {
-    return if (this.contains("م")) {
+    return if (this.contains("pm")) {
+        tripTimeZone.text = "م"
+        this.replace("pm", "")
+    } else if (this.contains("am")) {
+        tripTimeZone.text = "ص"
+        this.replace("am", "")
+    }else if (this.contains("م")) {
         tripTimeZone.text = "م"
         this.replace("م", "")
     } else if (this.contains("ص")) {

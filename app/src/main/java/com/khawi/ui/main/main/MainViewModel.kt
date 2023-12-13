@@ -21,10 +21,5 @@ class MainViewModel @Inject constructor(
         userMutableLiveData.postValue(repository.getUser())
     }
 
-    init {
-        viewModelScope.launch {
-            getUser()
-        }
-    }
 
 }
