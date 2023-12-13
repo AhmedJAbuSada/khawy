@@ -387,7 +387,7 @@ class RequestFormFragment : Fragment() {
                 return false
             }
         }
-        if (tripDate.isNullOrEmpty()) {
+        if (!isDeliver && tripDate.isNullOrEmpty()) {
             getString(R.string.error_date_empty).showAlertMessage(
                 context = requireContext(),
                 title = getString(R.string.error),
@@ -402,7 +402,7 @@ class RequestFormFragment : Fragment() {
             )
             return false
         }
-        if (tripTime.isNullOrEmpty()) {
+        if (!isDeliver && tripTime.isNullOrEmpty()) {
             getString(R.string.error_time_empty).showAlertMessage(
                 context = requireContext(),
                 title = getString(R.string.error),

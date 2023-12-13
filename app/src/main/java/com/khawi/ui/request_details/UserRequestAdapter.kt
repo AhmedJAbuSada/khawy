@@ -31,6 +31,8 @@ class UserRequestAdapter(
         val item = items[position]
         holder.username.text = item.user?.fullName ?: ""
         holder.userImage.loadImage(item.user?.image ?: "")
+
+        holder.showDetails.visibility = View.GONE
         holder.showDetails.setOnClickListener {
             onClick.invoke(item, position, ClickType.OPEN)
         }

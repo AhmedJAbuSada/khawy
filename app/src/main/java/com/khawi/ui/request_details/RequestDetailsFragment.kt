@@ -143,8 +143,6 @@ class RequestDetailsFragment : Fragment() {
         val tripInformationText =
             "${getString(R.string.from)}: ${order?.fAddress}\n${getString(R.string.to)}: ${order?.tAddress}"
         binding.tripInformation.text = tripInformationText
-        binding.tripTime.text = (order?.dtTime ?: "").checkTime(binding.tripTimeZone)
-        binding.tripDate.text = order?.dtDate?.formatDate() ?: ""
 
         binding.back.setOnClickListener {
             findNavController().popBackStack()
@@ -172,6 +170,8 @@ class RequestDetailsFragment : Fragment() {
             findNavController().popBackStack()
         }
 
+        binding.tripTimeContainer.visibility = View.GONE
+        binding.tripDateContainer.visibility = View.GONE
         binding.joinContainer.visibility = View.GONE
         binding.deliverContainer.visibility = View.GONE
         if (order?.orderType == 2) {
@@ -206,6 +206,13 @@ class RequestDetailsFragment : Fragment() {
             }
 
         } else if (order?.orderType == 1) {
+
+            binding.tripTimeContainer.visibility = View.VISIBLE
+            binding.tripDateContainer.visibility = View.VISIBLE
+
+            binding.tripTime.text = (order?.dtTime ?: "").checkTime(binding.tripTimeZone)
+            binding.tripDate.text = order?.dtDate?.formatDate() ?: ""
+
             binding.sendBtn.text = getString(R.string.join_now)
             binding.sendBtn.setOnClickListener {
                 viewModel.addJoin(order?.id ?: "")
