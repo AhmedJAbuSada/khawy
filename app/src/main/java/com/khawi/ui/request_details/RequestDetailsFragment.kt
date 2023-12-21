@@ -197,11 +197,11 @@ class RequestDetailsFragment : Fragment() {
                 binding.noteGroup.visibility = View.GONE
 
             binding.callClient.visibility = View.GONE
-            if (order?.status == startKey || order?.status == acceptedKey)
+            if ((order?.status == startKey || order?.status == acceptedKey) && (order?.user?.id != user?.id))
                 binding.callClient.visibility = View.VISIBLE
 
             binding.callClient.setOnClickListener {
-                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${user?.phoneNumber}"))
+                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:+${user?.phoneNumber}"))
                 startActivity(intent)
             }
 
@@ -232,15 +232,15 @@ class RequestDetailsFragment : Fragment() {
         }
 
         binding.priceOfferContainer.visibility = View.GONE
-        val offersAccepted = order?.offers?.filter { it.status == acceptOfferKey }
-        if (offersAccepted?.isNotEmpty() == true) {
-            val myOffer = offersAccepted[0]
-            if ((myOffer.user?.id ?: "") == (user?.id ?: "")) {
-                binding.priceOfferContainer.visibility = View.VISIBLE
-                val priceOfferText = "${myOffer.price} ${getString(R.string.currency)}"
-                binding.priceOffer.text = priceOfferText
-            }
-        }
+//        val offersAccepted = order?.offers?.filter { it.status == acceptOfferKey }
+//        if (offersAccepted?.isNotEmpty() == true) {
+//            val myOffer = offersAccepted[0]
+//            if ((myOffer.user?.id ?: "") == (user?.id ?: "")) {
+//                binding.priceOfferContainer.visibility = View.VISIBLE
+//                val priceOfferText = "${myOffer.price} ${getString(R.string.currency)}"
+//                binding.priceOffer.text = priceOfferText
+//            }
+//        }
 
         binding.edit.visibility = View.GONE
         binding.orderStatus.visibility = View.GONE
@@ -274,7 +274,7 @@ class RequestDetailsFragment : Fragment() {
             if (newStatusWithOfferAccepted()) {
                 binding.startBtn.visibility = View.VISIBLE
                 binding.startBtn.setOnClickListener {
-                    requireActivity().startTrackingService(order)
+                    requireActivity().startTrackingService(order, user?.id?:"")
                     viewModel.viewModelScope.launch {
                         viewModel.changeOrderStatusBody(
                             orderId = order?.id ?: "",
@@ -396,6 +396,7 @@ class RequestDetailsFragment : Fragment() {
                             val adapterUserRequest =
                                 UserRequestAdapter(
                                     requireContext(),
+                                    orderType = order?.orderType ?: 1,
                                     isRequest = true
                                 ) { item, _, type ->
                                     when (type) {
@@ -458,7 +459,9 @@ class RequestDetailsFragment : Fragment() {
                                 val adapterUserRequestAccepted =
                                     UserRequestAdapter(
                                         requireContext(),
-                                        canCall = order?.status == startKey
+                                        orderType = order?.orderType ?: 1,
+                                        canCall = order?.status == startKey,
+                                        userId = user?.id
                                     ) { item, _, type ->
                                         when (type) {
                                             UserRequestAdapter.ClickType.OPEN -> {
@@ -478,7 +481,7 @@ class RequestDetailsFragment : Fragment() {
                                             UserRequestAdapter.ClickType.CALL -> {
                                                 val intent = Intent(
                                                     Intent.ACTION_DIAL,
-                                                    Uri.parse("tel:${item.user?.phoneNumber}")
+                                                    Uri.parse("tel:+${item.user?.phoneNumber}")
                                                 )
                                                 startActivity(intent)
                                             }
@@ -497,7 +500,8 @@ class RequestDetailsFragment : Fragment() {
                                     offersAcceptedList[0].user,
                                     "${order?.maxPassenger ?: 0} ${getString(R.string.seats)}",
                                     offersAcceptedList[0].notes ?: "",
-                                    "${offersAcceptedList[0].price ?: ""} ${getString(R.string.currency)}"
+                                    "${offersAcceptedList[0].price ?: ""} ${getString(R.string.currency)}",
+                                    showPhone = true
                                 )
                             }
                         }
@@ -518,7 +522,8 @@ class RequestDetailsFragment : Fragment() {
         user: UserModel?,
         seatsText: String,
         noteText: String,
-        priceText: String
+        priceText: String,
+        showPhone:Boolean = false
     ) {
         binding.joinContainer.visibility = View.VISIBLE
         binding.userImage.loadImage(user?.image ?: "")
@@ -539,10 +544,10 @@ class RequestDetailsFragment : Fragment() {
         binding.price.text = priceText
 
         binding.callDriver.visibility = View.GONE
-        if (order?.status == startKey || order?.status == acceptedKey)
+        if ((order?.status == startKey || order?.status == acceptedKey) && showPhone)
             binding.callDriver.visibility = View.VISIBLE
         binding.callDriver.setOnClickListener {
-            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${user?.phoneNumber}"))
+            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:+${user?.phoneNumber}"))
             startActivity(intent)
         }
     }
@@ -633,7 +638,11 @@ class RequestDetailsFragment : Fragment() {
     }
 
     private fun endTripStatus(): Boolean {
-        return order?.status == startKey
+        val offersAccepted = order?.offers?.filter { it.status == acceptOfferKey }
+        return if ((order?.orderType == 2) && (offersAccepted?.isNotEmpty() == true) && (order?.status == startKey))
+            ((offersAccepted[0].user?.id ?: "") == (user?.id ?: ""))
+        else
+            (order?.status == startKey) && ((order?.user?.id ?: "") == (user?.id ?: ""))
     }
 
     private fun newStatusWithOfferAccepted(): Boolean {

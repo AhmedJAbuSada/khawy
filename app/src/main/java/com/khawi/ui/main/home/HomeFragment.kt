@@ -297,24 +297,24 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         userImage.loadImage(ownerUser?.image ?: "")
         username.text = ownerUser?.fullName ?: ""
 
-        val tripInformation = rootView.findViewById<TextView>(R.id.tripInformation)
-        val tripTime = rootView.findViewById<TextView>(R.id.tripTime)
-        val tripTimeZone = rootView.findViewById<TextView>(R.id.tripTimeZone)
-        val tripDate = rootView.findViewById<TextView>(R.id.tripDate)
-        tripInformation.text =
-            "${getString(R.string.from)}: ${order.fAddress}\n${getString(R.string.to)}: ${order.tAddress}"
-        tripTime.text = (order.dtTime ?: "").checkTime(tripTimeZone)
-//            if ((order.dtTime ?: "").contains("م")) {
-//                tripTimeZone.text = "م"
-//                (order.dtTime ?: "").replace("م", "")
-//            } else if ((order.dtTime ?: "").contains("ص")) {
-//                tripTimeZone.text = "ص"
-//                (order.dtTime ?: "").replace("ص", "")
-//            } else {
-//                order.dtTime ?: ""
-//            }
-
-        tripDate.text = order.dtDate?.formatDate() ?: ""
+//        val tripInformation = rootView.findViewById<TextView>(R.id.tripInformation)
+//        val tripTime = rootView.findViewById<TextView>(R.id.tripTime)
+//        val tripTimeZone = rootView.findViewById<TextView>(R.id.tripTimeZone)
+//        val tripDate = rootView.findViewById<TextView>(R.id.tripDate)
+//        tripInformation.text =
+//            "${getString(R.string.from)}: ${order.fAddress}\n${getString(R.string.to)}: ${order.tAddress}"
+//        tripTime.text = (order.dtTime ?: "").checkTime(tripTimeZone)
+////            if ((order.dtTime ?: "").contains("م")) {
+////                tripTimeZone.text = "م"
+////                (order.dtTime ?: "").replace("م", "")
+////            } else if ((order.dtTime ?: "").contains("ص")) {
+////                tripTimeZone.text = "ص"
+////                (order.dtTime ?: "").replace("ص", "")
+////            } else {
+////                order.dtTime ?: ""
+////            }
+//
+//        tripDate.text = order.dtDate?.formatDate() ?: ""
 
         val showDetails = rootView.findViewById<TextView>(R.id.showDetails)
         showDetails.setOnClickListener {

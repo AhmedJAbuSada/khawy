@@ -63,9 +63,13 @@ class UpdateProfileFragment : Fragment() {
             val data = result.data
 
             if (resultCode == Activity.RESULT_OK) {
-                val fileUri = data?.data!!
-                imageFile = fileUri.path?.let { File(it) }
-                binding.profileImageIV.loadImage(Uri.fromFile(imageFile))
+                try {
+                    val fileUri = data?.data!!
+                    imageFile = fileUri.path?.let { File(it) }
+                    binding.profileImageIV.loadImage(Uri.fromFile(imageFile))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
 
@@ -75,9 +79,13 @@ class UpdateProfileFragment : Fragment() {
             val data = result.data
 
             if (resultCode == Activity.RESULT_OK) {
-                val fileUri = data?.data!!
-                identityImageFile = fileUri.path?.let { File(it) }
-                binding.identityImage.text = identityImageFile?.name ?: ""
+                try {
+                    val fileUri = data?.data!!
+                    identityImageFile = fileUri.path?.let { File(it) }
+                    binding.identityImage.text = identityImageFile?.name ?: ""
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
 
@@ -87,9 +95,13 @@ class UpdateProfileFragment : Fragment() {
             val data = result.data
 
             if (resultCode == Activity.RESULT_OK) {
-                val fileUri = data?.data!!
-                licenseImageFile = fileUri.path?.let { File(it) }
-                binding.licenseImage.text = licenseImageFile?.name ?: ""
+                try {
+                    val fileUri = data?.data!!
+                    licenseImageFile = fileUri.path?.let { File(it) }
+                    binding.licenseImage.text = licenseImageFile?.name ?: ""
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
 
@@ -99,9 +111,13 @@ class UpdateProfileFragment : Fragment() {
             val data = result.data
 
             if (resultCode == Activity.RESULT_OK) {
-                val fileUri = data?.data!!
-                carFrontImageFile = fileUri.path?.let { File(it) }
-                binding.carFrontImage.text = carFrontImageFile?.name ?: ""
+                try {
+                    val fileUri = data?.data!!
+                    carFrontImageFile = fileUri.path?.let { File(it) }
+                    binding.carFrontImage.text = carFrontImageFile?.name ?: ""
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
 
@@ -111,9 +127,13 @@ class UpdateProfileFragment : Fragment() {
             val data = result.data
 
             if (resultCode == Activity.RESULT_OK) {
-                val fileUri = data?.data!!
-                carBackImageFile = fileUri.path?.let { File(it) }
-                binding.carBackImage.text = carBackImageFile?.name ?: ""
+                try {
+                    val fileUri = data?.data!!
+                    carBackImageFile = fileUri.path?.let { File(it) }
+                    binding.carBackImage.text = carBackImageFile?.name ?: ""
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
 
@@ -123,9 +143,13 @@ class UpdateProfileFragment : Fragment() {
             val data = result.data
 
             if (resultCode == Activity.RESULT_OK) {
-                val fileUri = data?.data!!
-                carRightImageFile = fileUri.path?.let { File(it) }
-                binding.carRightImage.text = carRightImageFile?.name ?: ""
+                try {
+                    val fileUri = data?.data!!
+                    carRightImageFile = fileUri.path?.let { File(it) }
+                    binding.carRightImage.text = carRightImageFile?.name ?: ""
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
 
@@ -135,9 +159,13 @@ class UpdateProfileFragment : Fragment() {
             val data = result.data
 
             if (resultCode == Activity.RESULT_OK) {
-                val fileUri = data?.data!!
-                carLeftImageFile = fileUri.path?.let { File(it) }
-                binding.carLeftImage.text = carLeftImageFile?.name ?: ""
+                try {
+                    val fileUri = data?.data!!
+                    carLeftImageFile = fileUri.path?.let { File(it) }
+                    binding.carLeftImage.text = carLeftImageFile?.name ?: ""
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
 

@@ -29,7 +29,7 @@ class SplashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        handleDynamicLinks()
+        goNext()
 
     }
 
@@ -43,13 +43,10 @@ class SplashActivity : BaseActivity() {
             .getDynamicLink(intent)
             .addOnSuccessListener(this) { pendingDynamicLinkData: PendingDynamicLinkData? ->
                 // Get deep link from result (may be null if no link is found)
-                var deepLink: Uri? = null
                 if (pendingDynamicLinkData != null) {
-                    deepLink = pendingDynamicLinkData.link
+                    val deepLink = pendingDynamicLinkData.link
                     val referralId = deepLink?.getQueryParameter("referal_id")
-                    if (referralId != null) {
-                        goNext(referralId)
-                    }
+                    goNext(referralId)
                 } else
                     goNext()
 

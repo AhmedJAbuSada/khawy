@@ -126,9 +126,13 @@ class RemoteAuthDataSource @Inject constructor(
                     append("email", it)
                 }
                 image?.let {
-                    append("image", it.readBytes(), Headers.build {
-                        append(HttpHeaders.ContentDisposition, "filename=${it.name}")
-                    })
+                    try {
+                        append("image", it.readBytes(), Headers.build {
+                            append(HttpHeaders.ContentDisposition, "filename=${it.name}")
+                        })
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
                 name?.let {
                     append("full_name", it)
@@ -158,34 +162,58 @@ class RemoteAuthDataSource @Inject constructor(
                     append("carNumber", carNumber)
                 }
                 identityImageFile?.let {
-                    append("identityImage", it.readBytes(), Headers.build {
-                        append(HttpHeaders.ContentDisposition, "filename=${it.name}")
-                    })
+                    try {
+                        append("identityImage", it.readBytes(), Headers.build {
+                            append(HttpHeaders.ContentDisposition, "filename=${it.name}")
+                        })
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
                 licenseImageFile?.let {
-                    append("licenseImage", it.readBytes(), Headers.build {
-                        append(HttpHeaders.ContentDisposition, "filename=${it.name}")
-                    })
+                    try {
+                        append("licenseImage", it.readBytes(), Headers.build {
+                            append(HttpHeaders.ContentDisposition, "filename=${it.name}")
+                        })
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
                 carFrontImageFile?.let {
-                    append("carFrontImage", it.readBytes(), Headers.build {
-                        append(HttpHeaders.ContentDisposition, "filename=${it.name}")
-                    })
+                    try {
+                        append("carFrontImage", it.readBytes(), Headers.build {
+                            append(HttpHeaders.ContentDisposition, "filename=${it.name}")
+                        })
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
                 carBackImageFile?.let {
-                    append("carBackImage", it.readBytes(), Headers.build {
-                        append(HttpHeaders.ContentDisposition, "filename=${it.name}")
-                    })
+                    try {
+                        append("carBackImage", it.readBytes(), Headers.build {
+                            append(HttpHeaders.ContentDisposition, "filename=${it.name}")
+                        })
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
                 carRightImageFile?.let {
-                    append("carRightImage", it.readBytes(), Headers.build {
-                        append(HttpHeaders.ContentDisposition, "filename=${it.name}")
-                    })
+                    try {
+                        append("carRightImage", it.readBytes(), Headers.build {
+                            append(HttpHeaders.ContentDisposition, "filename=${it.name}")
+                        })
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
                 carLeftImageFile?.let {
-                    append("carLeftImage", it.readBytes(), Headers.build {
-                        append(HttpHeaders.ContentDisposition, "filename=${it.name}")
-                    })
+                    try {
+                        append("carLeftImage", it.readBytes(), Headers.build {
+                            append(HttpHeaders.ContentDisposition, "filename=${it.name}")
+                        })
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             })
 

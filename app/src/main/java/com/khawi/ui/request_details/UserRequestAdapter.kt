@@ -11,12 +11,15 @@ import com.khawi.R
 import com.khawi.base.acceptOfferKey
 import com.khawi.base.loadImage
 import com.khawi.model.Offer
+import com.willy.ratingbar.ScaleRatingBar
 
 
 class UserRequestAdapter(
     private val ctx: Context,
+    private val orderType: Int,
     private val isRequest: Boolean = false,
     private val canCall: Boolean = false,
+    private val userId:String? = null,
     private val onClick: (item: Offer, position: Int, type: ClickType) -> Unit
 ) : RecyclerView.Adapter<UserRequestAdapter.ViewHolder>() {
 
@@ -29,8 +32,19 @@ class UserRequestAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        holder.username.text = item.user?.fullName ?: ""
-        holder.userImage.loadImage(item.user?.image ?: "")
+
+        val user = item.user
+        holder.userImage.loadImage(user?.image ?: "")
+        holder.ratingBar.rating = (user?.rate ?: "0").toFloat()
+
+        val stringBuilder = StringBuilder()
+        stringBuilder.append(user?.fullName ?: "")
+        if (user?.hasCar == true && orderType == 2) {
+            stringBuilder.append(" / ").append(user.carType ?: "")
+            stringBuilder.append(" ").append(user.carModel ?: "")
+            stringBuilder.append(" , ").append(user.carColor ?: "")
+        }
+        holder.username.text = stringBuilder.toString()
 
         holder.showDetails.visibility = View.GONE
         holder.showDetails.setOnClickListener {
@@ -44,7 +58,7 @@ class UserRequestAdapter(
 //        }
 
         holder.callOfferBtn.visibility = View.GONE
-        if (item.status == acceptOfferKey && canCall) {
+        if (item.status == acceptOfferKey && canCall && (userId != item.user?.id)) {
             holder.callOfferBtn.visibility = View.VISIBLE
             holder.callOfferBtn.setOnClickListener {
                 onClick.invoke(item, position, ClickType.CALL)
@@ -71,12 +85,14 @@ class UserRequestAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var showDetails: TextView
-//        var rateOfferBtn: TextView
+
+        //        var rateOfferBtn: TextView
         var callOfferBtn: TextView
         var acceptBtn: TextView
         var rejectBtn: TextView
         var username: TextView
         var userImage: ImageView
+        var ratingBar: ScaleRatingBar
 
 
         init {
@@ -87,6 +103,7 @@ class UserRequestAdapter(
             showDetails = itemView.findViewById(R.id.showDetails)
             username = itemView.findViewById(R.id.username)
             userImage = itemView.findViewById(R.id.userImage)
+            ratingBar = itemView.findViewById(R.id.ratingBar)
         }
     }
 

@@ -31,6 +31,7 @@ class LocationService : Service() {
         const val EXTRA_LOCATION_DATA = "extra_location_data"
         const val ACTION_STOP_SERVICE = "com.khawi.android.ACTION_STOP_SERVICE"
         const val orderKey = "order"
+        const val userIdKey = "user_id"
     }
 
     private val binder = LocationServiceBinder()
@@ -38,9 +39,8 @@ class LocationService : Service() {
     private lateinit var locationCallback: LocationCallback
 
     private var order: Order? = null
+    private var userId: String? = null
 
-    @Inject
-    lateinit var repository: UserRepository
 
     override fun onCreate() {
         super.onCreate()
@@ -62,6 +62,7 @@ class LocationService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         order = intent?.getParcelableExtra(orderKey) as? Order
+        userId = intent?.getStringExtra(userIdKey)
         val action = intent?.action
         when (action) {
             ACTION_STOP_SERVICE -> {
@@ -113,7 +114,6 @@ class LocationService : Service() {
 
     private fun handleNewLocation(location: Location) {
         val database = FirebaseDatabase.getInstance().getReference(trackingTable)
-        val user = repository.getUser()
         database.child(order?.id ?: "").setValue(
             TrackingLocation(
                 lastUpdate = System.currentTimeMillis()/1000,
@@ -121,7 +121,7 @@ class LocationService : Service() {
                 lng = location.longitude,
                 orderId = order?.id ?: "",
                 status = order?.status ?: "",
-                userId = user?.id
+                userId = userId
             )
         )
 

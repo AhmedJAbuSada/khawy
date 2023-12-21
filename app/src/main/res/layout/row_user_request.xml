@@ -83,18 +83,44 @@
             android:visibility="gone" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <TextView
-        android:id="@+id/username"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp"
-        android:layout_weight="1"
-        android:gravity="end"
-        android:includeFontPadding="false"
-        android:text="test"
-        android:textColor="@color/textColor"
-        android:textSize="16sp" />
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:gravity="end"
+            android:includeFontPadding="false"
+            android:text="test"
+            android:textColor="@color/textColor"
+            android:textSize="14sp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.willy.ratingbar.ScaleRatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/username"
+            app:layout_constraintTop_toBottomOf="@+id/username"
+            app:srb_clearRatingEnabled="false"
+            app:srb_clickable="false"
+            app:srb_drawableEmpty="@drawable/ic_unselected_star"
+            app:srb_drawableFilled="@drawable/ic_selected_star"
+            app:srb_isIndicator="false"
+            app:srb_numStars="5"
+            app:srb_scrollable="false"
+            app:srb_starHeight="14dp"
+            app:srb_starPadding="2dp"
+            app:srb_starWidth="14dp"
+            app:srb_stepSize="1.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/userImage"

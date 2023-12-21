@@ -453,9 +453,10 @@ fun String.formatDateTime(): String? {
     return formatZ.parse(this)?.let { date -> format.format(date) }
 }
 
-fun Activity.startTrackingService(order: Order?) {
+fun Activity.startTrackingService(order: Order?, userId:String) {
     val serviceIntent = Intent(this, LocationService::class.java)
     serviceIntent.putExtra(LocationService.orderKey, order)
+    serviceIntent.putExtra(LocationService.userIdKey, userId)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         startForegroundService(serviceIntent)
     } else {
