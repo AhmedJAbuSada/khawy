@@ -13,7 +13,6 @@ import android.location.Geocoder
 import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.os.Build
-import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +25,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -35,7 +33,6 @@ import com.google.gson.reflect.TypeToken
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.khawi.R
 import com.khawi.model.Order
-import java.lang.StringBuilder
 import java.net.InetAddress
 import java.net.MalformedURLException
 import java.net.NetworkInterface
@@ -416,10 +413,20 @@ fun LatLng.getAddress(context: Context): String {
         this.longitude,
         1
     )
-    var address = ""
-    if (addresses?.isNotEmpty() == true)
-        address = addresses[0].getAddressLine(0) ?: ""
-    return address
+    val address = StringBuilder()
+    if (addresses?.isNotEmpty() == true) {
+        if ((addresses[0].locality ?: "").isNotEmpty())
+            address.append(addresses[0].locality ?: "")
+        if ((addresses[0].subLocality ?: "").isNotEmpty())
+            address.append(" ").append(addresses[0].subLocality ?: "")
+        if ((addresses[0].adminArea ?: "").isNotEmpty())
+            address.append(" ").append(addresses[0].adminArea ?: "")
+        if ((addresses[0].subAdminArea ?: "").isNotEmpty())
+            address.append(" ").append(addresses[0].subAdminArea ?: "")
+        if ((addresses[0].countryName ?: "").isNotEmpty())
+            address.append(" ").append(addresses[0].countryName ?: "")
+    }
+    return address.toString()
 }
 
 fun LatLng.getAddressTitle(context: Context): String {
@@ -453,7 +460,7 @@ fun String.formatDateTime(): String? {
     return formatZ.parse(this)?.let { date -> format.format(date) }
 }
 
-fun Activity.startTrackingService(order: Order?, userId:String) {
+fun Activity.startTrackingService(order: Order?, userId: String) {
     val serviceIntent = Intent(this, LocationService::class.java)
     serviceIntent.putExtra(LocationService.orderKey, order)
     serviceIntent.putExtra(LocationService.userIdKey, userId)
@@ -476,7 +483,7 @@ fun String.checkTime(tripTimeZone: TextView): String {
     } else if (this.contains("am")) {
         tripTimeZone.text = "ص"
         this.replace("am", "")
-    }else if (this.contains("م")) {
+    } else if (this.contains("م")) {
         tripTimeZone.text = "م"
         this.replace("م", "")
     } else if (this.contains("ص")) {
