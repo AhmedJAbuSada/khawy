@@ -9,6 +9,9 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface NotificationRepository {
     suspend fun notificationList(params: HashMap<String, String>)
+    suspend fun notificationCount()
+    suspend fun notificationRead()
     suspend fun getNotificationListFlow(): StateFlow<BaseState<BaseResponse<MutableList<Notification>?>?>>
+    suspend fun getNotificationCountFlow(): StateFlow<BaseState<BaseResponse<Int?>?>>
 
 }

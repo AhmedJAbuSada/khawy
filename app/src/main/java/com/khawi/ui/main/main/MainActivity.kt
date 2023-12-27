@@ -32,6 +32,9 @@ class MainActivity : AppCompatActivity() {
         binding.bottomView.itemIconTintList = null
 
         navController?.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.notifications){
+                viewModel.notificationCount()
+            }
             binding.bottomView.visibility =
                 if (destination.id == R.id.home
                     || destination.id == R.id.orders
@@ -86,6 +89,18 @@ class MainActivity : AppCompatActivity() {
 
         if (intent.hasExtra("notification"))
             binding.bottomView.selectedItemId = R.id.notifications
+
+        viewModel.successLiveData.observe(this) {
+            it?.data?.let { count ->
+                if (count > 0) {
+                    binding.bottomView.getOrCreateBadge(R.id.notifications).number = count
+                } else {
+                    binding.bottomView.removeBadge(R.id.notifications)
+                }
+            }
+        }
+
+        viewModel.notificationCount()
     }
 
 //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

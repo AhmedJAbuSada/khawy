@@ -83,9 +83,12 @@ class NotificationsFragment : Fragment() {
         }
 
         viewModel.successLiveDataList.observe(viewLifecycleOwner) {
-            totalPages = it?.pagination?.totalPages ?: 0
-            isLastPage = page >= totalPages
-            adapter?.submitList(it?.data)
+            if (it?.data != null) {
+                totalPages = it.pagination?.totalPages ?: 0
+                isLastPage = page >= totalPages
+                adapter?.submitList(it.data)
+                viewModel.notificationRead()
+            }
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -100,10 +103,8 @@ class NotificationsFragment : Fragment() {
     }
 
     private fun callRequest() {
-        viewModel.viewModelScope.launch {
-            viewModel.params["limit"] = "10"
-            viewModel.params["page"] = "$page"
-            viewModel.notificationList()
-        }
+        viewModel.params["limit"] = "10"
+        viewModel.params["page"] = "$page"
+        viewModel.notificationList()
     }
 }

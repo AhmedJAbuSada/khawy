@@ -65,7 +65,7 @@
     <string name="hi_khawi">مرحبا خَوي</string>
     <string name="search_for_place">البحث عن مكان</string>
     <string name="your_location">حدد موقعك</string>
-    <string name="deliver_form">طلب توصيل</string>
+    <string name="deliver_form">طلب رحلة</string>
     <string name="join_form">طلب انشاء رحلة</string>
     <string name="car_information">معلومات السيارة</string>
     <string name="trip_time">وقت الرحلة</string>
@@ -87,11 +87,11 @@
     <string name="seat_request">عدد المقاعد المطلوبة</string>
     <string name="note">ملاحظات</string>
     <string name="join_now">انضم الآن</string>
-    <string name="apply_deliver">تقديم عرض توصيل</string>
-    <string name="success_request_deliver">تم تقديم عرض التوصيل بنجاح</string>
+    <string name="apply_deliver">تقديم عرض للرحلة</string>
+    <string name="success_request_deliver">تم تقديم عرض الللرحلة بنجاح</string>
     <string name="show_request_details">عرض تفاصيل الطلب</string>
     <string name="success_request_join">تم تقديم طلب انشاء رحلة بنجاحئ</string>
-    <string name="join_offer">عرض توصيل</string>
+    <string name="join_offer">عرض رحلة</string>
     <string name="message">النص</string>
     <string name="add_note_optional">اضف ملاحظة (اختياري)</string>
     <string name="minimum_price">أقل سعر</string>
@@ -106,7 +106,7 @@
     <string name="set_price">حدد السعر</string>
     <string name="seats_counts">عدد الركاب</string>
     <string name="success_request_join_create">تم انشاء طلب انشاء رحلة بنجاح</string>
-    <string name="success_request_deliver_create">تم انشاء طلب التوصيل بنجاح</string>
+    <string name="success_request_deliver_create">تم انشاء طلب الرحلة بنجاح</string>
     <string name="join_trip">الانضمام إلى الرحلة</string>
     <string name="price_must_between">يجب ان يكون السعر بين</string>
     <string name="currency">SAR</string>
@@ -154,7 +154,7 @@
     <string name="end_trip">انهاء الرحلة</string>
     <string name="are_you_want_accept">هل تريد قبول العملية؟</string>
     <string name="are_you_want_reject">هل تريد رفض العملية؟</string>
-    <string name="requests_delivery">طلبات التوصيل</string>
+    <string name="requests_delivery">طلبات الرحلات</string>
     <string name="offer_price">السعر المرسل</string>
     <string name="offer_accepted">العروض المقبولة</string>
     <string name="api_key">AIzaSyBG2O9nhPoHxemxdMh4NX8pBa32cd0Kc1Q</string>

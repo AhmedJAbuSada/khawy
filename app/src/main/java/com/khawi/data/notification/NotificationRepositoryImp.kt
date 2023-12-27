@@ -24,6 +24,8 @@ class NotificationRepositoryImp @Inject constructor(
 
     private val _eventList =
         MutableStateFlow<BaseState<BaseResponse<MutableList<Notification>?>?>>(BaseState.Idle())
+    private val _eventCount =
+        MutableStateFlow<BaseState<BaseResponse<Int?>?>>(BaseState.Idle())
 
     override suspend fun notificationList(params: HashMap<String, String>) =
         withContext(dispatcherProvider.io()) {
@@ -41,7 +43,40 @@ class NotificationRepositoryImp @Inject constructor(
             }
         }
 
+    override suspend fun notificationRead() =
+        withContext(dispatcherProvider.io()) {
+            when (val result = remoteDataSource.notificationRead()) {
+                is AdvanceResult.Success -> {
+                    val item = result.data
+                    item.v = System.currentTimeMillis()
+                    _eventList.emit(BaseState.ItemsLoaded(item))
+                    Timber.d("results here res ${result.data}")
+                }
+
+                is AdvanceResult.Error -> {
+                    Timber.d("something went wrong ${result.fault}")
+                }
+            }
+        }
+
+    override suspend fun notificationCount() =
+        withContext(dispatcherProvider.io()) {
+            when (val result = remoteDataSource.notificationCount()) {
+                is AdvanceResult.Success -> {
+                    val item = result.data
+                    item.v = System.currentTimeMillis()
+                    _eventCount.emit(BaseState.ItemsLoaded(item))
+                    Timber.d("results here res ${result.data}")
+                }
+
+                is AdvanceResult.Error -> {
+                    Timber.d("something went wrong ${result.fault}")
+                }
+            }
+        }
+
     override suspend fun getNotificationListFlow() = _eventList.asStateFlow()
+    override suspend fun getNotificationCountFlow() = _eventCount.asStateFlow()
 
 
 }

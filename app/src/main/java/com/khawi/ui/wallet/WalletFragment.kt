@@ -196,14 +196,14 @@ class WalletFragment : Fragment() {
     private fun openPaymentGateway(amount: String) {
         bottomSheet?.dismiss()
         try {
-            // test
-            val profileId = "88646"
-            val serverKey = "SZJN2DKWTG-JDHMTD6T2L-KZJKMN6GKH"
-            val clientKey = "C7KMQQ-R7BR6D-HN7DG7-KQKMRQ"
-//            // live
-//            val profileId = "94514"
-//            val serverKey = "SKJN2DKWTD-JGLHWBTNWK-JKMJHJW2ZD"
-//            val clientKey = "CRKMQQ-R77P6T-BHV27Q-TV2RN2"
+//            // test
+//            val profileId = "88646"
+//            val serverKey = "SZJN2DKWTG-JDHMTD6T2L-KZJKMN6GKH"
+//            val clientKey = "C7KMQQ-R7BR6D-HN7DG7-KQKMRQ"
+            // live
+            val profileId = "94514"
+            val serverKey = "SKJN2DKWTD-JGLHWBTNWK-JKMJHJW2ZD"
+            val clientKey = "CRKMQQ-R77P6T-BHV27Q-TV2RN2"
             val locale = PaymentSdkLanguageCode.AR
             val screenTitle = getString(R.string.app_name)
             val cartDesc = getString(R.string.app_name)
