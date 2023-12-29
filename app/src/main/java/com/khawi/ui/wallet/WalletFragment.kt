@@ -1,6 +1,7 @@
 package com.khawi.ui.wallet
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -246,6 +247,7 @@ class WalletFragment : Fragment() {
                     .build()
             startCardPayment(requireActivity(), configData, object : CallbackPaymentInterface {
                 override fun onError(error: PaymentSdkError) {
+                    Log.e("error payment", "msg: ${error.msg?:""}")
                     getString(R.string.error_paymet).showAlertMessage(context = requireContext(),
                         title = getString(R.string.error),
                         confirmText = getString(R.string.Ok),
