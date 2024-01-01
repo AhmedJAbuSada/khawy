@@ -362,29 +362,57 @@ class UpdateProfileFragment : Fragment() {
         viewModel.successLiveData.observe(viewLifecycleOwner) {
             if (it?.status == true) {
                 it.data?.let { item ->
-                    it.message?.showAlertMessage(context = requireContext(),
-                        title = getString(R.string.success),
-                        confirmText = getString(R.string.Ok),
-                        type = SweetAlertDialog.SUCCESS_TYPE,
-                        onCancelClick = {},
-                        onConfirmClick = {
-                            if (requireActivity() is MainActivity) {
+                    if (item.isApprove == true) {
+                        it.message?.showAlertMessage(context = requireContext(),
+                            title = getString(R.string.success),
+                            confirmText = getString(R.string.Ok),
+                            type = SweetAlertDialog.SUCCESS_TYPE,
+                            onCancelClick = {},
+                            onConfirmClick = {
                                 viewModel.addUser(item)
-                                findNavController().popBackStack()
-                            } else {
-                                if (item.isApprove == true) {
-                                    viewModel.addUser(item)
+                                if (requireActivity() is MainActivity) {
+                                    findNavController().popBackStack()
+                                } else {
                                     startActivity(
                                         Intent(
                                             requireContext(), MainActivity::class.java
                                         )
                                     )
                                     (requireActivity() as LoginActivity).finishAffinity()
+//                                    if (item.isApprove == true) {
+//                                        viewModel.addUser(item)
+//                                        startActivity(
+//                                            Intent(
+//                                                requireContext(), MainActivity::class.java
+//                                            )
+//                                        )
+//                                        (requireActivity() as LoginActivity).finishAffinity()
+//                                    } else {
+//                                        findNavController().navigate(R.id.action_updateProfileFragment_to_phoneNumberFragment)
+//                                    }
+                                }
+                            })
+                    } else {
+                        getString(R.string.request_sent_success).showAlertMessage(context = requireContext(),
+                            title = getString(R.string.alert),
+                            confirmText = getString(R.string.Ok),
+                            type = SweetAlertDialog.WARNING_TYPE,
+                            onCancelClick = {},
+                            onConfirmClick = {
+                                viewModel.addUser(item)
+                                if (requireActivity() is MainActivity) {
+                                    findNavController().popBackStack()
                                 } else {
-                                    findNavController().navigate(R.id.action_updateProfileFragment_to_phoneNumberFragment)
+                                    startActivity(
+                                        Intent(
+                                            requireContext(), MainActivity::class.java
+                                        )
+                                    )
+                                    (requireActivity() as LoginActivity).finishAffinity()
                                 }
                             }
-                        })
+                        )
+                    }
                 }
             } else {
                 it?.message?.errorMessage(requireContext())

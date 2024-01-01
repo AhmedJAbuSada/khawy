@@ -178,7 +178,19 @@ class RequestDetailsFragment : Fragment() {
             binding.sendBtn.text = getString(R.string.apply_deliver)
             binding.deliverContainer.visibility = View.VISIBLE
             binding.sendBtn.setOnClickListener {
-                viewModel.addOffer(order?.id ?: "")
+                if (user?.isApprove == true) {
+                    viewModel.addOffer(order?.id ?: "")
+                } else {
+                    getString(R.string.request_sent_success).showAlertMessage(context = requireContext(),
+                        title = getString(R.string.alert),
+                        confirmText = getString(R.string.Ok),
+                        type = SweetAlertDialog.WARNING_TYPE,
+                        onCancelClick = {},
+                        onConfirmClick = {
+
+                        }
+                    )
+                }
 //                findNavController().safeNavigate(
 //                    RequestDetailsFragmentDirections.actionRequestDetailsFragmentToRequestDeliverFragment(
 //                        orderObj = order
@@ -274,7 +286,7 @@ class RequestDetailsFragment : Fragment() {
             if (newStatusWithOfferAccepted()) {
                 binding.startBtn.visibility = View.VISIBLE
                 binding.startBtn.setOnClickListener {
-                    requireActivity().startTrackingService(order, user?.id?:"")
+                    requireActivity().startTrackingService(order, user?.id ?: "")
                     viewModel.viewModelScope.launch {
                         viewModel.changeOrderStatusBody(
                             orderId = order?.id ?: "",
@@ -523,7 +535,7 @@ class RequestDetailsFragment : Fragment() {
         seatsText: String,
         noteText: String,
         priceText: String,
-        showPhone:Boolean = false
+        showPhone: Boolean = false
     ) {
         binding.joinContainer.visibility = View.VISIBLE
         binding.userImage.loadImage(user?.image ?: "")

@@ -7,11 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.khawi.NavGraphDirections
 import com.khawi.R
 import com.khawi.base.errorMessage
+import com.khawi.base.showAlertMessage
 import com.khawi.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomView.itemIconTintList = null
 
         navController?.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.notifications){
+            if (destination.id == R.id.notifications) {
                 viewModel.notificationCount()
             }
             binding.bottomView.visibility =
@@ -80,8 +82,20 @@ class MainActivity : AppCompatActivity() {
         binding.joinFormContainer.setOnClickListener {
             val hasCar = viewModel.userMutableLiveData.value?.hasCar ?: false
             if (hasCar) {
-                navController?.navigate(NavGraphDirections.actionRequestFormFragment(false))
-                binding.requestsFormGroup.visibility = View.GONE
+                if (viewModel.userMutableLiveData.value?.isApprove == true) {
+                    navController?.navigate(NavGraphDirections.actionRequestFormFragment(false))
+                    binding.requestsFormGroup.visibility = View.GONE
+                } else {
+                    getString(R.string.request_sent_success).showAlertMessage(context = this,
+                        title = getString(R.string.alert),
+                        confirmText = getString(R.string.Ok),
+                        type = SweetAlertDialog.WARNING_TYPE,
+                        onCancelClick = {},
+                        onConfirmClick = {
+
+                        }
+                    )
+                }
             } else {
                 getString(R.string.you_need_a_car).errorMessage(this)
             }

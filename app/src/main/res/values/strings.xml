@@ -178,4 +178,5 @@
     <string name="you_need_a_car">يجب ان يكون لديك سيارة لاستخدام هذه الخاصية</string>
     <string name="reject_reason">سبب الرفض</string>
     <string name="image_was_attached">تم اختيار الصورة</string>
+    <string name="request_sent_success">تم تقديم طلبك .. سيتم مراجعة طلبك من قبل الادارة</string>
 </resources>
