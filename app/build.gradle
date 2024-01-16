@@ -162,6 +162,9 @@ dependencies {
     // paytabs
     implementation 'com.paytabs:payment-sdk:6.5.2'
 
+    // paytabs
+    implementation 'com.github.Tap-Payments:goSellSDK-Android:2.17.0'
+
     // draw rout
     implementation 'com.google.maps:google-maps-services:2.2.0'
     implementation 'org.slf4j:slf4j-nop:1.7.25'
