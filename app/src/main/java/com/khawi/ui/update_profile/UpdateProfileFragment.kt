@@ -315,7 +315,16 @@ class UpdateProfileFragment : Fragment() {
         }
 
         binding.back.setOnClickListener {
-            findNavController().popBackStack()
+            if (requireActivity() is MainActivity) {
+                findNavController().popBackStack()
+            } else {
+                startActivity(
+                    Intent(
+                        requireContext(), MainActivity::class.java
+                    )
+                )
+                (requireActivity() as LoginActivity).finishAffinity()
+            }
         }
         binding.saveBtn.setOnClickListener {
             if (validation()) {

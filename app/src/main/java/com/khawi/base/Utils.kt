@@ -166,18 +166,33 @@ fun String.showAlertMessage(
 }
 
 fun String.errorMessage(context: Context) {
-    this.showAlertMessage(
-        context = context,
-        title = context.getString(R.string.error),
-        confirmText = context.getString(R.string.Ok),
-        type = SweetAlertDialog.ERROR_TYPE,
-        onCancelClick = {
+    if (this == "لا يمكنك التعديل .. الرجاء التواصل مع الادارة"
+        || this == "تم تقديم طلبك .. سيتم مراجعة طلبك من قبل الادارة")
+        this.showAlertMessage(
+            context = context,
+            title = context.getString(R.string.alert),
+            confirmText = context.getString(R.string.Ok),
+            type = SweetAlertDialog.WARNING_TYPE,
+            onCancelClick = {
 
-        },
-        onConfirmClick = {
+            },
+            onConfirmClick = {
 
-        }
-    )
+            }
+        )
+    else
+        this.showAlertMessage(
+            context = context,
+            title = context.getString(R.string.error),
+            confirmText = context.getString(R.string.Ok),
+            type = SweetAlertDialog.ERROR_TYPE,
+            onCancelClick = {
+
+            },
+            onConfirmClick = {
+
+            }
+        )
 }
 
 fun <T> String.fromJson(): T = Gson().fromJson(this, object : TypeToken<T>() {}.type)
