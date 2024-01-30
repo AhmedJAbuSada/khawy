@@ -77,13 +77,13 @@
                 android:layout_width="47dp"
                 android:layout_height="47dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/car_marker" />
+                android:src="@drawable/join_marker" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/deliver_form"
+                android:text="@string/join_form"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -103,13 +103,13 @@
                 android:layout_width="47dp"
                 android:layout_height="47dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/join_marker" />
+                android:src="@drawable/car_marker" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/join_form"
+                android:text="@string/deliver_form"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
         </androidx.appcompat.widget.LinearLayoutCompat>

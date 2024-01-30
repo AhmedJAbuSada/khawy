@@ -126,13 +126,13 @@ class RequestFormFragment : Fragment() {
         binding.priceET.visibility = View.VISIBLE
         if (isDeliver) {
             binding.dailyCheckBoxContainer.visibility = View.GONE
-            binding.title.text = getString(R.string.deliver_form)
+            binding.title.text = getString(R.string.join_form)
             binding.maxSeatsET.hint = getString(R.string.seats_counts)
             binding.sendBtn.text = getString(R.string.apply_deliver)
         } else {
             binding.tripTimeContainer.visibility = View.VISIBLE
             binding.tripDateContainer.visibility = View.VISIBLE
-            binding.title.text = getString(R.string.join_form)
+            binding.title.text = getString(R.string.deliver_form)
 //            binding.joinGroup.visibility = View.VISIBLE
             binding.maxSeatsET.hint = getString(R.string.maximum_seats)
             binding.sendBtn.text = getString(R.string.apply_join)
@@ -221,7 +221,7 @@ class RequestFormFragment : Fragment() {
                             price = price,
                             isRepeated = binding.dailyCheckBox.isChecked,
                             days = listDays,
-                            orderType = if (isDeliver) 2 else 1,
+                            orderType = if (isDeliver) 1 else 2,
                             maxPassenger = (binding.maxSeatsET.text.toString()).toInt(),
                             notes = binding.noteET.text.toString(),
                         )
@@ -240,7 +240,7 @@ class RequestFormFragment : Fragment() {
                 requireContext().deliverBottomSheet(
                     layoutInflater,
                     binding.container,
-                    if (isDeliver)
+                    if (!isDeliver)
                         getString(R.string.success_request_deliver_create)
                     else
                         getString(R.string.success_request_join_create),
@@ -387,7 +387,7 @@ class RequestFormFragment : Fragment() {
                 return false
             }
         }
-        if (!isDeliver && tripDate.isNullOrEmpty()) {
+        if (isDeliver && tripDate.isNullOrEmpty()) {
             getString(R.string.error_date_empty).showAlertMessage(
                 context = requireContext(),
                 title = getString(R.string.error),
@@ -402,7 +402,7 @@ class RequestFormFragment : Fragment() {
             )
             return false
         }
-        if (!isDeliver && tripTime.isNullOrEmpty()) {
+        if (isDeliver && tripTime.isNullOrEmpty()) {
             getString(R.string.error_time_empty).showAlertMessage(
                 context = requireContext(),
                 title = getString(R.string.error),

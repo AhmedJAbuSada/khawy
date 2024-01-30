@@ -49,7 +49,7 @@ class LocationService : Service() {
         createNotificationChannel()
 
         val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle(getString(com.khawi.R.string.app_name))
+            .setContentTitle(getString(com.khawi.R.string.khawi))
             .setContentText(getString(com.khawi.R.string.tracking_location))
             .setSmallIcon(com.khawi.R.mipmap.ic_launcher)
             .build()

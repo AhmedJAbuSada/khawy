@@ -38,7 +38,7 @@ class MyFcmListenerService : FirebaseMessagingService() {
             showNotification(
                 if (!TextUtils.isEmpty(title))
                     title
-                else getString(R.string.app_name),
+                else getString(R.string.khawi),
                 message.notification?.body ?: "",
                 intent
             )
@@ -68,8 +68,8 @@ class MyFcmListenerService : FirebaseMessagingService() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
-                getString(R.string.app_name),
-                getString(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT
+                getString(R.string.khawi),
+                getString(R.string.khawi), NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationManager.createNotificationChannel(notificationChannel)
         }
@@ -85,7 +85,7 @@ class MyFcmListenerService : FirebaseMessagingService() {
         notifyStyle: NotificationCompat.BigPictureStyle?
     ): Notification {
 
-        val parseBuilder = NotificationCompat.Builder(this, getString(R.string.app_name))
+        val parseBuilder = NotificationCompat.Builder(this, getString(R.string.khawi))
         parseBuilder.setStyle(NotificationCompat.BigTextStyle().bigText(body))
         val random = Random()
         val pContentIntent = PendingIntent.getActivity(
